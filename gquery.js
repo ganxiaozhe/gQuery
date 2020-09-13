@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery v1.3.0 | (c) Ganxiaozhe
+// gQuery v1.3.1 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
@@ -212,11 +212,13 @@
 		},
 		fadeOut: function(dur,callback){
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
+			let cthis,copa;
 
 			return this.each(function(){
-				this.animate([{opacity:0}],dur);
+				copa = this.style.opacity || 1;
+				this.animate([{opacity:copa},{opacity:0}],dur);
 
-				let cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
+				cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
 			});
 		},
 		fadeToggle: function(dur,callback){
