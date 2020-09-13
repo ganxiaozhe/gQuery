@@ -1,11 +1,7 @@
 // =================================================
 //
-// gQuery v1.3.0 under MIT
-//
-// Licensed MIT for open source use
-// or gQuery Commercial License for commercial use
-//
-// Copyright 2020 gQuery, by Ganxiaozhe
+// gQuery v1.3.0 | (c) Ganxiaozhe
+// gquery.net/about/license
 //
 // [fn]
 // seletor,each,find,parent,remove,empty,text,html
