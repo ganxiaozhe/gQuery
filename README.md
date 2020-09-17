@@ -19,6 +19,9 @@ The brand new JavaScript function library, and killed IE
 
 如果不考虑兼容 IE，同时喜欢极简自由的开发，强烈建议使用 gQuery 以获得更好的体验。
 
+# Docs
+https://www.gquery.net/docs/
+
 
 
 # Let's try gQuery
