@@ -1,19 +1,19 @@
 // =================================================
 //
-// gQuery v1.3.1 | (c) Ganxiaozhe
+// gQuery v1.3.2 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
-// seletor,each,find,parent,remove,empty,text,html
+// seletor,each,find,parent,remove,empty,text,html,ohtml
 // val,width,height,offset,prepend,append,before,after
 // attr,removeAttr,hasClass,addClass,removeClass,toggleClass
 // css,show,hide,fadeIn,fadeOut,fadeToggle
 // slideUp,slideDown,slideToggle,on,off,trigger,click,select
 //
 // [extend fn]
-// isWindow,strToNode,copy,deepClone
+// isWindow,isNode,strToNode,copy,deepClone
 // [extend array]
-// unique
+// unique,finder
 // [extend event]
 // list,add,remove
 // [extend get]
@@ -40,7 +40,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.3.0',
+		gquery: '1.3.2',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -74,7 +74,7 @@
 				for (let i = elems.length - 1; i >= 0; i--) {fArr.push(elems[i]);}
 			});
 
-			fArr = gQuery.array.unique(fArr);
+			fArr = $.array.unique(fArr);
 			finder.length = fArr.length;let ii = 0;
 			for (let i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[ii];ii++;}
 			return finder;
@@ -87,53 +87,45 @@
 			let _this = this;
 			return this.each(function(idx){_this[idx] = this.nextElementSibling;});
 		},
-		remove: function(){
-			this.each(function(){this.parentNode.removeChild(this);});
+		remove: function(sel){
+			let rthis = ( sel === undefined ? this : this.find(sel) );
+			rthis.each(function(){this.parentNode.removeChild(this);});
 		},
-		empty: function(){
-			return this.each(function(){
+		empty: function(sel){
+			let rthis = ( sel === undefined ? this : this.find(sel) );
+			return rthis.each(function(){
 				while(this.firstChild){this.removeChild(this.firstChild);}
 			});
 		},
 		text: function(val){
-			if(val === undefined) {
-				let resArr = [];this.each(function(){resArr.push(this.innerText);});
-				return (resArr.length>1 ? resArr : resArr[0]);
-			} else {
-				return this.each(function(){this.innerText = val;});
-			}
+			return this.handle.thvEach.call(this,'innerText',val);
 		},
 		html: function(val){
-			if(val === undefined) {
-				let resArr = [];this.each(function(){resArr.push(this.innerHTML);});
-				return (resArr.length>1 ? resArr : resArr[0]);
-			} else {
-				return this.each(function(){this.innerHTML = val;});
-			}
+			return this.handle.thvEach.call(this,'innerHTML',val);
 		},
 		val: function(val){
-			if(val === undefined) {
-				let resArr = [];this.each(function(){
-					this.value===undefined || resArr.push(this.value);
-				});
-				return (resArr.length>1 ? resArr : resArr[0]);
-			} else {
-				return this.each(function(){this.value = val;});
-			}
+			return this.handle.thvEach.call(this,'value',val);
+		},
+		ohtml: function(val){
+			return this.handle.thvEach.call(this,'outerHTML',val);
 		},
 		width: function(val){
-			let totalWidth = 0;
-			this.each(function(){
-				val===undefined ? (totalWidth += this.offsetWidth) : (this.style.width = val);
-			});
-			if(val===undefined){return totalWidth/this.length;} else {return this;}
+			if(val!==undefined){
+				isNaN(val) || (val += 'px');
+				return this.each(function(){this.style.width = val;});
+			}
+
+			let totalWidth = [];this.each(function(){totalWidth.push(this.offsetWidth);});
+			return (totalWidth.length>1 ? totalWidth : totalWidth[0]);
 		},
 		height: function(val){
-			let totalHeight = 0;
-			this.each(function(){
-				val===undefined ? (totalHeight += this.offsetHeight) : (this.style.height = val);
-			});
-			if(val===undefined){return totalHeight/this.length;} else {return this;}
+			if(val!==undefined){
+				isNaN(val) || (val += 'px');
+				return this.each(function(){this.style.height = val;});
+			}
+
+			let totalHeight = [];this.each(function(){totalHeight.push(this.offsetHeight);});
+			return (totalHeight.length>1 ? totalHeight : totalHeight[0]);
 		},
 		offset: function(){
 			var rect = this[0].getBoundingClientRect();
@@ -155,7 +147,12 @@
 			return this.each(function(){this.after( gQuery.strToNode(elem) );});
 		},
 		attr: function(attrs,val){
-			if(val === undefined && typeof attrs === 'string') {return this[0].getAttribute(attrs);} else {
+			if(val === undefined && typeof attrs === 'string') {
+				let resArr = [];this.each(function(){
+					resArr.push( this.getAttribute(attrs) );
+				});
+				return (resArr.length>1 ? resArr : resArr[0]);
+			} else {
 				if(typeof attrs === 'object'){
 					return this.each(function(){
 						for(let idx in attrs){this.setAttribute(idx, attrs[idx]);}
@@ -184,18 +181,29 @@
 			return this.each(function(){this.classList.toggle(cls);});
 		},
 		css: function(styles,val){
-			if(val){
+			if(val !== undefined){
 				return this.each(function(){this.style[styles] = val;});
 			}
-			if(typeof styles === 'string'){return this[0].style[styles];}
+			if(typeof styles === 'string'){
+				let _css,force = styles.substr(0,1)==='!' ? 1 : 0;
+				styles = styles.replace(/^!/,'');
+				let resArr = [];this.each(function(){
+					_css = this.style[styles] || undefined;
+					(_css===undefined && force) && (_css = window.getComputedStyle(this)[styles]);
+					resArr.push( _css );
+				});
+				return (resArr.length>1 ? resArr : resArr[0]);
+			}
 
 			return this.each(function(){
 				for(let style in styles){this.style[style] = styles[style];}
 			});
 		},
 		show: function(disp){
-			disp || (disp='block');
-			return this.each(function(){this.style.display=disp});
+			return this.each(function(){
+				disp || (disp = this.style.display=='none' ? '' : 'block');
+				this.style.display = disp;
+			});
 		},
 		hide: function(){
 			return this.each(function(){this.style.display='none'});
@@ -204,9 +212,11 @@
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
 
 			return this.each(function(){
-				if(this.style.display!='' && this.style.display!='none'){return true;}
+				if(window.getComputedStyle(this).display!='none'){return true;}
 
-				this.style.display='block';this.animate([{opacity:0},{opacity:1}],dur);
+				this.style.display='';
+				window.getComputedStyle(this).display=='none' && (this.style.display='block');
+				this.animate([{opacity:0},{opacity:1}],dur);
 				let cthis = this;setTimeout(()=>{callback.call(cthis);},dur);
 			});
 		},
@@ -254,21 +264,38 @@
 				this.style.display=='none' ? $(this).slideDown(dur,callback) : $(this).slideUp(dur,callback);
 			});
 		},
-		on: function(evtName,fn){
-			return this.each(function(){gQuery.event.add(this,evtName,fn);});
+		on: function(evtName,selector,fn){
+			(arguments.length==2 && selector instanceof Function) && (fn = selector,selector = false);
+			let appoint = function(inFn){
+				return selector ? function(e){
+					let nodes = this.querySelectorAll(selector),
+						contain = false,tgtNode,i;
+
+					for (i = nodes.length - 1; i >= 0; i--) {
+						nodes[i].contains(e.target) && (tgtNode = nodes[i],contain = true);
+					}
+					contain && ( inFn.call(tgtNode) );
+				} : inFn;
+			};
+
+			if(typeof fn === 'function'){
+				let newfn = appoint(fn);
+				return this.each(function(){gQuery.event.add(this,evtName,newfn);});
+			}
+
+			return this.each(function(){
+				for(let evt in evtName){
+					let newfn = appoint(evtName[evt]);
+					gQuery.event.add(this,evt,newfn);
+				}
+			});
 		},
 		off: function(evtName){
 			return this.each(function(){gQuery.event.remove(this,evtName);});
 		},
 		trigger: function(evtName,params){
-			params || (params={});let ctmEvent;
-
-			if (window.CustomEvent) {
-				ctmEvent = new CustomEvent(evtName, {detail: params});
-			} else {
-				ctmEvent = document.createEvent('CustomEvent');
-				ctmEvent.initCustomEvent(evtName, true, true, params);
-			}
+			params || (params={});
+			let ctmEvent = new CustomEvent(evtName, {detail: params});
 
 			return this.each(function(){this.dispatchEvent(ctmEvent);});
 		},
@@ -290,22 +317,57 @@
 	gQuery.fn.init.prototype = gQuery.fn;
 
 	gQuery.extend = gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
+	gQuery.fn.extend({
+		handle: {
+			thvEach: function(prop,val){
+				let isArr = Array.isArray(val);
+
+				if(val === undefined || (isArr && val.length==0) ) {
+					let resArr = [];this.each(function(){resArr.push(this[prop]);});
+					return (isArr ? resArr : resArr.join(''));
+				}
+				return isArr ? this.each(function(idx){this[prop] = val[idx];}) :
+				 this.each(function(){this[prop] = val;});
+			}
+		}
+	});
 	gQuery.extend({
 		global: (typeof window !== 'undefined' ? window : global),
 		isWindow: function(obj){
 			return Object.prototype.toString.call(obj)==='[object Window]';
 		},
+		isNode: function(obj){
+			let str = Object.prototype.toString.call(obj);
+			return (str.indexOf('HTML')>-1 && str.indexOf('Element')>-1) ? true : false;
+		},
 		array: {
-			unique: function(arr){
-				let j = {};
+			unique: function(arr,typ){
+				let j = {},isNode = $.isNode(arr[0]);
+				if(typ=='node' || isNode){
+					return arr.filter(function(item, index, arr) {
+						return arr.indexOf(item, 0) === index;
+					});
+				}
+
 				arr.forEach(function(v){
-					let typ = typeof v,vv=v;
-					if(typ==='object'){
-						(v.tagName) ? (typ='node',v = v.innerHTML) : v = JSON.stringify(v);
-					}
-					j[v + '::' + typ] = vv;
+					let vtyp = typeof v,vv=v;
+					if(vtyp==='object'){v = JSON.stringify(v);}
+					j[v + '::' + vtyp] = vv;
 				});
 				return Object.keys(j).map(function(v){return j[v];});
+			},
+			finder: function(arr,finder){
+				let isObj = (typeof finder === 'object'),resame;
+				for (let i = 0; i < arr.length; i++) {
+					if(isObj){
+						resame = true;
+						for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
+						if(resame){return {index:i,array:arr[i]};}
+					} else {
+						if(arr[i]==finder){return {index:i,array:arr[i]};}
+					}
+				}
+				return null;
 			}
 		},
 		event: {
