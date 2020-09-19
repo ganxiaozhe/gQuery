@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery v1.3.2 | (c) Ganxiaozhe
+// gQuery v1.3.5 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
@@ -31,7 +31,7 @@
 		window.location.href = 'https://gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery %c https://gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -40,7 +40,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.3.2',
+		gquery: '1.3.5',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -222,13 +222,12 @@
 		},
 		fadeOut: function(dur,callback){
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
-			let cthis,copa;
 
 			return this.each(function(){
-				copa = this.style.opacity || 1;
+				let copa = this.style.opacity || 1;
 				this.animate([{opacity:copa},{opacity:0}],dur);
 
-				cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
+				let cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
 			});
 		},
 		fadeToggle: function(dur,callback){
@@ -264,8 +263,10 @@
 				this.style.display=='none' ? $(this).slideDown(dur,callback) : $(this).slideUp(dur,callback);
 			});
 		},
-		on: function(evtName,selector,fn){
+		on: function(evtName,selector,fn,opts){
+			(arguments.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
 			(arguments.length==2 && selector instanceof Function) && (fn = selector,selector = false);
+
 			let appoint = function(inFn){
 				return selector ? function(e){
 					let nodes = this.querySelectorAll(selector),
@@ -276,17 +277,17 @@
 					}
 					contain && ( inFn.call(tgtNode) );
 				} : inFn;
-			};
+			},cfn;
 
 			if(typeof fn === 'function'){
-				let newfn = appoint(fn);
-				return this.each(function(){gQuery.event.add(this,evtName,newfn);});
+				cfn = appoint(fn);
+				return this.each(function(){gQuery.event.add(this,evtName,cfn,opts);});
 			}
 
 			return this.each(function(){
 				for(let evt in evtName){
-					let newfn = appoint(evtName[evt]);
-					gQuery.event.add(this,evt,newfn);
+					cfn = appoint(evtName[evt]);
+					gQuery.event.add(this,evt,cfn,opts);
 				}
 			});
 		},
@@ -356,53 +357,56 @@
 				});
 				return Object.keys(j).map(function(v){return j[v];});
 			},
-			finder: function(arr,finder){
-				let isObj = (typeof finder === 'object'),resame;
+			finder: function(arr,finder,opts){
+				typeof opts === 'object' || (opts = {});
+				opts.limit === undefined && (opts.limit=1);
+
+				let isObj = (typeof finder === 'object'),resame,resArr = [];
 				for (let i = 0; i < arr.length; i++) {
 					if(isObj){
 						resame = true;
 						for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
-						if(resame){return {index:i,array:arr[i]};}
+						resame && resArr.push( {index:i,array:arr[i]} );
+
+						if(opts.limit>0 && resArr.length>=opts.limit){break;}
 					} else {
-						if(arr[i]==finder){return {index:i,array:arr[i]};}
+						arr[i]==finder && resArr.push( {index:i,array:arr[i]} );
+						if(opts.limit>0 && resArr.length>=opts.limit){break;}
 					}
 				}
-				return null;
+				return resArr.length>1 ? resArr : resArr[0];
 			}
 		},
 		event: {
-			list: [],
-			add: function(obj,evtName,fn){
-				let objEl = obj instanceof Element,
-					eid = objEl ? obj.getAttribute('gq-evt-id') : obj.gqEvtId,list;
+			add: function(obj,evtName,fn,opts){
+				typeof opts === 'object' || (opts={});
+				opts.capture === undefined && (opts.capture=true);
 
-				if(eid===null || eid===undefined){
-					eid = this.list.length;
-					objEl ? obj.setAttribute('gq-evt-id',eid) : obj.gqEvtId=eid;
+				let events = obj.gQueryEvents,evtObj = {fn:fn,opts:opts};
 
-					this.list.push({ id: eid,functions: {[evtName]:[fn]} });
+				if(events===undefined){
+					events = {[evtName]:[ evtObj ]};
 				} else {
-					list = this.list[eid];
-					if(typeof list.functions[evtName] !== 'object'){
-						list.functions[evtName] = [fn];
+					if(typeof events[evtName] !== 'object'){
+						events[evtName] = [evtObj];
 					} else {
-						list.functions[evtName].push(fn);
+						events[evtName].push(evtObj);
 					}
 				}
 
-				list = this.list[eid].functions[evtName];
-				obj.addEventListener(evtName,list[ list.length-1 ],true);
+				obj.gQueryEvents = events;
+				let event = events[evtName][ events[evtName].length-1 ];
+				obj.addEventListener(evtName,event.fn,event.opts);
 			},
 			remove: function(obj,evtName){
-				let objEl = obj instanceof Element,
-					eid = objEl ? obj.getAttribute('gq-evt-id') : obj.gqEvtId,i;
-				if(eid===null || typeof this.list[eid].functions[evtName]!=='object'){return;}
+				let events = obj.gQueryEvents,i;
+				if(events===undefined || typeof events[evtName]!=='object'){return;}
 
-				let fns = this.list[eid].functions[evtName];
+				let fns = events[evtName];
 				for (i = fns.length - 1; i >= 0; i--) {
-					obj.removeEventListener(evtName,fns[i],true);
+					obj.removeEventListener(evtName,fns[i].fn,fns[i].opts);
 				}
-				delete this.list[eid].functions[evtName];
+				delete events[evtName];
 			}
 		},
 		strToNode: function(str){
