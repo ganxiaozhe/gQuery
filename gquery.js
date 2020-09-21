@@ -135,16 +135,16 @@
 			}
 		},
 		append: function(elem){
-			return this.each(function(){this.appendChild( gQuery.strToNode(elem) );});
+			return this.each(function(){this.appendChild( $.strToNode(elem) );});
 		},
 		prepend: function(elem){
-			return this.each(function(){this.prepend( gQuery.strToNode(elem) );});
+			return this.each(function(){this.prepend( $.strToNode(elem) );});
 		},
 		before: function(elem){
-			return this.each(function(){this.before( gQuery.strToNode(elem) );});
+			return this.each(function(){this.before( $.strToNode(elem) );});
 		},
 		after: function(elem){
-			return this.each(function(){this.after( gQuery.strToNode(elem) );});
+			return this.each(function(){this.after( $.strToNode(elem) );});
 		},
 		attr: function(attrs,val){
 			if(val === undefined && typeof attrs === 'string') {
@@ -343,8 +343,8 @@
 		},
 		array: {
 			unique: function(arr,typ){
-				let j = {},isNode = $.isNode(arr[0]);
-				if(typ=='node' || isNode){
+				let j = {};
+				if( typ=='node' || $.isNode(arr[0]) ){
 					return arr.filter(function(item, index, arr) {
 						return arr.indexOf(item, 0) === index;
 					});
