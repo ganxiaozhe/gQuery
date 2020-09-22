@@ -36,6 +36,15 @@ $('#exPutValues li:nth-child(2)').text( val.join('，')+'。' );
 
 $('#exPutValues li:nth-child(3)').html('<i>—— 张爱玲</i>');
 ```
+
+gQuery: CSS强制查询
+```JavaScript
+$('p').css('line-height');
+// [undefined,undefined,undefined,...]
+$('p').css('!line-height');
+// ["15.6px","25.6px","25.6px",...]
+```
+
 gQuery: 事件委派
 ```JavaScript
 $('#todoList').on('click','li',function(){
