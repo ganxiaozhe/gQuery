@@ -36,6 +36,12 @@ $('#exPutValues li:nth-child(2)').text( val.join('，')+'。' );
 
 $('#exPutValues li:nth-child(3)').html('<i>—— 张爱玲</i>');
 ```
+gQuery: 事件委派
+```JavaScript
+$('#todoList').on('click','li',function(){
+  $(this).remove();
+});
+```
 gQuery: fade 操作
 ```JavaScript
 l$('.exFadeShow').html("It's").append('<i class="gi icon-arrows-cw ga-spin ml-2">');
