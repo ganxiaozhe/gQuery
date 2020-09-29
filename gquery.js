@@ -1,17 +1,18 @@
 // =================================================
 //
-// gQuery v1.3.5 | (c) Ganxiaozhe
+// gQuery v1.3.6 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
 // seletor,each,find,parent,remove,empty,text,html,ohtml
 // val,width,height,offset,prepend,append,before,after
-// attr,removeAttr,hasClass,addClass,removeClass,toggleClass
+// attr,removeAttr,data,removeData
+// hasClass,addClass,removeClass,toggleClass
 // css,show,hide,fadeIn,fadeOut,fadeToggle
 // slideUp,slideDown,slideToggle,on,off,trigger,click,select
 //
 // [extend fn]
-// isWindow,isNode,strToNode,copy,deepClone
+// isPlainObject,isWindow,isNode,strToNode,copy,deepClone
 // [extend array]
 // unique,finder
 // [extend event]
@@ -40,7 +41,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.3.5',
+		gquery: '1.3.6',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -148,21 +149,45 @@
 		},
 		attr: function(attrs,val){
 			if(val === undefined && typeof attrs === 'string') {
-				let resArr = [];this.each(function(){
-					resArr.push( this.getAttribute(attrs) );
+				let resArr = [],attr;this.each(function(){
+					attr = this.getAttribute(attrs);attr===null&&(attr=undefined);
+					resArr.push( attr );
 				});
 				return (resArr.length>1 ? resArr : resArr[0]);
-			} else {
-				if(typeof attrs === 'object'){
-					return this.each(function(){
-						for(let idx in attrs){this.setAttribute(idx, attrs[idx]);}
-					});
-				}
-				return this.each(function(){this.setAttribute(attrs, val);});
 			}
+
+			if(typeof attrs === 'object'){
+				return this.each(function(){
+					for(let idx in attrs){this.setAttribute(idx, attrs[idx]);}
+				});
+			}
+			return this.each(function(){this.setAttribute(attrs, val);});
 		},
 		removeAttr: function(attr){
 			return this.each(function(){this.removeAttribute(attr);});
+		},
+		data: function(keys,val){
+			this.each(function(){
+				this.gQueryData===undefined&&(this.gQueryData={});
+			});
+			if(val === undefined) {
+				let resArr = [];this.each(function(){
+					typeof keys === 'string' ? resArr.push( this.gQueryData[keys] ) : resArr.push( this.gQueryData );
+				});
+				return (resArr.length>1 ? resArr : resArr[0]);
+			}
+
+			return this.each(function(){
+				if(typeof keys === 'object'){
+					for(let idx in keys){this.gQueryData[idx] = keys[idx];}
+				} else {this.gQueryData[keys] = val;}
+			});
+		},
+		removeData: function(key){
+			return this.each(function(){
+				this.gQueryData===undefined&&(this.gQueryData={});
+				delete this.gQueryData[key];
+			});
 		},
 		hasClass: function(cls){
 			let res = false;
@@ -317,7 +342,8 @@
 	};
 	gQuery.fn.init.prototype = gQuery.fn;
 
-	gQuery.extend = gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
+
+	gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
 	gQuery.fn.extend({
 		handle: {
 			thvEach: function(prop,val){
@@ -332,6 +358,55 @@
 			}
 		}
 	});
+
+
+	gQuery.isPlainObject = function(obj){
+		let prototype;
+
+		return Object.prototype.toString.call(obj) === '[object Object]' 
+			&& (prototype = Object.getPrototypeOf(obj), prototype === null || 
+			prototype == Object.getPrototypeOf({}));
+	};
+	gQuery.extend = function(obj){
+		if(arguments.length==1){
+			for(let idx in obj){this[idx] = obj[idx];}return this;
+		}
+
+		let deep = false, length = arguments.length, i = 1,
+			name, options, src, copy, clone, copyIsArray,
+			target = arguments[0] || {};
+		if (typeof target == 'boolean') {
+			deep = target;target = arguments[i] || {};i++;
+		}
+		if (typeof target !== "object") {target = {};}
+
+		for (; i < length; i++) {
+			options = arguments[i];
+			if(options == null){continue;}
+
+			for (name in options) {
+				src = target[name];
+				copy = options[name];
+
+				// 解决循环引用
+				if (target === copy) {continue;}
+				// 要递归的对象必须是 plainObject 或者数组
+				if ( deep && copy && (gQuery.isPlainObject(copy) || (copyIsArray = Array.isArray(copy))) ) {
+					// 要复制的对象属性值类型需要与目标属性值相同
+					if (copyIsArray) {
+						copyIsArray = false;
+						clone = src && Array.isArray(src) ? src : [];
+					} else {
+						clone = src && gQuery.isPlainObject(src) ? src : {};
+					}
+					target[name] = gQuery.extend(deep, clone, copy);
+				} else if (copy !== undefined) {
+					target[name] = copy;
+				}
+			}
+	    }
+	    return target;
+	};
 	gQuery.extend({
 		global: (typeof window !== 'undefined' ? window : global),
 		isWindow: function(obj){
