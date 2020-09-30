@@ -73,6 +73,7 @@
 			this.each(function(idx){
 				let elems = this.querySelectorAll(sel);
 				for (let i = elems.length - 1; i >= 0; i--) {fArr.push(elems[i]);}
+				delete finder[idx];
 			});
 
 			fArr = $.array.unique(fArr);
@@ -360,6 +361,14 @@
 	});
 
 
+	gQuery.global = (typeof window !== 'undefined' ? window : global);
+	gQuery.isWindow = function(obj){
+		return Object.prototype.toString.call(obj)==='[object Window]';
+	};
+	gQuery.isNode = function(obj){
+		let str = Object.prototype.toString.call(obj);
+		return (str.indexOf('HTML')>-1 && str.indexOf('Element')>-1) ? true : false;
+	};
 	gQuery.isPlainObject = function(obj){
 		let prototype;
 
@@ -407,15 +416,8 @@
 	    }
 	    return target;
 	};
+
 	gQuery.extend({
-		global: (typeof window !== 'undefined' ? window : global),
-		isWindow: function(obj){
-			return Object.prototype.toString.call(obj)==='[object Window]';
-		},
-		isNode: function(obj){
-			let str = Object.prototype.toString.call(obj);
-			return (str.indexOf('HTML')>-1 && str.indexOf('Element')>-1) ? true : false;
-		},
 		array: {
 			unique: function(arr,typ){
 				let j = {};
