@@ -1,6 +1,6 @@
 # gQuery
 The brand new JavaScript function library, and killed IE
-- Only 4kB minified and gzipped. Can also be included as an AMD module
+- Only 4.7kB minified and gzipped. Can also be included as an AMD module
 - Supports CSS3 selectors to find elements as well as in style property manipulation
 - Use native animation API. Support all major browsers
 
