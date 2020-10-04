@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery v1.3.6 | (c) Ganxiaozhe
+// gQuery v1.4.0 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
@@ -19,8 +19,12 @@
 // list,add,remove
 // [extend get]
 // queryParam
+// [extend cookie]
+// set,get,remove
 // [extend storage]
-// read,write,remove,clear,push
+// local,set,get,remove,clear,push
+// [extend sessionStorage]
+// local,set,get,remove,clear,push
 //
 // =================================================
 ;(function(global,factory){
@@ -29,10 +33,10 @@
 	(global = window || self, global.gQuery = global.$ = factory());
 
 	if(!!window.ActiveXObject || "ActiveXObject" in window){
-		window.location.href = 'https://gquery.net/kill-ie?back='+(window.location.href);
+		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.0 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -41,7 +45,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.3.6',
+		gquery: '1.4.0',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -520,9 +524,58 @@
 				return null;
 			}
 		},
+		cookie: {
+			get: function(key, json){
+				let jar = {}, i = 0,
+					cookies = document.cookie ? document.cookie.split('; ') : [];
+				function decode(s){return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);}
+
+				for (; i < cookies.length; i++) {
+					let parts = cookies[i].split('=');
+					let cookie = parts.slice(1).join('=');
+					if (!json && cookie.charAt(0) === '"') {cookie = cookie.slice(1, -1);}
+
+					try {
+						let name = decode(parts[0]);cookie = decode(cookie);
+
+						if(json){try {cookie = JSON.parse(cookie);} catch(e){}}
+						jar[name] = cookie;
+
+						if(key === name){break;}
+					} catch (e) {}
+				}
+
+				return key ? jar[key] : jar;
+			},
+			set: function(key, value, attributes){
+				attributes = $.extend({path: '/'}, attributes);
+				if (typeof attributes.expires === 'number') {
+					attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+				}
+				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+				let stringifiedAttrs = '';
+				for (let attrName in attributes) {
+					if (!attributes[attrName]) {continue;}
+					stringifiedAttrs += '; ' + attrName;
+
+					if (attributes[attrName] === true) {continue;}
+					stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
+				}
+
+				return (document.cookie = key + '=' + value + stringifiedAttrs);
+			},
+			remove: function(key, attributes){
+				$.cookie.set(key, '', $.extend(attributes, {expires: -1}));
+			}
+		},
 		storage: {
 			local: function(){return $.global.localStorage},
-			read: function(key,typ){
+			set: function(key,data){
+				(typeof data=='object') && (data = JSON.stringify(data));
+				this.local().setItem(key,data);
+			},
+			get: function(key,typ){
 				if(!typ){return this.local().getItem(key);}
 
 				let keyData = this.local().getItem(key);
@@ -531,17 +584,13 @@
 				}
 				return keyData;
 			},
-			write: function(key,data){
-				(typeof data=='object') && (data = JSON.stringify(data));
-				this.local().setItem(key,data);
-			},
 			remove: function(key){this.local().removeItem(key);},
 			clear: function(){this.local().clear();},
 			push: function(key,data,ext){
-				let kd = this.read(key);
+				let kd = this.get(key);
 				if(!kd){
-					data = '['+JSON.stringify(data)+']';this.write(key,data);
-					return this.read(key);
+					data = '['+JSON.stringify(data)+']';this.set(key,data);
+					return this.get(key);
 				} else {
 					try{
 						let tkd = JSON.parse(kd);
@@ -552,12 +601,15 @@
 						kd = '['+JSON.stringify(kd)+']';kd = JSON.parse(kd);
 						kd.push(data);
 					}
-					if(ext=='unique'){kd = gQuery.array.unique(kd);}
-					this.write(key,JSON.stringify(kd));
-					return this.read(key,'array');
+					if(ext=='unique'){kd = $.array.unique(kd);}
+					this.set(key,JSON.stringify(kd));
+					return this.get(key,'array');
 				}
 			}
 		}
 	});
+	gQuery.sessionStorage = gQuery.extend({}, gQuery.storage);
+	gQuery.sessionStorage.local = function(){return $.global.sessionStorage};
+
 	return gQuery;
 }));
