@@ -1,6 +1,6 @@
 # gQuery
 The brand new JavaScript function library, and killed IE
-- Only 4kB minified and gzipped. Can also be included as an AMD module
+- Only 4.7kB minified and gzipped. Can also be included as an AMD module
 - Supports CSS3 selectors to find elements as well as in style property manipulation
 - Use native animation API. Support all major browsers
 
@@ -71,24 +71,41 @@ $('.exSlideShow > .header > .bullets > .bg-red,.exSlideShow > .header > .bullets
 	}
 });
 ```
+### gQuery: array 操作
+```JavaScript
+let CHAT_RECORD = [
+    {id:0,name:'甘大蔗',msg:'为什么会有人把大花被穿身上啊？'},
+    {id:1,name:'甘小蔗',msg:'小燕子穿花衣'},
+    {id:2,name:'甘小蔗',msg:'年年春天来这里'},
+    {id:3,name:'甘小蔗',msg:'我问燕子你为啥来'},
+    {id:4,name:'甘大蔗',msg:'呃呃'},
+    {id:5,name:'甘小蔗',msg:'燕子说'},
+    {id:6,name:'甘小蔗',msg:'“先他妈管好你自己”'},
+    {id:7,name:'甘大蔗',msg:'乌鱼子'},
+];
+
+let newArr = $.array.finder(CHAT_RECORD, {name:'甘大蔗'}, {limit:2});
+
+$('#ex-array-finder').text( JSON.stringify(newArr) );
+```
 ### gQuery: storage 操作
 ```JavaScript
 var storageEx = [];
 $.storage.remove('exampleData');
 storageEx.push( JSON.stringify( $.storage.local() ) );
  
-$.storage.write('exampleData',storageEx);
-storageEx.push( $.storage.read('exampleData') );
+$.storage.set('exampleData',storageEx);
+storageEx.push( $.storage.get('exampleData') );
  
-$.storage.write('exampleData','gQuery');
-storageEx.push( $.storage.read('exampleData') );
+$.storage.set('exampleData','gQuery');
+storageEx.push( $.storage.get('exampleData') );
  
 $.storage.push('exampleData','is');
 $.storage.push('exampleData','a');
 $.storage.push('exampleData','Smaller and faster modern JavaScript function library');
-storageEx.push( $.storage.read('exampleData') );
+storageEx.push( $.storage.get('exampleData') );
  
-storageEx.push( $.storage.read('exampleData','array').join(' ') );
+storageEx.push( $.storage.get('exampleData','array').join(' ') );
  
 $('#exStorageData').html( storageEx.join('\n\n') );
 ```
