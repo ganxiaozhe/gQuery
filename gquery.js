@@ -563,6 +563,7 @@
 					stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
 				}
 
+				typeof value==='object' && (value = JSON.stringify(value));
 				return (document.cookie = key + '=' + value + stringifiedAttrs);
 			},
 			remove: function(key, attributes){
