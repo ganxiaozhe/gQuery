@@ -1,10 +1,10 @@
 // =================================================
 //
-// gQuery v1.4.0 | (c) Ganxiaozhe
+// gQuery v1.4.1 | (c) Ganxiaozhe
 // gquery.net/about/license
 //
 // [fn]
-// seletor,each,find,parent,remove,empty,text,html,ohtml
+// seletor,each,find,eq,parent,remove,empty,text,html,ohtml
 // val,width,height,offset,prepend,append,before,after
 // attr,removeAttr,data,removeData
 // hasClass,addClass,removeClass,toggleClass
@@ -36,7 +36,7 @@
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery 1.4.0 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.1 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -45,7 +45,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.0',
+		gquery: '1.4.1',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -85,6 +85,7 @@
 			for (let i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[ii];ii++;}
 			return finder;
 		},
+		eq: function(idx){return $(this[idx]);},
 		parent: function(){
 			let _this = this;
 			return this.each(function(idx){_this[idx] = this.parentNode;});
@@ -242,8 +243,6 @@
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
 
 			return this.each(function(){
-				if(window.getComputedStyle(this).display!='none'){return true;}
-
 				this.style.display='';
 				window.getComputedStyle(this).display=='none' && (this.style.display='block');
 				this.animate([{opacity:0},{opacity:1}],dur);
@@ -257,7 +256,9 @@
 				let copa = this.style.opacity || 1;
 				this.animate([{opacity:copa},{opacity:0}],dur);
 
-				let cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
+				let cthis = this;
+				setTimeout(()=>{cthis.style.display = 'none';},dur-1);
+				setTimeout(()=>{callback.call(cthis);},dur);
 			});
 		},
 		fadeToggle: function(dur,callback){
@@ -270,20 +271,24 @@
 		slideUp: function(dur,callback){
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
 
+			setTimeout(()=>{callback.call(this);},dur);
 			return this.each(function(){
 				this.animate([{height:this.offsetHeight+'px'},{height:'0px'}],dur);
 
-				let cthis = this;setTimeout(()=>{cthis.style.display = 'none';callback.call(cthis);},dur);
+				let gthis = $(this);
+				setTimeout(()=>{gthis.css({display:'none', height:'0px'});},dur-1);
 			});
 		},
 		slideDown: function(dur,callback){
 			dur || (dur=500);typeof callback === 'function' || (callback=function(){});
+			let elH;setTimeout(()=>{callback.call(this);},dur);
 
 			return this.each(function(){
-				this.style.display = '';let elH = this.offsetHeight+'px';
-				this.animate([{height:'0px'},{height:elH}],dur);
+				if( window.getComputedStyle(this).height!=='0px' ){return;}
 
-				let cthis = this;setTimeout(()=>{callback.call(cthis);},dur);
+				this.style.display = '';this.style.height = '';
+				elH = this.offsetHeight+'px';
+				this.animate([{height:'0px'},{height:elH}],dur);
 			});
 		},
 		slideToggle: function(dur,callback){
