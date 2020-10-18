@@ -1,6 +1,8 @@
 // =================================================
 //
-// gQuery v1.4.1 | (c) Ganxiaozhe
+// gQuery.js v1.4.2
+// (c) 2020, JU Chengren (Ganxiaozhe)
+// Released under the MIT License.
 // gquery.net/about/license
 //
 // [fn]
@@ -36,7 +38,7 @@
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery 1.4.1 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.2 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -45,7 +47,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.1',
+		gquery: '1.4.2',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -134,8 +136,17 @@
 			let totalHeight = [];this.each(function(){totalHeight.push(this.offsetHeight);});
 			return (totalHeight.length>1 ? totalHeight : totalHeight[0]);
 		},
-		offset: function(){
-			var rect = this[0].getBoundingClientRect();
+		offset: function(force, offset, node){
+			offset || (offset = {top:0, left:0});
+			if(force){
+				node || (node = this[0]);
+				if(node == document.body){return offset;}
+
+				offset.top += node.offsetTop;offset.left += node.offsetLeft;
+				return gQuery.fn.offset(true, offset, node.parentNode);
+			}
+
+			let rect = this[0].getBoundingClientRect();
 			return {
 				top: rect.top + document.body.scrollTop,
 				left: rect.left + document.body.scrollLeft
@@ -173,17 +184,16 @@
 			return this.each(function(){this.removeAttribute(attr);});
 		},
 		data: function(keys,val){
-			this.each(function(){
-				this.gQueryData===undefined&&(this.gQueryData={});
-			});
-			if(val === undefined) {
+			if(typeof keys !== 'object' && val === undefined) {
 				let resArr = [];this.each(function(){
+					this.gQueryData===undefined&&(this.gQueryData={});
 					typeof keys === 'string' ? resArr.push( this.gQueryData[keys] ) : resArr.push( this.gQueryData );
 				});
 				return (resArr.length>1 ? resArr : resArr[0]);
 			}
 
 			return this.each(function(){
+				this.gQueryData===undefined&&(this.gQueryData={});
 				if(typeof keys === 'object'){
 					for(let idx in keys){this.gQueryData[idx] = keys[idx];}
 				} else {this.gQueryData[keys] = val;}
@@ -300,7 +310,11 @@
 		},
 		on: function(evtName,selector,fn,opts){
 			(arguments.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
-			(arguments.length==2 && selector instanceof Function) && (fn = selector,selector = false);
+			if(arguments.length==2){
+				if(typeof selector === 'function'){
+					fn = selector,selector = false;
+				} else if(typeof selector === 'object'){opts = selector,selector = false;}
+			}
 
 			let appoint = function(inFn){
 				return selector ? function(e){
@@ -326,8 +340,9 @@
 				}
 			});
 		},
-		off: function(evtName){
-			return this.each(function(){gQuery.event.remove(this,evtName);});
+		off: function(evtName,opts){
+			opts===undefined && (opts = false);
+			return this.each(function(){gQuery.event.remove(this, evtName, opts);});
 		},
 		trigger: function(evtName,params){
 			params || (params={});
@@ -468,7 +483,7 @@
 				typeof opts === 'object' || (opts={});
 				opts.capture === undefined && (opts.capture=true);
 
-				let events = obj.gQueryEvents,evtObj = {fn:fn,opts:opts};
+				let events = obj.gQueryEvents, evtObj = {fn:fn,opts:opts};
 
 				if(events===undefined){
 					events = {[evtName]:[ evtObj ]};
@@ -482,15 +497,19 @@
 
 				obj.gQueryEvents = events;
 				let event = events[evtName][ events[evtName].length-1 ];
-				obj.addEventListener(evtName,event.fn,event.opts);
+				obj.addEventListener(evtName, event.fn, event.opts);
 			},
-			remove: function(obj,evtName){
+			remove: function(obj,evtName,opts){
 				let events = obj.gQueryEvents,i;
 				if(events===undefined || typeof events[evtName]!=='object'){return;}
 
-				let fns = events[evtName];
+				let fns = events[evtName],ropts;
 				for (i = fns.length - 1; i >= 0; i--) {
-					obj.removeEventListener(evtName,fns[i].fn,fns[i].opts);
+					ropts = opts ? opts : {};
+					ropts.capture === undefined && (ropts.capture=true);
+					if( JSON.stringify(ropts) != JSON.stringify(fns[i].opts) ){continue;}
+
+					obj.removeEventListener(evtName, fns[i].fn, ropts);
 				}
 				delete events[evtName];
 			}
