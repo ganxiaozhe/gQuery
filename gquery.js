@@ -136,20 +136,16 @@
 			let totalHeight = [];this.each(function(){totalHeight.push(this.offsetHeight);});
 			return (totalHeight.length>1 ? totalHeight : totalHeight[0]);
 		},
-		offset: function(force, offset, node){
-			offset || (offset = {top:0, left:0});
-			if(force){
-				node || (node = this[0]);
-				if(node == document.body){return offset;}
-
-				offset.top += node.offsetTop;offset.left += node.offsetLeft;
-				return gQuery.fn.offset(true, offset, node.parentNode);
-			}
-
-			let rect = this[0].getBoundingClientRect();
+		offset: function(typ){
+			let rect = this[0].getBoundingClientRect(), spos = {
+				top: document.body.scrollTop==0?document.documentElement.scrollTop:document.body.scrollTop,
+				left: document.body.scrollLeft==0?document.documentElement.scrollLeft:document.body.scrollLeft
+			};
+			typ && (spos.top=0, spos.left=0);
+			
 			return {
-				top: rect.top + document.body.scrollTop,
-				left: rect.left + document.body.scrollLeft
+				top: rect.top + spos.top,
+				left: rect.left + spos.left
 			}
 		},
 		append: function(elem){
