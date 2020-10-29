@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery.js v1.4.2
+// gQuery.js v1.4.3
 // (c) 2020, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
@@ -20,7 +20,7 @@
 // [extend event]
 // list,add,remove
 // [extend get]
-// queryParam
+// queryParam,browserSpec
 // [extend cookie]
 // set,get,remove
 // [extend storage]
@@ -37,8 +37,15 @@
 	if(!!window.ActiveXObject || "ActiveXObject" in window){
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
+	let bro = $.get.browserSpec();
+	switch(bro.name){
+		case 'IE':window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);break;
+		case 'Edge':
+			if(bro.version<=18){window.location.href = 'https://www.gquery.net/kill-ie/oldEdge.html?back='+(window.location.href);}
+			break;
+	}
 
-	console.log('%c gQuery 1.4.2 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.3 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -47,7 +54,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.2',
+		gquery: '1.4.3',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -354,11 +361,26 @@
 			}
 		},
 		select: function(){
-			switch(this[0].tagName){
-				case 'INPUT':case 'TEXTAREA':this[0].select();break;
+			switch( this[0].tagName.toLowerCase() ){
+				case 'input':case 'textarea':
+					this[0].select();break;
 				default:window.getSelection().selectAllChildren(this[0]);
 			}
 			return this;
+		},
+		load: function(url, data, func){
+			let _this = this, _mh = {method: 'GET'};
+			if(typeof data === 'object'){
+				_mh.method = 'POST';_mh.body = new FormData();
+				for(let nm in data){
+					_mh.body.append(nm, data[nm]);
+				}
+			} else if(typeof data === 'function'){func = data;}
+
+			fetch(url, _mh).then(res => res.text()).then(function(resp){
+				_this.html( resp );
+				typeof func === 'function' && func.call( _this );
+			});
 		}
 	};
 	gQuery.fn.init.prototype = gQuery.fn;
@@ -439,7 +461,7 @@
 
 	gQuery.extend({
 		array: {
-			unique: function(arr,typ){
+			unique: function(arr, typ){
 				let j = {};
 				if( typ=='node' || $.isNode(arr[0]) ){
 					return arr.filter(function(item, index, arr) {
@@ -454,7 +476,7 @@
 				});
 				return Object.keys(j).map(function(v){return j[v];});
 			},
-			finder: function(arr,finder,opts){
+			finder: function(arr, finder, opts){
 				typeof opts === 'object' || (opts = {});
 				opts.limit === undefined && (opts.limit=1);
 
@@ -475,7 +497,7 @@
 			}
 		},
 		event: {
-			add: function(obj,evtName,fn,opts){
+			add: function(obj, evtName, fn, opts){
 				typeof opts === 'object' || (opts={});
 				opts.capture === undefined && (opts.capture=true);
 
@@ -495,7 +517,7 @@
 				let event = events[evtName][ events[evtName].length-1 ];
 				obj.addEventListener(evtName, event.fn, event.opts);
 			},
-			remove: function(obj,evtName,opts){
+			remove: function(obj, evtName, opts){
 				let events = obj.gQueryEvents,i;
 				if(events===undefined || typeof events[evtName]!=='object'){return;}
 
@@ -537,11 +559,32 @@
 			return copy;
 		},
 		get: {
-			queryParam: function(name) {
+			queryParam: function(name){
 				let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
 					res = window.location.search.substr(1).match(reg);
 				if(res != null){return decodeURI(res[2]);}
 				return null;
+			},
+			browserSpec: function(){
+				let ua = navigator.userAgent, tem,
+					M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+				if(/trident/i.test(M[1])){
+					tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+					return {name:'IE',version:(tem[1] || '')};
+				}
+				if(M[1]=== 'Chrome'){
+					tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+					if(tem != null) return {name:tem[1].replace('OPR', 'Opera'),version:tem[2]};
+				}
+				M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+
+				if((tem = ua.match(/version\/(\d+)/i))!= null){M.splice(1, 1, tem[1]);}
+				return {
+					name: M[0], version: M[1],
+					isMobile: /Mobi/i.test(ua),
+					touchDevice: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement)
+				};
 			}
 		},
 		cookie: {
@@ -592,11 +635,11 @@
 		},
 		storage: {
 			local: function(){return $.global.localStorage},
-			set: function(key,data){
+			set: function(key, data){
 				(typeof data=='object') && (data = JSON.stringify(data));
 				this.local().setItem(key,data);
 			},
-			get: function(key,typ){
+			get: function(key, typ){
 				if(!typ){return this.local().getItem(key);}
 
 				let keyData = this.local().getItem(key);
@@ -607,7 +650,7 @@
 			},
 			remove: function(key){this.local().removeItem(key);},
 			clear: function(){this.local().clear();},
-			push: function(key,data,ext){
+			push: function(key, data, ext){
 				let kd = this.get(key);
 				if(!kd){
 					data = '['+JSON.stringify(data)+']';this.set(key,data);
