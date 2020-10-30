@@ -74,9 +74,9 @@
 			for (let i = elems.length - 1; i >= 0; i--) {this[i] = elems[i];}
 			return this;
 		},
-		each: function(arr,callback){
+		each: function(arr, callback){
 			callback || (callback = arr,arr = this);
-			for(let i = 0; i < arr.length; i++){
+			for(let i = 0,len = arr.length; i < len; i++){
 				if(callback.call(arr[i], i, arr[i-1]) == false){break;}
 			}
 			return this;
@@ -100,8 +100,17 @@
 			return this.each(function(idx){_this[idx] = this.parentNode;});
 		},
 		next: function(sel){
-			let _this = this;
-			return this.each(function(idx){_this[idx] = this.nextElementSibling;});
+			let _this = this,_idx = 0;
+			this.each(function(idx){
+				if(this.nextElementSibling === null){
+					delete _this[idx];
+				} else {_this[_idx] = this.nextElementSibling, _idx++;}
+			});
+
+			for (let i = _idx,len = _this.length; i < len; i++) {
+				delete _this[i];_this.length--;
+			}
+			return _this;
 		},
 		remove: function(sel){
 			let rthis = ( sel === undefined ? this : this.find(sel) );
@@ -583,7 +592,7 @@
 				return {
 					name: M[0], version: M[1],
 					isMobile: /Mobi/i.test(ua),
-					touchDevice: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement)
+					touchPoints: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement || 0)
 				};
 			}
 		},
