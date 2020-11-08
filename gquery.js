@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery.js v1.4.3
+// gQuery.js v1.4.4
 // (c) 2020, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
@@ -40,12 +40,9 @@
 	let bro = $.get.browserSpec();
 	switch(bro.name){
 		case 'IE':window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);break;
-		case 'Edge':
-			if(bro.version<=18){window.location.href = 'https://www.gquery.net/kill-ie/oldEdge.html?back='+(window.location.href);}
-			break;
 	}
 
-	console.log('%c gQuery 1.4.3 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.4 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window,function(){
 	'use strict';
 	var gQuery = function( selector, context ) {
@@ -54,7 +51,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.3',
+		gquery: '1.4.4',
 		init: function(sel,opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -160,8 +157,7 @@
 			typ && (spos.top=0, spos.left=0);
 			
 			return {
-				top: rect.top + spos.top,
-				left: rect.left + spos.left
+				top: rect.top + spos.top, left: rect.left + spos.left
 			}
 		},
 		append: function(elem){
@@ -238,7 +234,7 @@
 				return this.each(function(){this.style[styles] = val;});
 			}
 			if(typeof styles === 'string'){
-				let _css,force = styles.substr(0,1)==='!' ? 1 : 0;
+				let _css, force = styles.substr(0,1)==='!' ? 1 : 0;
 				styles = styles.replace(/^!/,'');
 				let resArr = [];this.each(function(){
 					_css = this.style[styles] || undefined;
@@ -267,7 +263,7 @@
 			return this.each(function(){
 				this.style.display='';
 				window.getComputedStyle(this).display=='none' && (this.style.display='block');
-				this.animate([{opacity:0},{opacity:1}],dur);
+				typeof this.animate==='function' && this.animate([{opacity:0},{opacity:1}],dur);
 				let cthis = this;setTimeout(()=>{callback.call(cthis);},dur);
 			});
 		},
@@ -276,7 +272,7 @@
 
 			return this.each(function(){
 				let copa = this.style.opacity || 1;
-				this.animate([{opacity:copa},{opacity:0}],dur);
+				typeof this.animate==='function' && this.animate([{opacity:copa},{opacity:0}],dur);
 
 				let cthis = this;
 				setTimeout(()=>{cthis.style.display = 'none';},dur-1);
@@ -295,7 +291,7 @@
 
 			setTimeout(()=>{callback.call(this);},dur);
 			return this.each(function(){
-				this.animate([{height:this.offsetHeight+'px'},{height:'0px'}],dur);
+				typeof this.animate==='function' && this.animate([{height:this.offsetHeight+'px'},{height:'0px'}],dur);
 
 				let gthis = $(this);
 				setTimeout(()=>{gthis.css({display:'none', height:'0px'});},dur-1);
@@ -310,7 +306,7 @@
 
 				this.style.display = '';this.style.height = '';
 				elH = this.offsetHeight+'px';
-				this.animate([{height:'0px'},{height:elH}],dur);
+				typeof this.animate==='function' && this.animate([{height:'0px'},{height:elH}],dur);
 			});
 		},
 		slideToggle: function(dur,callback){
@@ -320,7 +316,7 @@
 				this.style.display=='none' ? $(this).slideDown(dur,callback) : $(this).slideUp(dur,callback);
 			});
 		},
-		on: function(evtName,selector,fn,opts){
+		on: function(evtName, selector, fn, opts){
 			(arguments.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
 			if(arguments.length==2){
 				if(typeof selector === 'function'){
@@ -328,6 +324,7 @@
 				} else if(typeof selector === 'object'){opts = selector,selector = false;}
 			}
 
+			// 处理事件委托
 			let appoint = function(inFn){
 				return selector ? function(e){
 					let nodes = this.querySelectorAll(selector),
@@ -342,13 +339,13 @@
 
 			if(typeof fn === 'function'){
 				cfn = appoint(fn);
-				return this.each(function(){gQuery.event.add(this,evtName,cfn,opts);});
+				return this.each(function(){gQuery.event.add(this, evtName, cfn, opts);});
 			}
 
 			return this.each(function(){
 				for(let evt in evtName){
 					cfn = appoint(evtName[evt]);
-					gQuery.event.add(this,evt,cfn,opts);
+					gQuery.event.add(this, evt, cfn, opts);
 				}
 			});
 		},
@@ -379,6 +376,8 @@
 		},
 		load: function(url, data, func){
 			let _this = this, _mh = {method: 'GET'};
+			typeof url === 'object' && (_mh = $.extend(_mh, url),url = url.url);
+
 			if(typeof data === 'object'){
 				_mh.method = 'POST';_mh.body = new FormData();
 				for(let nm in data){
@@ -386,7 +385,10 @@
 				}
 			} else if(typeof data === 'function'){func = data;}
 
-			fetch(url, _mh).then(res => res.text()).then(function(resp){
+			fetch(url, _mh).then(res => {
+				if(res.ok){return res.text();}
+				throw new Error('Network response was not ok.');
+			}).catch(err => {throw new Error(err);}).then(function(resp){
 				_this.html( resp );
 				typeof func === 'function' && func.call( _this );
 			});
@@ -398,7 +400,7 @@
 	gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
 	gQuery.fn.extend({
 		handle: {
-			thvEach: function(prop,val){
+			thvEach: function(prop, val){
 				let isArr = Array.isArray(val);
 
 				if(val === undefined || (isArr && val.length==0) ) {
@@ -502,6 +504,8 @@
 						if(opts.limit>0 && resArr.length>=opts.limit){break;}
 					}
 				}
+
+				if(opts.array){return resArr;}
 				return resArr.length>1 ? resArr : resArr[0];
 			}
 		},
