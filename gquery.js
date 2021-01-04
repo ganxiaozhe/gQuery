@@ -1,26 +1,30 @@
 // =================================================
 //
-// gQuery.js v1.4.4
-// (c) 2020, JU Chengren (Ganxiaozhe)
+// gQuery.js v1.4.6
+// (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
 //
 // [fn]
-// seletor,each,find,eq,parent,remove,empty,text,html,ohtml
-// val,width,height,offset,prepend,append,before,after
+// init,each,find,eq,parent,remove,empty
+// text,html,ohtml,val,width,height,offset
+// prepend,append,before,after
 // attr,removeAttr,data,removeData
 // hasClass,addClass,removeClass,toggleClass
 // css,show,hide,fadeIn,fadeOut,fadeToggle
-// slideUp,slideDown,slideToggle,on,off,trigger,click,select
+// slideUp,slideDown,slideToggle,on,off,trigger
+// click,select,load
 //
 // [extend fn]
-// isPlainObject,isWindow,isNode,strToNode,copy,deepClone
+// isPlainObject,isWindow,isNode,strToNode,copy,fetch
 // [extend array]
 // unique,finder
 // [extend event]
-// list,add,remove
+// add,remove
 // [extend get]
-// queryParam,browserSpec
+// browserSpec,queryParam,json
+// [extend parse]
+// json
 // [extend cookie]
 // set,get,remove
 // [extend storage]
@@ -29,7 +33,7 @@
 // local,set,get,remove,clear,push
 //
 // =================================================
-;(function(global,factory){
+;(function(global, factory){
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global = window || self, global.gQuery = global.$ = factory());
@@ -37,22 +41,18 @@
 	if(!!window.ActiveXObject || "ActiveXObject" in window){
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
-	let bro = $.get.browserSpec();
-	switch(bro.name){
-		case 'IE':window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);break;
-	}
 
-	console.log('%c gQuery 1.4.4 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
-}(window,function(){
+	console.log('%c gQuery 1.4.6 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+}(window, function(){
 	'use strict';
-	var gQuery = function( selector, context ) {
-		return new gQuery.fn.init( selector, context );
-	}
+	let gQuery = function(selector, context){
+		return new gQuery.fn.init(selector, context);
+	};
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.4',
-		init: function(sel,opts){
+		gquery: '1.4.6',
+		init: function(sel, opts){
 			let to = typeof sel,elems = [];
 			switch(to){
 				case 'function':
@@ -79,16 +79,16 @@
 			return this;
 		},
 		find: function(sel){
-			let finder = gQuery.deepClone(this),fArr = [];
+			let finder = gQuery.extend({},this),fArr = [],i;
 			this.each(function(idx){
 				let elems = this.querySelectorAll(sel);
-				for (let i = elems.length - 1; i >= 0; i--) {fArr.push(elems[i]);}
+				for (i = 0; i < elems.length; i++) {fArr.push(elems[i]);}
 				delete finder[idx];
 			});
 
 			fArr = $.array.unique(fArr);
-			finder.length = fArr.length;let ii = 0;
-			for (let i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[ii];ii++;}
+			finder.length = fArr.length;
+			for (i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[i];}
 			return finder;
 		},
 		eq: function(idx){return $(this[idx]);},
@@ -111,7 +111,7 @@
 		},
 		remove: function(sel){
 			let rthis = ( sel === undefined ? this : this.find(sel) );
-			rthis.each(function(){this.parentNode.removeChild(this);});
+			return rthis.each(function(){this.parentNode.removeChild(this);});
 		},
 		empty: function(sel){
 			let rthis = ( sel === undefined ? this : this.find(sel) );
@@ -375,26 +375,17 @@
 			return this;
 		},
 		load: function(url, data, func){
-			let _this = this, _mh = {method: 'GET'};
-			typeof url === 'object' && (_mh = $.extend(_mh, url),url = url.url);
+			let _this = this;
+			typeof data === 'function' && (func=data, data=false);
 
-			if(typeof data === 'object'){
-				_mh.method = 'POST';_mh.body = new FormData();
-				for(let nm in data){
-					_mh.body.append(nm, data[nm]);
-				}
-			} else if(typeof data === 'function'){func = data;}
-
-			fetch(url, _mh).then(res => {
-				if(res.ok){return res.text();}
-				throw new Error('Network response was not ok.');
-			}).catch(err => {throw new Error(err);}).then(function(resp){
+			$.fetch(url, data, 'text').then(function(resp){
 				_this.html( resp );
 				typeof func === 'function' && func.call( _this );
 			});
 		}
 	};
 	gQuery.fn.init.prototype = gQuery.fn;
+
 
 
 	gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
@@ -414,21 +405,7 @@
 	});
 
 
-	gQuery.global = (typeof window !== 'undefined' ? window : global);
-	gQuery.isWindow = function(obj){
-		return Object.prototype.toString.call(obj)==='[object Window]';
-	};
-	gQuery.isNode = function(obj){
-		let str = Object.prototype.toString.call(obj);
-		return (str.indexOf('HTML')>-1 && str.indexOf('Element')>-1) ? true : false;
-	};
-	gQuery.isPlainObject = function(obj){
-		let prototype;
 
-		return Object.prototype.toString.call(obj) === '[object Object]' 
-			&& (prototype = Object.getPrototypeOf(obj), prototype === null || 
-			prototype == Object.getPrototypeOf({}));
-	};
 	gQuery.extend = function(obj){
 		if(arguments.length==1){
 			for(let idx in obj){this[idx] = obj[idx];}return this;
@@ -469,81 +446,45 @@
 	    }
 	    return target;
 	};
-
 	gQuery.extend({
-		array: {
-			unique: function(arr, typ){
-				let j = {};
-				if( typ=='node' || $.isNode(arr[0]) ){
-					return arr.filter(function(item, index, arr) {
-						return arr.indexOf(item, 0) === index;
-					});
-				}
+		copy: function(str){
+			if(typeof str==='object'){str = $(str).text();}
 
-				arr.forEach(function(v){
-					let vtyp = typeof v,vv=v;
-					if(vtyp==='object'){v = JSON.stringify(v);}
-					j[v + '::' + vtyp] = vv;
-				});
-				return Object.keys(j).map(function(v){return j[v];});
-			},
-			finder: function(arr, finder, opts){
-				typeof opts === 'object' || (opts = {});
-				opts.limit === undefined && (opts.limit=1);
-
-				let isObj = (typeof finder === 'object'),resame,resArr = [];
-				for (let i = 0; i < arr.length; i++) {
-					if(isObj){
-						resame = true;
-						for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
-						resame && resArr.push( {index:i,array:arr[i]} );
-
-						if(opts.limit>0 && resArr.length>=opts.limit){break;}
-					} else {
-						arr[i]==finder && resArr.push( {index:i,array:arr[i]} );
-						if(opts.limit>0 && resArr.length>=opts.limit){break;}
-					}
-				}
-
-				if(opts.array){return resArr;}
-				return resArr.length>1 ? resArr : resArr[0];
-			}
+			$('body').append("<textarea id='gQuery-copyTemp'>"+str+"</textarea>");
+			$('#gQuery-copyTemp').select();document.execCommand("Copy");
+			$('#gQuery-copyTemp').remove();
 		},
-		event: {
-			add: function(obj, evtName, fn, opts){
-				typeof opts === 'object' || (opts={});
-				opts.capture === undefined && (opts.capture=true);
+		fetch: function(url, data, bodyMH){
+			let _mh = {method: 'GET'};
+			typeof url === 'object' && (_mh = $.extend(_mh, url),url = url.url);
 
-				let events = obj.gQueryEvents, evtObj = {fn:fn,opts:opts};
-
-				if(events===undefined){
-					events = {[evtName]:[ evtObj ]};
-				} else {
-					if(typeof events[evtName] !== 'object'){
-						events[evtName] = [evtObj];
-					} else {
-						events[evtName].push(evtObj);
-					}
+			if(typeof data === 'object'){
+				_mh.method = 'POST';_mh.body = new FormData();
+				for(let nm in data){
+					_mh.body.append(nm, data[nm]);
 				}
+			} if(typeof data === 'string'){bodyMH = data;}
 
-				obj.gQueryEvents = events;
-				let event = events[evtName][ events[evtName].length-1 ];
-				obj.addEventListener(evtName, event.fn, event.opts);
-			},
-			remove: function(obj, evtName, opts){
-				let events = obj.gQueryEvents,i;
-				if(events===undefined || typeof events[evtName]!=='object'){return;}
+			if(!bodyMH){return fetch(url, _mh);}
+			return fetch(url, _mh).then(res => {
+				if(res.ok){return res[bodyMH]();}
+				throw new Error('Network response was not ok.');
+			}).catch(err => {throw new Error(err);});
+		},
+		global: (typeof window !== 'undefined' ? window : global),
+		isWindow: function(obj){
+			return Object.prototype.toString.call(obj)==='[object Window]';
+		},
+		isNode: function(obj){
+			let str = Object.prototype.toString.call(obj);
+			return (str.indexOf('HTML')>-1 && str.indexOf('Element')>-1) ? true : false;
+		},
+		isPlainObject: function(obj){
+			let prototype;
 
-				let fns = events[evtName],ropts;
-				for (i = fns.length - 1; i >= 0; i--) {
-					ropts = opts ? opts : {};
-					ropts.capture === undefined && (ropts.capture=true);
-					if( JSON.stringify(ropts) != JSON.stringify(fns[i].opts) ){continue;}
-
-					obj.removeEventListener(evtName, fns[i].fn, ropts);
-				}
-				delete events[evtName];
-			}
+			return Object.prototype.toString.call(obj) === '[object Object]' 
+				&& (prototype = Object.getPrototypeOf(obj), prototype === null || 
+				prototype == Object.getPrototypeOf({}));
 		},
 		strToNode: function(str){
 			if(typeof str === 'string'){
@@ -554,137 +495,219 @@
 			}
 			return str;
 		},
-		copy: function(str){
-			if(typeof str==='object'){str = $(str).text();}
+		ui: "缺少 UI 组件，请前往 https://www.gquery.net/ui/ 下载"
+	});
 
-			$('body').append("<textarea id='gQuery-copyTemp'>"+str+"</textarea>");
-			$('#gQuery-copyTemp').select();document.execCommand("Copy");
-			$('#gQuery-copyTemp').remove();
-		},
-		deepClone: function(obj){
-			let copy = Object.create(Object.getPrototypeOf(obj)),
-			propNames = Object.getOwnPropertyNames(obj);
 
-			propNames.forEach(function(name) {
-				let desc = Object.getOwnPropertyDescriptor(obj, name);
-				Object.defineProperty(copy, name, desc);
+
+	gQuery.array = {
+		unique: function(arr, typ){
+			let j = {};
+			if( typ=='node' || $.isNode(arr[0]) ){
+				return arr.filter(function(item, index, arr) {
+					return arr.indexOf(item, 0) === index;
+				});
+			}
+
+			arr.forEach(function(v){
+				let vtyp = typeof v,vv=v;
+				if(vtyp==='object'){v = JSON.stringify(v);}
+				j[v + '::' + vtyp] = vv;
 			});
-			return copy;
+			return Object.keys(j).map(function(v){return j[v];});
 		},
-		get: {
-			queryParam: function(name){
-				let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
-					res = window.location.search.substr(1).match(reg);
-				if(res != null){return decodeURI(res[2]);}
-				return null;
-			},
-			browserSpec: function(){
-				let ua = navigator.userAgent, tem,
-					M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+		finder: function(arr, finder, opts){
+			typeof opts === 'object' || (opts = {});
+			opts.limit === undefined && (opts.limit=1);
 
-				if(/trident/i.test(M[1])){
-					tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-					return {name:'IE',version:(tem[1] || '')};
-				}
-				if(M[1]=== 'Chrome'){
-					tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-					if(tem != null) return {name:tem[1].replace('OPR', 'Opera'),version:tem[2]};
-				}
-				M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+			let isObj = (typeof finder === 'object'),resame,resArr = [];
+			for (let i = 0; i < arr.length; i++) {
+				if(isObj){
+					resame = true;
+					for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
+					resame && resArr.push( {index:i,array:arr[i]} );
 
-				if((tem = ua.match(/version\/(\d+)/i))!= null){M.splice(1, 1, tem[1]);}
-				return {
-					name: M[0], version: M[1],
-					isMobile: /Mobi/i.test(ua),
-					touchPoints: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement || 0)
-				};
-			}
-		},
-		cookie: {
-			get: function(key, json){
-				let jar = {}, i = 0,
-					cookies = document.cookie ? document.cookie.split('; ') : [];
-				function decode(s){return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);}
-
-				for (; i < cookies.length; i++) {
-					let parts = cookies[i].split('=');
-					let cookie = parts.slice(1).join('=');
-					if (!json && cookie.charAt(0) === '"') {cookie = cookie.slice(1, -1);}
-
-					try {
-						let name = decode(parts[0]);cookie = decode(cookie);
-
-						if(json){try {cookie = JSON.parse(cookie);} catch(e){}}
-						jar[name] = cookie;
-
-						if(key === name){break;}
-					} catch (e) {}
-				}
-
-				return key ? jar[key] : jar;
-			},
-			set: function(key, value, attributes){
-				attributes = $.extend({path: '/'}, attributes);
-				if (typeof attributes.expires === 'number') {
-					attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
-				}
-				attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-				let stringifiedAttrs = '';
-				for (let attrName in attributes) {
-					if (!attributes[attrName]) {continue;}
-					stringifiedAttrs += '; ' + attrName;
-
-					if (attributes[attrName] === true) {continue;}
-					stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
-				}
-
-				typeof value==='object' && (value = JSON.stringify(value));
-				return (document.cookie = key + '=' + value + stringifiedAttrs);
-			},
-			remove: function(key, attributes){
-				$.cookie.set(key, '', $.extend(attributes, {expires: -1}));
-			}
-		},
-		storage: {
-			local: function(){return $.global.localStorage},
-			set: function(key, data){
-				(typeof data=='object') && (data = JSON.stringify(data));
-				this.local().setItem(key,data);
-			},
-			get: function(key, typ){
-				if(!typ){return this.local().getItem(key);}
-
-				let keyData = this.local().getItem(key);
-				if(typ=='array' || typ=='object'){
-					try{keyData = JSON.parse(keyData);} catch(err){throw new Error("Parsing!");}
-				}
-				return keyData;
-			},
-			remove: function(key){this.local().removeItem(key);},
-			clear: function(){this.local().clear();},
-			push: function(key, data, ext){
-				let kd = this.get(key);
-				if(!kd){
-					data = '['+JSON.stringify(data)+']';this.set(key,data);
-					return this.get(key);
+					if(opts.limit>0 && resArr.length>=opts.limit){break;}
 				} else {
-					try{
-						let tkd = JSON.parse(kd);
-						if( Array.isArray(tkd) ){tkd.push(data);kd = tkd;} else {
-							kd = JSON.parse('['+kd+']');kd.push(data);
-						}
-					} catch(err){
-						kd = '['+JSON.stringify(kd)+']';kd = JSON.parse(kd);
-						kd.push(data);
-					}
-					if(ext=='unique'){kd = $.array.unique(kd);}
-					this.set(key,JSON.stringify(kd));
-					return this.get(key,'array');
+					arr[i]==finder && resArr.push( {index:i,array:arr[i]} );
+					if(opts.limit>0 && resArr.length>=opts.limit){break;}
 				}
+			}
+
+			if(opts.array){return resArr;}
+			return resArr.length>1 ? resArr : resArr[0];
+		}
+	};
+
+	gQuery.cookie = {
+		get: function(key, json){
+			let jar = {}, i = 0,
+				cookies = document.cookie ? document.cookie.split('; ') : [];
+			function decode(s){return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);}
+
+			for (; i < cookies.length; i++) {
+				let parts = cookies[i].split('=');
+				let cookie = parts.slice(1).join('=');
+				if (!json && cookie.charAt(0) === '"') {cookie = cookie.slice(1, -1);}
+
+				try {
+					let name = decode(parts[0]);cookie = decode(cookie);
+
+					if(json){try {cookie = JSON.parse(cookie);} catch(e){}}
+					jar[name] = cookie;
+
+					if(key === name){break;}
+				} catch (e) {}
+			}
+
+			return key ? jar[key] : jar;
+		},
+		set: function(key, value, attributes){
+			attributes = $.extend({path: '/'}, attributes);
+			if (typeof attributes.expires === 'number') {
+				attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+			}
+			attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+			let stringifiedAttrs = '';
+			for (let attrName in attributes) {
+				if (!attributes[attrName]) {continue;}
+				stringifiedAttrs += '; ' + attrName;
+
+				if (attributes[attrName] === true) {continue;}
+				stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
+			}
+
+			typeof value==='object' && (value = JSON.stringify(value));
+			return (document.cookie = key + '=' + value + stringifiedAttrs);
+		},
+		remove: function(key, attributes){
+			$.cookie.set(key, '', $.extend(attributes, {expires: -1}));
+		}
+	};
+
+	gQuery.event = {
+		add: function(obj, evtName, fn, opts){
+			typeof opts === 'object' || (opts={});
+			opts.capture === undefined && (opts.capture=true);
+
+			let events = obj.gQueryEvents, evtObj = {fn:fn,opts:opts};
+
+			if(events===undefined){
+				events = {[evtName]:[ evtObj ]};
+			} else {
+				if(typeof events[evtName] !== 'object'){
+					events[evtName] = [evtObj];
+				} else {
+					events[evtName].push(evtObj);
+				}
+			}
+
+			obj.gQueryEvents = events;
+			let event = events[evtName][ events[evtName].length-1 ];
+			obj.addEventListener(evtName, event.fn, event.opts);
+		},
+		remove: function(obj, evtName, opts){
+			let events = obj.gQueryEvents,i;
+			if(events===undefined || typeof events[evtName]!=='object'){return;}
+
+			let fns = events[evtName],ropts;
+			for (i = fns.length - 1; i >= 0; i--) {
+				ropts = opts ? opts : {};
+				ropts.capture === undefined && (ropts.capture=true);
+				if( JSON.stringify(ropts) != JSON.stringify(fns[i].opts) ){continue;}
+
+				obj.removeEventListener(evtName, fns[i].fn, ropts);
+			}
+			delete events[evtName];
+		}
+	};
+
+	gQuery.get = {
+		browserSpec: function(){
+			let ua = navigator.userAgent, tem,
+				M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+			if(/trident/i.test(M[1])){
+				tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+				return {name:'IE',version:(tem[1] || '')};
+			}
+			if(M[1]=== 'Chrome'){
+				tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+				if(tem != null) return {name:tem[1].replace('OPR', 'Opera'),version:tem[2]};
+			}
+			M = M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
+
+			if((tem = ua.match(/version\/(\d+)/i))!= null){M.splice(1, 1, tem[1]);}
+			return {
+				name: M[0], version: M[1],
+				isMobile: /Mobi/i.test(ua),
+				touchPoints: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement || 0)
+			};
+		},
+		queryParam: function(name){
+			let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
+				res = window.location.search.substr(1).match(reg);
+			if(res != null){return decodeURI(res[2]);}
+			return null;
+		},
+		json: function(url, data){
+			return $.fetch(url, data, 'text').then(data => {
+				return $.parse.json(data);
+			});
+		}
+	};
+
+	gQuery.parse = {
+		json: function(str){
+			let json;
+			try{json = JSON.parse(str);} catch(err){}
+			try{
+				if(!json){json = Function('"use strict";return (' + str + ')')();}
+			} catch(err){console.error(err);json = str;}
+
+			return json;
+		}
+	};
+
+	gQuery.storage = {
+		local: function(){return $.global.localStorage},
+		set: function(key, data){
+			(typeof data=='object') && (data = JSON.stringify(data));
+			this.local().setItem(key,data);
+		},
+		get: function(key, typ){
+			if(!typ){return this.local().getItem(key);}
+
+			let keyData = this.local().getItem(key);
+			if(typ=='array' || typ=='object'){
+				try{keyData = JSON.parse(keyData);} catch(err){throw new Error("Parsing!");}
+			}
+			return keyData;
+		},
+		remove: function(key){this.local().removeItem(key);},
+		clear: function(){this.local().clear();},
+		push: function(key, data, ext){
+			let kd = this.get(key);
+			if(!kd){
+				data = '['+JSON.stringify(data)+']';this.set(key,data);
+				return this.get(key);
+			} else {
+				try{
+					let tkd = JSON.parse(kd);
+					if( Array.isArray(tkd) ){tkd.push(data);kd = tkd;} else {
+						kd = JSON.parse('['+kd+']');kd.push(data);
+					}
+				} catch(err){
+					kd = '['+JSON.stringify(kd)+']';kd = JSON.parse(kd);
+					kd.push(data);
+				}
+				if(ext=='unique'){kd = $.array.unique(kd);}
+				this.set(key,JSON.stringify(kd));
+				return this.get(key,'array');
 			}
 		}
-	});
+	};
 	gQuery.sessionStorage = gQuery.extend({}, gQuery.storage);
 	gQuery.sessionStorage.local = function(){return $.global.sessionStorage};
 
