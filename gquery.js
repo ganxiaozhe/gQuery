@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery.js v1.4.6
+// gQuery.js v1.4.7
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
@@ -42,7 +42,7 @@
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery 1.4.6 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.7 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
 	'use strict';
 	let gQuery = function(selector, context){
@@ -51,7 +51,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.6',
+		gquery: '1.4.7',
 		init: function(sel, opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -61,8 +61,14 @@
 					}
 					return;
 				case 'object':
-					sel.length===undefined ? elems.push(sel) : elems = sel;
-					gQuery.isWindow(sel) && (elems = [window]);
+					if(gQuery.isWindow(sel)){elems = [window];break;}
+					if(sel.gquery!==undefined){elems = sel;break;}
+
+					if(Array.isArray(sel)){
+						sel.map((val)=>{
+							$.isNode(val) && elems.push(val);
+						});
+					} else {elems.push(sel);}
 					break;
 				case 'string':elems = document.querySelectorAll(sel);break;
 			}
@@ -79,7 +85,7 @@
 			return this;
 		},
 		find: function(sel){
-			let finder = gQuery.extend({},this),fArr = [],i;
+			let finder = Object.create(this),fArr = [],i;
 			this.each(function(idx){
 				let elems = this.querySelectorAll(sel);
 				for (i = 0; i < elems.length; i++) {fArr.push(elems[i]);}
@@ -93,21 +99,30 @@
 		},
 		eq: function(idx){return $(this[idx]);},
 		parent: function(){
-			let _this = this;
-			return this.each(function(idx){_this[idx] = this.parentNode;});
-		},
-		next: function(sel){
-			let _this = this,_idx = 0;
+			let finder = Object.create(this),fArr = [];
 			this.each(function(idx){
-				if(this.nextElementSibling === null){
-					delete _this[idx];
-				} else {_this[_idx] = this.nextElementSibling, _idx++;}
+				fArr.push(this.parentNode);delete finder[idx];
 			});
 
-			for (let i = _idx,len = _this.length; i < len; i++) {
-				delete _this[i];_this.length--;
-			}
-			return _this;
+			fArr = $.array.unique(fArr);
+			finder.length = fArr.length;
+			for (let i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[i];}
+			return finder;
+		},
+		next: function(sel){
+			let finder = Object.create(this), fArr = [], elem, i;
+			this.each(function(idx){
+				elem = this.nextElementSibling;
+				if( elem!==null && (!sel || elem.matches(sel)) ){
+					fArr.push(elem);
+				}
+				delete finder[idx];
+			});
+
+			fArr = $.array.unique(fArr);
+			finder.length = fArr.length;
+			for (i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[i];}
+			return finder;
 		},
 		remove: function(sel){
 			let rthis = ( sel === undefined ? this : this.find(sel) );
@@ -149,12 +164,21 @@
 			let totalHeight = [];this.each(function(){totalHeight.push(this.offsetHeight);});
 			return (totalHeight.length>1 ? totalHeight : totalHeight[0]);
 		},
-		offset: function(typ){
+		offset: function(opts){
+			if(typeof opts === 'object'){
+				return this.each(function(){
+					for(let key in opts){
+						isNaN(opts[key]) || (opts[key]+='px');
+						this.style[key] = opts[key];
+					}
+				});
+			}
+
 			let rect = this[0].getBoundingClientRect(), spos = {
 				top: document.body.scrollTop==0?document.documentElement.scrollTop:document.body.scrollTop,
 				left: document.body.scrollLeft==0?document.documentElement.scrollLeft:document.body.scrollLeft
 			};
-			typ && (spos.top=0, spos.left=0);
+			opts && (spos.top=0, spos.left=0);
 			
 			return {
 				top: rect.top + spos.top, left: rect.left + spos.left
@@ -189,9 +213,12 @@
 			return this.each(function(){this.setAttribute(attrs, val);});
 		},
 		removeAttr: function(attr){
-			return this.each(function(){this.removeAttribute(attr);});
+			attr = attr.split(' ');
+			return this.each(function(){
+				attr.map(v=>this.removeAttribute(v));
+			});
 		},
-		data: function(keys,val){
+		data: function(keys, val){
 			if(typeof keys !== 'object' && val === undefined) {
 				let resArr = [];this.each(function(){
 					this.gQueryData===undefined&&(this.gQueryData={});
@@ -221,25 +248,33 @@
 			return res;
 		},
 		addClass: function(cls){
-			return this.each(function(){this.classList.add(cls);});
+			cls = cls.split(' ');
+			return this.each(function(){
+				cls.map(v=>this.classList.add(v));
+			});
 		},
 		removeClass: function(cls){
-			return this.each(function(){this.classList.remove(cls);});
+			cls = cls.split(' ');
+			return this.each(function(){
+				cls.map(v=>this.classList.remove(v));
+			});
 		},
 		toggleClass: function(cls){
-			return this.each(function(){this.classList.toggle(cls);});
+			cls = cls.split(' ');
+			return this.each(function(){
+				cls.map(v=>this.classList.toggle(v));
+			});
 		},
 		css: function(styles,val){
 			if(val !== undefined){
 				return this.each(function(){this.style[styles] = val;});
 			}
+
 			if(typeof styles === 'string'){
-				let _css, force = styles.substr(0,1)==='!' ? 1 : 0;
+				let _css, resArr=[];
 				styles = styles.replace(/^!/,'');
-				let resArr = [];this.each(function(){
-					_css = this.style[styles] || undefined;
-					(_css===undefined && force) && (_css = window.getComputedStyle(this)[styles]);
-					resArr.push( _css );
+				this.each(function(){
+					resArr.push( window.getComputedStyle(this)[styles] );
 				});
 				return (resArr.length>1 ? resArr : resArr[0]);
 			}
@@ -302,8 +337,6 @@
 			let elH;setTimeout(()=>{callback.call(this);},dur);
 
 			return this.each(function(){
-				if( window.getComputedStyle(this).height!=='0px' ){return;}
-
 				this.style.display = '';this.style.height = '';
 				elH = this.offsetHeight+'px';
 				typeof this.animate==='function' && this.animate([{height:'0px'},{height:elH}],dur);
@@ -349,15 +382,23 @@
 				}
 			});
 		},
-		off: function(evtName,opts){
+		off: function(evts, opts){
 			opts===undefined && (opts = false);
-			return this.each(function(){gQuery.event.remove(this, evtName, opts);});
-		},
-		trigger: function(evtName,params){
-			params || (params={});
-			let ctmEvent = new CustomEvent(evtName, {detail: params});
+			evts || (evts='*');
+			evts = evts.split(' ');
 
-			return this.each(function(){this.dispatchEvent(ctmEvent);});
+			return this.each(function(){
+				evts.map(evt=>gQuery.event.remove(this, evt, opts));
+			});
+		},
+		trigger: function(evts, params){
+			params || (params={});
+			evts = evts.split(' ');
+			let ctmEvts = evts.map(val=>new CustomEvent(val, {detail: params}));
+
+			return this.each(function(){
+				ctmEvts.map(evt=>this.dispatchEvent(evt));
+			});
 		},
 		click: function(fn){
 			if(typeof fn === 'function'){
@@ -382,13 +423,14 @@
 				_this.html( resp );
 				typeof func === 'function' && func.call( _this );
 			});
+		},
+		extend: function(obj){
+			for(let idx in obj){this[idx] = obj[idx];}
+			return this;
 		}
 	};
 	gQuery.fn.init.prototype = gQuery.fn;
 
-
-
-	gQuery.fn.extend = function(obj){for(let idx in obj){this[idx] = obj[idx];}return this;};
 	gQuery.fn.extend({
 		handle: {
 			thvEach: function(prop, val){
@@ -459,9 +501,12 @@
 			typeof url === 'object' && (_mh = $.extend(_mh, url),url = url.url);
 
 			if(typeof data === 'object'){
-				_mh.method = 'POST';_mh.body = new FormData();
-				for(let nm in data){
-					_mh.body.append(nm, data[nm]);
+				_mh.method = 'POST';
+				if(Object.prototype.toString.call(data)=='[object FormData]'){
+					_mh.body = data;
+				} else {
+					_mh.body = new FormData();
+					for(let nm in data){_mh.body.append(nm, data[nm]);}
 				}
 			} if(typeof data === 'string'){bodyMH = data;}
 
@@ -488,10 +533,7 @@
 		},
 		strToNode: function(str){
 			if(typeof str === 'string'){
-				let temp = document.createElement('div');
-				temp.innerHTML = str;
-				str = document.createDocumentFragment();
-				while (temp.firstChild) {str.appendChild(temp.firstChild);}
+				return document.createRange().createContextualFragment(str);
 			}
 			return str;
 		},
@@ -520,12 +562,12 @@
 			typeof opts === 'object' || (opts = {});
 			opts.limit === undefined && (opts.limit=1);
 
-			let isObj = (typeof finder === 'object'),resame,resArr = [];
+			let isObj = (typeof finder === 'object'), resame, resArr = [];
 			for (let i = 0; i < arr.length; i++) {
 				if(isObj){
 					resame = true;
 					for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
-					resame && resArr.push( {index:i,array:arr[i]} );
+					resame && resArr.push( {index:i, array:arr[i]} );
 
 					if(opts.limit>0 && resArr.length>=opts.limit){break;}
 				} else {
@@ -591,7 +633,11 @@
 			typeof opts === 'object' || (opts={});
 			opts.capture === undefined && (opts.capture=true);
 
-			let events = obj.gQueryEvents, evtObj = {fn:fn,opts:opts};
+			let flag = evtName.split('.');evtName = flag.splice(0,1);
+			flag.length>0 && (opts.__flag = {});
+			flag.map(f=>{opts.__flag[f]=true;});
+
+			let events = obj.gQueryEvents, evtObj = {fn:fn, opts:opts};
 
 			if(events===undefined){
 				events = {[evtName]:[ evtObj ]};
@@ -608,18 +654,36 @@
 			obj.addEventListener(evtName, event.fn, event.opts);
 		},
 		remove: function(obj, evtName, opts){
-			let events = obj.gQueryEvents,i;
-			if(events===undefined || typeof events[evtName]!=='object'){return;}
-
-			let fns = events[evtName],ropts;
-			for (i = fns.length - 1; i >= 0; i--) {
-				ropts = opts ? opts : {};
-				ropts.capture === undefined && (ropts.capture=true);
-				if( JSON.stringify(ropts) != JSON.stringify(fns[i].opts) ){continue;}
-
-				obj.removeEventListener(evtName, fns[i].fn, ropts);
+			let events = obj.gQueryEvents, flag = evtName.split('.'), i;
+			evtName = flag.splice(0,1);
+			if(events===undefined){return;}
+			if(evtName=='*'){
+				Object.keys(events).map(evt=>revent(evt, true));return;
 			}
-			delete events[evtName];
+
+			if(typeof events[evtName]!=='object'){return;}
+			revent(evtName);
+
+			function revent(evt, forceFilter){
+				let fns = events[evt];
+				for (i = fns.length - 1; i >= 0; i--) {
+					/*
+					 * 默认过滤状态；
+					 * 传入 flag 时，过滤无 flag 的对象，留下有 flag 的对象；
+					 * 未传入 flag 时，过滤有 flag 的对象，留下无 flag 的对象。
+					*/
+					if(!forceFilter){
+						let filter=1, flagO=fns[i].opts.__flag || {};
+						if(flag.length<1 && Object.keys(flagO).length<1){filter=0;}
+						flag.map(f=>{flagO[f] && (filter=0);});
+						if(filter){continue;}
+					}
+
+					obj.removeEventListener(evt, fns[i].fn, fns[i].opts);
+					events[evt].splice(i, 1);
+					events[evt].length<1 && (delete events[evt]);
+				}
+			}
 		}
 	};
 
