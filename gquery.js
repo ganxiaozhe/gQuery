@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery.js v1.4.7
+// gQuery.js v1.4.71
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
@@ -42,7 +42,7 @@
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery 1.4.7 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.71 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
 	'use strict';
 	let gQuery = function(selector, context){
@@ -51,7 +51,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.7',
+		gquery: '1.4.71',
 		init: function(sel, opts){
 			let to = typeof sel,elems = [];
 			switch(to){
@@ -274,7 +274,7 @@
 				let _css, resArr=[];
 				styles = styles.replace(/^!/,'');
 				this.each(function(){
-					resArr.push( window.getComputedStyle(this)[styles] );
+					resArr.push( getComputedStyle(this)[styles] );
 				});
 				return (resArr.length>1 ? resArr : resArr[0]);
 			}
@@ -297,7 +297,7 @@
 
 			return this.each(function(){
 				this.style.display='';
-				window.getComputedStyle(this).display=='none' && (this.style.display='block');
+				getComputedStyle(this).display=='none' && (this.style.display='block');
 				typeof this.animate==='function' && this.animate([{opacity:0},{opacity:1}],dur);
 				let cthis = this;setTimeout(()=>{callback.call(cthis);},dur);
 			});
@@ -350,25 +350,26 @@
 			});
 		},
 		on: function(evtName, selector, fn, opts){
+			// 以下是所有无需事件委托的情况
 			(arguments.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
 			if(arguments.length==2){
 				if(typeof selector === 'function'){
-					fn = selector,selector = false;
-				} else if(typeof selector === 'object'){opts = selector,selector = false;}
+					fn = selector, selector = false;
+				} else if(typeof selector === 'object'){opts = selector, selector = false;}
 			}
 
 			// 处理事件委托
 			let appoint = function(inFn){
 				return selector ? function(e){
 					let nodes = this.querySelectorAll(selector),
-						contain = false,tgtNode,i;
+						contain = false, tgtNode, i;
 
 					for (i = nodes.length - 1; i >= 0; i--) {
-						nodes[i].contains(e.target) && (tgtNode = nodes[i],contain = true);
+						nodes[i].contains(e.target) && (tgtNode = nodes[i], contain = true);
 					}
-					contain && ( inFn.call(tgtNode) );
+					contain && ( inFn.call(tgtNode, e) );
 				} : inFn;
-			},cfn;
+			}, cfn;
 
 			if(typeof fn === 'function'){
 				cfn = appoint(fn);
