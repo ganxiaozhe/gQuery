@@ -37,20 +37,22 @@ $('#exPutValues li:nth-child(2)').text( val.join('，')+'。' );
 $('#exPutValues li:nth-child(3)').html('<i>—— 张爱玲</i>');
 ```
 
-gQuery: CSS强制查询
-```JavaScript
-$('p').css('line-height');
-// [undefined,undefined,undefined,...]
-$('p').css('!line-height');
-// ["15.6px","25.6px","25.6px",...]
-```
-
 gQuery: 事件委派
 ```JavaScript
-$('#todoList').on('click','li',function(){
-  $(this).remove();
+$('#todoList').on('click', 'li', function(){
+    $(this).remove();
 });
+
+$('#todoList').on({
+    mousedown: function(e){
+        console.log(this, e);
+    },
+    mouseup: function(e){
+        console.log(this, e);
+    }
+}, 'li');
 ```
+
 gQuery: fade 操作
 ```JavaScript
 l$('.exFadeShow').html("It's").append('<i class="gi icon-arrows-cw ga-spin ml-2">');
@@ -60,6 +62,7 @@ setTimeout(()=>{
 	});
 },500);
 ```
+
 gQuery: slide 操作
 ```JavaScript
 $('.exSlideShow > .header > .bullets > .bg-red,.exSlideShow > .header > .bullets > .bg-green').off('click').on('click',function(){
@@ -71,7 +74,8 @@ $('.exSlideShow > .header > .bullets > .bg-red,.exSlideShow > .header > .bullets
 	}
 });
 ```
-### gQuery: array 操作
+
+### gQuery: array{}
 ```JavaScript
 let CHAT_RECORD = [
     {id:0,name:'甘大蔗',msg:'为什么会有人把大花被穿身上啊？'},
@@ -88,7 +92,15 @@ let newArr = $.array.finder(CHAT_RECORD, {name:'甘大蔗'}, {limit:2});
 
 $('#ex-array-finder').text( JSON.stringify(newArr) );
 ```
-### gQuery: storage 操作
+
+### gQuery: cookie{}
+```
+$.cookie.get(key:String [, json:Boolean])
+$.cookie.set(key:String, value:Mixed [, options:Object])
+$.cookie.remove(key:String)
+```
+
+### gQuery: storage{}
 ```JavaScript
 var storageEx = [];
 $.storage.remove('exampleData');
@@ -122,5 +134,30 @@ gQuery
 gQuery is a Smaller and faster modern JavaScript function library
 ```
 
+### gQuery: get{}
+```
+$.get.queryParam(name:String)
+$.get.browserSpec()
+$.get.json(url:String, data:Object)
+```
+
+### gQuery: fetch 操作
+`$.fetch(url:String:Object [, data:Object, bodyMethod:String])`
+```
+$.fetch('/lib/js/gquery.ui.js', 'text').then(data => {
+    console.log(data);
+});
+
+$.fetch('/lib/json/enneagram.json', 'json').then(data=>{
+    console.log(data);
+})
+
+$.fetch('/lib/php/user/info.php', {
+    id: 168,
+    token: 'a6440a91c528dadfc7d5323dc626686a'
+}, 'json').then(data => {
+    console.log(data);
+});
+```
 
 ......
