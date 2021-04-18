@@ -475,10 +475,9 @@
 		},
 		pend: function(prop, elem){
 			return this.each(function(){
-				let elems = $.parse.html(elem), elen, i;
-				(elems instanceof NodeList || elems instanceof HTMLCollection) || (elems=[elems]);
-				elen = elems.length-1;
-
+				let elems = typeof elem === 'string' ? $.parse.html(elem) : [elem.cloneNode(true)];
+				let elen = elems.length-1, i;
+				
 				for(i = elen; i >= 0; i--){
 					prop=='insertBefore' ? this[prop](elems[i], this.firstChild) : this[prop](elems[i]);
 				}
