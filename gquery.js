@@ -474,12 +474,14 @@
 			 this.each(function(){this[prop] = val;});
 		},
 		pend: function(prop, elem){
+			let elems = typeof elem === 'string' ? $.parse.html(elem) : [elem];
+
 			return this.each(function(){
-				let elems = typeof elem === 'string' ? $.parse.html(elem) : [elem.cloneNode(true)];
-				let elen = elems.length-1, i;
-				
-				for(i = elen; i >= 0; i--){
-					prop=='insertBefore' ? this[prop](elems[i], this.firstChild) : this[prop](elems[i]);
+				let elen = elems.length, i, el;
+
+				for(i = 0; i < elen; i++){
+					el = elems[i].cloneNode(true);
+					prop=='insertBefore' ? this[prop](el, this.firstChild) : this[prop](el);
 				}
 			});
 		}
