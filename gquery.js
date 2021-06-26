@@ -1,14 +1,14 @@
 // =================================================
 //
-// gQuery.js v1.4.8
+// gQuery.js v1.4.83
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
 //
 // [fn]
-// init,push,each,find,eq,parent,remove,empty
+// init,push,each,find,is,eq,parent,next
 // text,html,ohtml,val,width,height,offset
-// prepend,append,before,after
+// remove,empty,prepend,append,before,after
 // attr,removeAttr,data,removeData
 // hasClass,addClass,removeClass,toggleClass
 // css,show,hide,fadeIn,fadeOut,fadeToggle
@@ -17,7 +17,7 @@
 //
 // [extend fn]
 // isPlainObject,isWindow,isNode,strToNum
-// copy,fetch
+// each,copy,fetch
 // [extend array]
 // unique,finder
 // [extend event]
@@ -43,7 +43,7 @@
 		window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
 	}
 
-	console.log('%c gQuery 1.4.8 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+	console.log('%c gQuery 1.4.83 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
 	'use strict';
 	let gQuery = function(selector, context){
@@ -52,7 +52,7 @@
 
 	gQuery.fn = gQuery.prototype = {
 		constructor: gQuery,
-		gquery: '1.4.8',
+		gquery: '1.4.83',
 		init: function(sel, opts){
 			let to = typeof sel, elems = [];
 			switch(to){
@@ -71,7 +71,11 @@
 						});
 					} else {elems.push(sel);}
 					break;
-				case 'string':elems = document.querySelectorAll(sel);break;
+				case 'string':
+					try{elems = document.querySelectorAll(sel);} catch(err){
+						elems = $.parse.html(sel);
+					};
+					break;
 			}
 
 			switch(opts){
@@ -102,9 +106,12 @@
 			}
 			return this;
 		},
-		find: function(sel){
+		find: function(sel, contain){
 			let finder = Object.create(this), fArr = [], i;
 			this.each(function(idx){
+				if(!$.isNode(this)){return;}
+				contain && $(this).is(sel) && fArr.push(this);
+
 				let elems = this.querySelectorAll(sel);
 				for (i = 0; i < elems.length; i++) {fArr.push(elems[i]);}
 				delete finder[idx];
@@ -114,6 +121,18 @@
 			finder.length = fArr.length;
 			for (i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[i];}
 			return finder;
+		},
+		is: function(sel){
+			let r = false;
+			this.each(function(idx){
+				let _mat = (
+					this.matches || this.matchesSelector || 
+					this.msMatchesSelector || this.mozMatchesSelector || 
+					this.webkitMatchesSelector || this.oMatchesSelector
+				);
+				if(_mat.call(this, sel)){r = true;return false;}
+			});
+			return r;
 		},
 		eq: function(idx){return $(this[idx]);},
 		parent: function(){
@@ -211,16 +230,19 @@
 			}
 		},
 		append: function(elem){
-			return gqHandle.pend.call(this,'appendChild',elem);
+			return gqHandle.pend.call(this, 'appendChild', elem);
 		},
 		prepend: function(elem){
-			return gqHandle.pend.call(this,'insertBefore',elem);
+			return gqHandle.pend.call(this, 'insertBefore', elem);
+		},
+		insertBefore: function(elem){
+			return gqHandle.pend.call($(elem), 'before', this);
 		},
 		before: function(elem){
-			return gqHandle.pend.call(this,'before',elem);
+			return gqHandle.pend.call(this, 'before', elem);
 		},
 		after: function(elem){
-			return gqHandle.pend.call(this,'after',elem);
+			return gqHandle.pend.call(this, 'after', elem);
 		},
 		attr: function(attrs, val){
 			if(val === undefined && typeof attrs === 'string') {
@@ -267,9 +289,12 @@
 			});
 		},
 		hasClass: function(cls){
-			let res = false;
+			cls = cls.split(' ');
+			let res = true;
 			this.each(function(){
-				if( this.classList.contains(cls) ){res = true;}
+				cls.map(v=>{
+					this.classList.contains(v) || (res = false);
+				});
 			});
 			return res;
 		},
@@ -388,12 +413,12 @@
 			let appoint = function(inFn){
 				return selector ? function(e){
 					let nodes = this.querySelectorAll(selector),
-						contain = false, tgtNode, i;
+						tgtNode = false, i;
 
 					for (i = nodes.length - 1; i >= 0; i--) {
-						nodes[i].contains(e.target) && (tgtNode = nodes[i], contain = true);
+						nodes[i].contains(e.target) && (tgtNode = nodes[i]);
 					}
-					contain && ( inFn.call(tgtNode, e) );
+					tgtNode && ( inFn.call(tgtNode, e) );
 				} : inFn;
 			}, cfn;
 
@@ -443,11 +468,16 @@
 			return this;
 		},
 		load: function(url, data, func){
-			let _this = this;
+			let _this = this, up = url.trim().split(' ');
 			typeof data === 'function' && (func=data, data=false);
 
-			$.fetch(url, data, 'text').then(function(resp){
-				_this.html( resp );
+			$.fetch(up[0], data, 'text').then(function(resp){
+				if(up.length>1){
+					up.splice(0, 1);
+					_this.html( $(resp).find(up.join(' '), 1).html() );
+				} else {
+					_this.html( resp );
+				}
 				typeof func === 'function' && func.call( _this );
 			});
 		},
@@ -474,7 +504,9 @@
 			 this.each(function(){this[prop] = val;});
 		},
 		pend: function(prop, elem){
-			let elems = typeof elem === 'string' ? $.parse.html(elem) : [elem];
+			let elems = typeof elem === 'string' ? $.parse.html(elem) : (
+                elem.gquery ? elem : [elem]
+            );
 
 			return this.each(function(){
 				let elen = elems.length, i, el;
@@ -536,6 +568,20 @@
 	};
 
 
+	gQuery.each = function(object, callback){
+		if(typeof object === 'object'){
+			for(let i in object){
+				if(callback.call(object[i], i, object[i]) === false){
+					break;
+				}
+			}
+			return true;
+		}
+
+		[].every.call(object, function(v, i){
+            return callback.call(v, i, v) === false ? false : true;
+        });
+	};
 	gQuery.copy = function(str){
 		if(typeof str==='object'){str = $(str).text();}
 
@@ -762,9 +808,12 @@
 				touchPoints: (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement || 0)
 			};
 		},
-		queryParam: function(name){
+		queryParam: function(href, name){
+			name===undefined && (name = href, href=window.location.href);
+			if(href.indexOf('?')<0){return null;}
+
 			let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
-				res = window.location.search.substr(1).match(reg);
+				res = href.replace(/.*?\?/g, '').match(reg);
 			if(res != null){return decodeURI(res[2]);}
 			return null;
 		},
@@ -785,11 +834,14 @@
 			return html;
 		},
 		json: function(str){
+			if(typeof str === 'object'){return str;}
+			if(str===''){return {};}
+
 			let json;
 			try{json = JSON.parse(str);} catch(err){}
 			try{
 				if(!json){json = Function('"use strict";return (' + str + ')')();}
-			} catch(err){console.error(err);json = str;}
+			} catch(err){throw new Error(err);}
 
 			return json;
 		}
@@ -799,14 +851,14 @@
 		local: function(){return $.global.localStorage},
 		set: function(key, data){
 			(typeof data=='object') && (data = JSON.stringify(data));
-			this.local().setItem(key,data);
+			this.local().setItem(key, data);
 		},
 		get: function(key, typ){
 			if(!typ){return this.local().getItem(key);}
 
 			let keyData = this.local().getItem(key);
 			if(typ=='array' || typ=='object'){
-				try{keyData = JSON.parse(keyData);} catch(err){throw new Error("Parsing!");}
+				try{keyData = $.parse.json(keyData);} catch(err){throw new Error("Parsing!");}
 			}
 			return keyData;
 		},
@@ -829,7 +881,7 @@
 				}
 				if(ext=='unique'){kd = $.array.unique(kd);}
 				this.set(key,JSON.stringify(kd));
-				return this.get(key,'array');
+				return this.get(key, 'array');
 			}
 		}
 	};
