@@ -13,7 +13,7 @@ The brand new JavaScript function library, and killed IE
 
 如今现代浏览器中，jQuery 难免显得有些臃肿，且绝大多数开发者并未完全使用其函数。各大平台（Github ...）和框架（Bootstrap 5 ...）也都和 jQuery 逐渐告别。
 
-在这一境况下，我决定在新项目中也不再引入 jQuery 库，而转头重写了 gQuery 这更为精小的函数库。在继承 jQuery 中的常用函数同时，拓展了许多我平时常用的操作函数。其代码大小在压缩后仅有 9kB，并完全在 MIT 下开源。
+在这一境况下，我决定在新项目中也不再引入 jQuery 库，而转头重写了 gQuery 这更为精小的函数库。在继承 jQuery 中的常用函数同时，拓展了许多我平时常用的操作函数。其代码大小在压缩后仅有 14kB，并完全在 MIT 下开源。
 
 另外，大多数 jQuery 插件仅需小量修改即可适用于 gQuery。
 
@@ -55,12 +55,12 @@ $('#todoList').on({
 
 gQuery: fade 操作
 ```JavaScript
-l$('.exFadeShow').html("It's").append('<i class="gi icon-arrows-cw ga-spin ml-2">');
-setTimeout(()=>{
-	$('.exFadeShow').fadeToggle(800,function(){
-		$(this).html('gQuery').fadeIn(800);
-	});
-},500);
+$('.exFadeShow').html("It's").append('<i class="gi icon-arrows-cw ga-spin ml-2">');
+
+// wait 实现更优雅的 setTimeout
+$('.exFadeShow').wait(500).fadeToggle(800,function(){
+    $(this).html('gQuery').fadeIn(800);
+});
 ```
 
 gQuery: slide 操作
@@ -122,7 +122,7 @@ storageEx.push( $.storage.get('exampleData','array').join(' ') );
 $('#exStorageData').html( storageEx.join('\n\n') );
 ```
 Result: storageEx
-```
+```javascript
 {"theme":"light","indexInit":"1"}
 
 ["{\"theme\":\"light\",\"indexInit\":\"1\"}"]
@@ -135,7 +135,7 @@ gQuery is a Smaller and faster modern JavaScript function library
 ```
 
 ### gQuery: get{}
-```
+```javascript
 $.get.queryParam(name:String)
 $.get.browserSpec()
 $.get.json(url:String, data:Object)
@@ -143,7 +143,7 @@ $.get.json(url:String, data:Object)
 
 ### gQuery: fetch 操作
 `$.fetch(url:String:Object [, data:Object, bodyMethod:String])`
-```
+```javascript
 $.fetch('/lib/js/gquery.ui.js', 'text').then(data => {
     console.log(data);
 });
@@ -158,6 +158,23 @@ $.fetch('/lib/php/user/info.php', {
 }, 'json').then(data => {
     console.log(data);
 });
+```
+
+### gQuery: Date 操作
+```javascript
+let $date = $('#exDate > li');
+
+$date.eq(0).text( $.date().format() );
+
+$date.eq(1).text( $.date(1630862585909).format('本世纪第yy年的m月d日 hh:ii:ss') );
+
+$date.eq(2).text( $.date('2002-2-14 2:30:00').format() );
+
+$date.eq(3).text( $.date('-3d').calc('+4 hours').calc('-2h').format() );
+
+$date.eq(4).text( $.date().diff('-3d').ago() );
+
+// console.log( $.date() )
 ```
 
 ......

@@ -1,12 +1,12 @@
 // =================================================
 //
-// gQuery.js v1.4.85
+// gQuery.js v1.4.9
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.net/about/license
 //
 // [fn]
-// init,push,each,find,is,eq,parent,next
+// init,push,each,find,is,exist,eq,parent,next
 // text,html,ohtml,val,width,height,offset
 // remove,empty,prepend,append,before,after
 // attr,removeAttr,data,removeData
@@ -16,7 +16,7 @@
 // click,select,load,wait
 //
 // [extend fn]
-// isPlainObject,isWindow,isNode,strToNum
+// isPlainObject,isWindow,isNode
 // each,copy,fetch
 // [extend array]
 // unique,finder,has
@@ -32,6 +32,12 @@
 // local,set,get,remove,clear,push
 // [extend sessionStorage]
 // local,set,get,remove,clear,push
+// [extend chain]
+// chain
+// [extend date]
+// parse,calc
+// [extend date prototype]
+// init,calc,initDate,format,diff,ago
 //
 // =================================================
 ;(function(global, factory){
@@ -43,16 +49,19 @@
         window.location.href = 'https://www.gquery.net/kill-ie?back='+(window.location.href);
     }
 
-    console.log('%c gQuery 1.4.85 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+    console.log('%c gQuery 1.4.9 %c www.gquery.net \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
     'use strict';
     let gQuery = function(selector, context){
         return new gQuery.fn.init(selector, context);
     };
 
+    /* -------------------------------------
+     * gQuery - prototype chain
+     * ------------------------------------- */
     gQuery.fn = gQuery.prototype = {
         constructor: gQuery,
-        gquery: '1.4.85',
+        gquery: '1.4.9',
         init: function(sel, opts){
             let to = typeof sel, elems = [];
             switch(to){
@@ -131,6 +140,13 @@
                     this.webkitMatchesSelector || this.oMatchesSelector
                 );
                 if(_mat.call(this, sel)){r = true;return false;}
+            });
+            return r;
+        },
+        exist: function(){
+            let r = false;
+            this.each(function(idx){
+                if(document.body.contains(this)){r = true;return false;}
             });
             return r;
         },
@@ -246,7 +262,7 @@
         },
         attr: function(attrs, val){
             if(val === undefined && typeof attrs === 'string') {
-                let resArr = [],attr;this.each(function(){
+                let resArr = [], attr;this.each(function(){
                     attr = this.getAttribute(attrs);attr===null&&(attr=undefined);
                     resArr.push( attr );
                 });
@@ -408,8 +424,12 @@
                     fn = selector, selector = false;
                 } else if(typeof selector === 'object'){opts = selector, selector = false;}
             }
+            typeof opts === 'object' || (opts={});
 
             // 处理事件委托
+            if(selector){
+                opts.capture===undefined&&(opts.capture=true);
+            }
             let appoint = function(inFn){
                 return selector ? function(e){
                     let nodes = this.querySelectorAll(selector),
@@ -446,7 +466,7 @@
         trigger: function(evts, params){
             params || (params={});
             evts = evts.split(' ');
-            let ctmEvts = evts.map(val=>new CustomEvent(val, {detail: params}));
+            let ctmEvts = evts.map(name=>new CustomEvent(name, {detail: params}));
 
             return this.each(function(){
                 ctmEvts.map(evt=>this.dispatchEvent(evt));
@@ -528,6 +548,7 @@
     /**
      * gQuery wait
      * @author Matthew Lee matt@madleedesign.com
+     * @author Ganxiaozhe hi@gxzv.com
      */
     function gQueryDummy($real, delay, _fncQueue){
         // A Fake gQuery-like object that allows us to resolve the entire gQuery
@@ -605,6 +626,10 @@
 
 
 
+
+    /* -------------------------------------
+     * gQuery - extend
+     * ------------------------------------- */
     gQuery.extend = function(obj){
         if(arguments.length==1){
             for(let idx in obj){
@@ -717,14 +742,12 @@
             && (prototype = Object.getPrototypeOf(obj), prototype === null || 
             prototype == Object.getPrototypeOf({}));
     };
-    gQuery.strToNum = function(str){
-        return (
-            typeof str === 'string' ? parseInt( str.replace(/[^\d]/g,'') ) : str
-        );
-    };
     gQuery.ui = "缺少 UI 组件，请前往 https://www.gquery.net/ui/ 下载";
 
 
+    /** -------------------------------------
+     * Array
+     * ------------------------------------- */
     gQuery.array = {
         unique: function(arr, typ){
             let j = {};
@@ -735,7 +758,7 @@
             }
 
             arr.forEach(function(v){
-                let vtyp = typeof v,vv=v;
+                let vtyp = typeof v, vv=v;
                 if(vtyp==='object'){v = JSON.stringify(v);}
                 j[v + '::' + vtyp] = vv;
             });
@@ -768,57 +791,10 @@
         }
     };
 
-    gQuery.cookie = {
-        get: function(key, json){
-            let jar = {}, i = 0,
-                cookies = document.cookie ? document.cookie.split('; ') : [];
-            function decode(s){return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);}
-
-            for (; i < cookies.length; i++) {
-                let parts = cookies[i].split('=');
-                let cookie = parts.slice(1).join('=');
-                if (!json && cookie.charAt(0) === '"') {cookie = cookie.slice(1, -1);}
-
-                try {
-                    let name = decode(parts[0]);cookie = decode(cookie);
-
-                    if(json){try {cookie = JSON.parse(cookie);} catch(e){}}
-                    jar[name] = cookie;
-
-                    if(key === name){break;}
-                } catch (e) {}
-            }
-
-            return key ? jar[key] : jar;
-        },
-        set: function(key, value, attributes){
-            attributes = $.extend({path: '/'}, attributes);
-            if (typeof attributes.expires === 'number') {
-                attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
-            }
-            attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
-
-            let stringifiedAttrs = '';
-            for (let attrName in attributes) {
-                if (!attributes[attrName]) {continue;}
-                stringifiedAttrs += '; ' + attrName;
-
-                if (attributes[attrName] === true) {continue;}
-                stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
-            }
-
-            typeof value==='object' && (value = JSON.stringify(value));
-            return (document.cookie = key + '=' + value + stringifiedAttrs);
-        },
-        remove: function(key, attributes){
-            $.cookie.set(key, '', $.extend(attributes, {expires: -1}));
-        }
-    };
-
     gQuery.event = {
         add: function(obj, evtName, fn, opts){
             typeof opts === 'object' || (opts={});
-            opts.capture === undefined && (opts.capture=true);
+            opts.capture === undefined && (opts.capture=false);
 
             let flag = evtName.split('.');evtName = flag.splice(0,1);
             flag.length>0 && (opts.__flag = {});
@@ -874,6 +850,9 @@
         }
     };
 
+    /** -------------------------------------
+     * Get
+     * ------------------------------------- */
     gQuery.get = {
         browserSpec: function(){
             let ua = navigator.userAgent, tem,
@@ -912,6 +891,9 @@
         }
     };
 
+    /** -------------------------------------
+     * Parse
+     * ------------------------------------- */
     gQuery.parse = {
         html: function(html){
             if(typeof html === 'string'){
@@ -932,9 +914,67 @@
             } catch(err){throw new Error(err);}
 
             return json;
+        },
+        number: function(str){
+            return (
+                typeof str === 'string' ? parseInt( str.replace(/[^\d]/g,'') ) : str
+            );
         }
     };
 
+    /** -------------------------------------
+     * Cookie
+     * ------------------------------------- */
+    gQuery.cookie = {
+        get: function(key, json){
+            let jar = {}, i = 0,
+                cookies = document.cookie ? document.cookie.split('; ') : [];
+            function decode(s){return s.replace(/(%[0-9A-Z]{2})+/g, decodeURIComponent);}
+
+            for (; i < cookies.length; i++) {
+                let parts = cookies[i].split('=');
+                let cookie = parts.slice(1).join('=');
+                if (!json && cookie.charAt(0) === '"') {cookie = cookie.slice(1, -1);}
+
+                try {
+                    let name = decode(parts[0]);cookie = decode(cookie);
+
+                    if(json){try {cookie = JSON.parse(cookie);} catch(e){}}
+                    jar[name] = cookie;
+
+                    if(key === name){break;}
+                } catch (e) {}
+            }
+
+            return key ? jar[key] : jar;
+        },
+        set: function(key, value, attributes){
+            attributes = $.extend({path: '/'}, attributes);
+            if (typeof attributes.expires === 'number') {
+                attributes.expires = new Date(new Date() * 1 + attributes.expires * 864e+5);
+            }
+            attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+
+            let stringifiedAttrs = '';
+            for (let attrName in attributes) {
+                if (!attributes[attrName]) {continue;}
+                stringifiedAttrs += '; ' + attrName;
+
+                if (attributes[attrName] === true) {continue;}
+                stringifiedAttrs += '=' + String(attributes[attrName]).split(';')[0];
+            }
+
+            typeof value==='object' && (value = JSON.stringify(value));
+            return (document.cookie = key + '=' + value + stringifiedAttrs);
+        },
+        remove: function(key, attributes){
+            $.cookie.set(key, '', $.extend(attributes, {expires: -1}));
+        }
+    };
+
+    /** -------------------------------------
+     * Storage
+     * ------------------------------------- */
     gQuery.storage = {
         local: function(){return $.global.localStorage},
         set: function(key, data){
@@ -975,6 +1015,221 @@
     };
     gQuery.sessionStorage = gQuery.extend({}, gQuery.storage);
     gQuery.sessionStorage.local = function(){return $.global.sessionStorage};
+
+
+    /** -------------------------------------
+     * Prototype Chain Generator
+     * ------------------------------------- */
+    gQuery.chain = function(_ch){
+        function chain(){
+            return new chain.prototype.init(...arguments);
+        }
+        chain.prototype = _ch;
+        chain.prototype.init.prototype = chain.prototype;
+        return chain;
+    };
+
+    /** -------------------------------------
+     * Date
+     * ------------------------------------- */
+    gQuery.date = new gQuery.chain({
+        gquery: true,
+        init: function(){
+            let arg = arguments[0], isArg = false;
+            this.date = $.date.parse(arg);
+
+            return this.initDate();
+        },
+        calc: function(arg){
+            // 以免在计算过程中对初始日期产生影响
+            let __dt = Object.create(this);
+            __dt.date = $.date.calc(__dt.date, arg);
+
+            return this.initDate(__dt);
+        },
+        initDate: function(__dt){
+            if(typeof __dt!=='object'){
+                __dt = this;
+            }
+
+            __dt.timestamp = __dt.date.getTime();
+
+            let dt = __dt.date;
+            __dt._y = dt.getFullYear();
+            __dt._m = dt.getMonth() + 1;
+            __dt._d = dt.getDate();
+            __dt._h = dt.getHours();
+            __dt._i = dt.getMinutes();
+            __dt._s = dt.getSeconds();
+
+            return __dt;
+        },
+
+        /**
+         * @e.g. format()
+         * @e.g. format('yyyy-mm-dd')
+         * @e.g. format('本世纪第yy年的m月')
+         */
+        format: function(fmt){
+            let _t = $.extend({}, this);
+            _t._m<10 && (_t._m='0'+_t._m);
+            _t._d<10 && (_t._d='0'+_t._d);
+            _t._h<10 && (_t._h='0'+_t._h);
+            _t._i<10 && (_t._i='0'+_t._i);
+            _t._s<10 && (_t._s='0'+_t._s);
+            _t._dt = _t._y+'-'+_t._m+'-'+_t._d+' '+_t._h+':'+_t._i+':'+_t._s;
+            // 未自定义直接返回默认格式
+            if(typeof fmt!=='string'){return _t._dt;}
+
+            rp('yyyy', _t._y);rp('yy', String(_t._y).substr(-2));
+            rp('mm', _t._m);rp('m', this._m);
+            rp('dd', _t._d);rp('d', this._d);
+
+            rp('hh', _t._h);rp('h', this._h);
+            rp('ii', _t._i);rp('i', this._i);
+            rp('ss', _t._s);rp('s', this._s);
+
+            function rp(regStr, repStr){
+                fmt = fmt.replace(new RegExp(regStr, 'g'), repStr);
+            };
+            return fmt;
+        },
+        diff: function(_dt){
+            _dt = $.date.parse(_dt);
+            let df = {}, _t = {},
+                ms_start = this.date.getTime(), ms_end = _dt.getTime();
+            function fl(val){return Math.floor(val);}
+
+            df._ms = ms_start - ms_end;
+            df._s = fl(df._ms/1000);
+            df._i = fl(df._s/60);
+            df._h = fl(df._i/60);
+            df._d = fl(df._h/24);
+
+            // 防止开始时间>结束时间导致的计算出错
+            _t._ms = Math.abs(df._ms);
+
+            df.d = fl( _t._ms / (24*60*60*1000) );
+            _t.df_h = _t._ms % (24*60*60*1000);
+            df.h = fl( _t.df_h / (60*60*1000) );
+            _t.df_i = _t.df_h % (60*60*1000);
+            df.i = fl( _t.df_i / (60*1000) );
+            _t.df_s = _t.df_i % (60*1000);
+            df.s = fl( _t.df_s / (1000) );
+            df.ms = _t.df_s % (1000);
+
+            this._df = df;
+            return this;
+        },
+        ago: function(){
+            let df = this._df;
+            if(typeof df!=='object'){return '现在';}
+            if(df._ms<0){return '未来';}
+
+            if(df.d>0){
+                if(df.d>=30){
+                    df.mon = Math.floor(df.d/30);
+                    if(df.mon>=12){
+                        df.year = Math.floor(df.mon/12);
+                        return df.year+"年前";
+                    }
+
+                    return df.mon+"个月前";
+                }
+
+                if(df.d==1){return "昨天";}
+                if(df.d==2){return "前天";}
+                return df.d+"天前";
+            }
+            if(df.h>0){return df.h+"小时前";}
+            if(df.i>0){return df.i+"分钟前";}
+            if(df.s>0){return df.s+"秒前";}
+            if(df.ms>0){return "刚刚";}
+            if(df.ms===0){return "现在";}
+
+            return '未知';
+        }
+    });
+    /**
+     * @e.g. parse('2002-2-14 12:00:00')
+     * @e.g. parse(timestamp)
+     * @e.g. parse(Date, '+6 day')
+     * @e.g. parse('+6 day')
+     */
+    gQuery.date.parse = function(arg1, arg2){
+        let typ1 = typeof arg1, typ2 = typeof arg2, date, _t = {};
+
+        if(arg1 && arg1 instanceof Date){
+            if(typ2!=='string'){return arg1;}
+            return this.calc(arg1, arg2);
+        }
+        if(typ1==='string' && /^[+-]/.test(arg1)){
+            return this.calc(new Date(), arg1);
+        }
+
+        if(typ1==='string'){
+            date = new Date(arg1);
+            // Safari 处理
+            if( isNaN(date.getTime()) ){
+                date = new Date(arg1.replace(/-/g, '/'));
+            }
+            return date;
+        }
+
+        if(typ1==='number'){
+            // 处理错误数值
+            _t.len = 13 - String(arg1).length;
+            if(_t.len!=0){
+                arg1 = _t.len<0 ? arg1/(10**Math.abs(_t.len)) : arg1*(10**_t.len);
+            }
+            return new Date(Math.round(arg1));
+        }
+
+        return new Date();
+    };
+    /**
+     * @e.g. parse(Date, '+6 day')
+     * @return Date
+     */
+    gQuery.date.calc = function(arg1, arg2){
+        let ts = arg1.getTime(), isAdd = !/^-/.test(arg2);
+        let dt = {};
+        arg2 = arg2.replace(/[\+\- ]/g, '');
+        // 分割数值和类型
+        dt.num = arg2.replace(/[^\d]/g, '');
+        dt.typ = arg2.replace(dt.num, '');
+
+        dt.num = parseInt(dt.num);
+        isAdd && (dt.num*=-1);
+        
+        switch(dt.typ){
+            case 'y':case 'year':case 'years':
+                arg1.setYear(arg1.getFullYear() - dt.num);
+                ts = arg1.getTime();
+                break;
+            case 'm':case 'mon':case 'month':case 'months':
+                arg1.setMonth(arg1.getMonth() - dt.num);
+                ts = arg1.getTime();
+                break;
+
+            case 'd':case 'day':case 'days':
+                ts -= dt.num*(24*60*60*1000);
+                break;
+            case 'h':case 'hour':case 'hours':
+                ts -= dt.num*(60*60*1000);
+                break;
+            case 'i':case 'min':case 'minute':case 'minutes':
+                ts -= dt.num*(60*1000);
+                break;
+            case 's':case 'sec':case 'second':case 'seconds':
+                ts -= dt.num*1000;
+                break;
+            case 'ms':case 'millisecond':case 'milliseconds':
+                ts -= dt.num;
+                break;
+        }
+        return new Date(ts);
+    }
 
     return gQuery;
 }));
