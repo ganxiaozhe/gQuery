@@ -179,7 +179,10 @@
         },
         remove: function(sel){
             let rthis = ( sel === undefined ? this : this.find(sel) );
-            return rthis.each(function(){this.parentNode.removeChild(this);});
+            return rthis.each(function(){
+                if(this.parentNode===null){return true;}
+                this.parentNode.removeChild(this);
+            });
         },
         empty: function(sel){
             let rthis = ( sel === undefined ? this : this.find(sel) );
@@ -482,12 +485,22 @@
                 opts.capture===undefined&&(opts.capture=true);
             }
             let appoint = function(inFn){
+                let isMouse = $.array.finder([
+                    'mousedown','mouseenter','mouseleave',
+                    'mousemove','mouseover','mouseout'
+                ], evtName);
+
                 return selector ? function(e){
                     let nodes = this.querySelectorAll(selector),
                         tgtNode = false, i;
 
                     for (i = nodes.length - 1; i >= 0; i--) {
-                        nodes[i].contains(e.target) && (tgtNode = nodes[i]);
+                        if(tgtNode!==false){break;}
+                        if(isMouse){
+                            nodes[i]===e.target && (tgtNode = nodes[i]);
+                        } else {
+                            nodes[i].contains(e.target) && (tgtNode = nodes[i]);
+                        }
                     }
                     tgtNode && ( inFn.call(tgtNode, e) );
                 } : inFn;
@@ -495,7 +508,9 @@
 
             if(typeof fn === 'function'){
                 cfn = appoint(fn);
-                return this.each(function(){$.event.add(this, evtName, cfn, opts);});
+                return this.each(function(){
+                    $.event.add(this, evtName, cfn, opts);
+                });
             }
 
             return this.each(function(){
