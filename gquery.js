@@ -1,6 +1,6 @@
 // =================================================
 //
-// gQuery.js v1.5.0
+// gQuery.js v1.5.3
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
 // Released under the MIT License.
 // gquery.org/license
@@ -12,7 +12,7 @@
 // attr,removeAttr,data,removeData
 // hasClass,addClass,removeClass,toggleClass
 // css,show,hide,animate,fadeIn,fadeOut,fadeToggle
-// slideUp,slideDown,slideToggle,on,off,trigger
+// slideUp,slideDown,slideToggle,on,one,off,trigger
 // click,select,load,wait
 //
 // [extend fn]
@@ -46,10 +46,10 @@
     (global = window || self, global.gQuery = global.$ = factory());
 
     if(!!window.ActiveXObject || "ActiveXObject" in window){
-        window.location.href = 'https://www.gquery.org/kill-ie?back='+(window.location.href);
+        window.location.href = 'https://gquery.org/kill-ie?back='+(window.location.href);
     }
 
-    console.log('%c gQuery 1.5.0 %c www.gquery.org \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+    console.log('%c gQuery 1.5.3 %c www.gquery.org \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
     'use strict';
     let gQuery = function(selector, context){
@@ -61,7 +61,7 @@
      * ------------------------------------- */
     gQuery.fn = gQuery.prototype = {
         constructor: gQuery,
-        gquery: '1.5.0',
+        gquery: '1.5.3',
         init: function(sel, opts){
             let to = typeof sel, elems = [];
             switch(to){
@@ -115,14 +115,24 @@
             }
             return this;
         },
-        find: function(sel, contain){
+        /**
+         * sel           CSS3 选择器
+         * contain       查询是否包含自身
+         * onlyChildren  只查询子元素
+         */
+        find: function(sel, contain, onlyChildren){
             let finder = Object.create(this), fArr = [], i;
             this.each(function(idx){
                 if(!$.isNode(this)){return;}
                 contain && $(this).is(sel) && fArr.push(this);
 
-                let elems = this.querySelectorAll(sel);
-                for (i = 0; i < elems.length; i++) {fArr.push(elems[i]);}
+                let elems = onlyChildren ? this.children : this.querySelectorAll(sel);
+                for (i = 0; i < elems.length; i++) {
+                    if(onlyChildren && !$(elems[i]).is(sel)){
+                        continue;
+                    }
+                    fArr.push(elems[i]);
+                }
                 delete finder[idx];
             });
 
@@ -177,12 +187,14 @@
             for (i = fArr.length - 1; i >= 0; i--) {finder[i] = fArr[i];}
             return finder;
         },
-        remove: function(sel){
-            let rthis = ( sel === undefined ? this : this.find(sel) );
-            return rthis.each(function(){
+        remove: function(sel, onlyChildren){
+            onlyChildren===undefined && (onlyChildren=false);
+            let rthis = ( sel === undefined ? this : this.find(sel,false,onlyChildren) );
+            rthis.each(function(){
                 if(this.parentNode===null){return true;}
                 this.parentNode.removeChild(this);
             });
+            return this;
         },
         empty: function(sel){
             let rthis = ( sel === undefined ? this : this.find(sel) );
@@ -210,8 +222,11 @@
 
             let totalWidth = [], iw;
             this.each(function(){
-                iw = this.offsetWidth || parseFloat(this.getBoundingClientRect().width.toFixed(2));
-                totalWidth.push(iw);
+                iw = this.offsetWidth;
+                if(iw===undefined){
+                    iw = typeof this.getBoundingClientRect==='function' ? this.getBoundingClientRect().width.toFixed(2) : 0;
+                }
+                totalWidth.push(parseFloat(iw));
             });
             return (totalWidth.length>1 ? totalWidth : totalWidth[0]);
         },
@@ -223,8 +238,11 @@
 
             let totalHeight = [], ih;
             this.each(function(){
-                ih = this.offsetHeight || parseFloat(this.getBoundingClientRect().height.toFixed(2));
-                totalHeight.push(ih);
+                ih = this.offsetHeight;
+                if(ih===undefined){
+                    ih = typeof this.getBoundingClientRect==='function' ? this.getBoundingClientRect().height.toFixed(2) : 0;
+                }
+                totalHeight.push(parseFloat(ih));
             });
             return (totalHeight.length>1 ? totalHeight : totalHeight[0]);
         },
@@ -365,8 +383,10 @@
         },
         show: function(disp){
             return this.each(function(){
-                disp || (disp = this.style.display=='none' ? '' : 'block');
-                this.style.display = disp;
+                this.style.display = '';
+                if(getComputedStyle(this)['display'] == 'none'){
+                    this.style.display = disp||'block';
+                }
             });
         },
         hide: function(){
@@ -402,14 +422,8 @@
             });
         },
         stop: function(){
-            let aniArray = $.animation.array;
             return this.each(function(){
-                let that = this;
-                $.each(aniArray, function(_i, _k){
-                    if(that===_k.elem){
-                        aniArray.splice(_i, 1);
-                    }
-                });
+                this.__gQueryStop = true;
             });
         },
 
@@ -417,9 +431,7 @@
             dur || (dur=500);
 
             return this.each(function(){
-                this.style.display='';
-                getComputedStyle(this).display=='none' && (this.style.display = 'block');
-                $(this).stop().animate({opacity:1}, dur, function(){
+                $(this).show().stop().animate({opacity:1}, dur, function(){
                     callback && callback.call(this);
                 });
             });
@@ -453,12 +465,14 @@
             });
         },
         slideDown: function(dur, callback){
-            dur || (dur=500);let elH;
+            dur || (dur=500);
 
             return this.each(function(){
+                let orgHeight = $(this).css('height');
                 let $that = $(this).css({display:'', height:''});
-                elH = this.offsetHeight+'px';
-                $that.stop().animate({height:elH}, dur, function(){
+                let newHeight = this.offsetHeight;
+                this.style.height = orgHeight;
+                $that.stop().animate({height:newHeight+'px'}, dur, function(){
                     callback && callback.call(this);
                 });
             });
@@ -471,24 +485,18 @@
             });
         },
         on: function(evtName, selector, fn, opts){
-            // 以下是所有无需事件委托的情况
-            (arguments.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
-            if(arguments.length==2){
-                if(typeof selector === 'function'){
-                    fn = selector, selector = false;
-                } else if(typeof selector === 'object'){opts = selector, selector = false;}
-            }
-            typeof opts === 'object' || (opts={});
+            [evtName, selector, fn, opts] = gqHandle.onArgs(arguments);
 
             // 处理事件委托
             if(selector){
                 opts.capture===undefined&&(opts.capture=true);
             }
-            let appoint = function(inFn){
+            let appoint = function(inFn, name){
                 let isMouse = $.array.finder([
-                    'mousedown','mouseenter','mouseleave',
+                    // 不包括 mousedown\mouseup\touchstart\touchend
+                    'mouseenter','mouseleave',
                     'mousemove','mouseover','mouseout'
-                ], evtName);
+                ], name);
 
                 return selector ? function(e){
                     let nodes = this.querySelectorAll(selector),
@@ -507,7 +515,7 @@
             }, cfn;
 
             if(typeof fn === 'function'){
-                cfn = appoint(fn);
+                cfn = appoint(fn, evtName);
                 return this.each(function(){
                     $.event.add(this, evtName, cfn, opts);
                 });
@@ -515,10 +523,15 @@
 
             return this.each(function(){
                 for(let evt in evtName){
-                    cfn = appoint(evtName[evt]);
+                    cfn = appoint(evtName[evt], evt);
                     $.event.add(this, evt, cfn, opts);
                 }
             });
+        },
+        one: function(evtName, selector, fn, opts){
+            [evtName, selector, fn, opts] = gqHandle.onArgs(arguments);
+            opts.once = true;
+            return this.on(evtName, selector, fn, opts);
         },
         off: function(evts, opts){
             opts===undefined && (opts = false);
@@ -603,6 +616,20 @@
                     prop=='insertBefore' ? this[prop](el, this.firstChild) : this[prop](el);
                 }
             });
+        },
+
+        onArgs: function(args){
+            let evtName = args[0], selector = args[1], fn = args[2], opts = args[3];
+
+            (args.length==3 && typeof fn !== 'function') && (opts = fn,fn = selector,selector = false);
+            if(args.length==2){
+                if(typeof selector === 'function'){
+                    fn = selector, selector = false;
+                } else if(typeof selector === 'object'){opts = selector, selector = false;}
+            }
+            typeof opts === 'object' || (opts={});
+
+            return [evtName, selector, fn, opts];
         }
     };
 
@@ -614,37 +641,35 @@
      * @author Ganxiaozhe hi@gxzv.com
      */
     function gQueryDummy($real, delay, _fncQueue){
-        // A Fake gQuery-like object that allows us to resolve the entire gQuery
-        // method chain, pause, and resume execution later.
-
         let dummy = this;
         this._fncQueue = (typeof _fncQueue === 'undefined') ? [] : _fncQueue;
         this._delayCompleted = false;
         this._$real = $real;
 
-        if (typeof delay === 'number' && delay >= 0 && delay < Infinity)
+        if (typeof delay === 'number' && delay >= 0 && delay < Infinity){
             this.timeoutKey = window.setTimeout(function () {
                 dummy._performDummyQueueActions();
             }, delay);
-
-        else if (delay !== null && typeof delay === 'object' && typeof delay.promise === 'function')
+        } else if (delay !== null && typeof delay === 'object' && typeof delay.promise === 'function'){
             delay.then(function () {
                 dummy._performDummyQueueActions();
             });
-
-        else return $real;
+        } else if (typeof delay === 'string'){
+            $real.one(delay, function(){
+                dummy._performDummyQueueActions();
+            });
+        } else return $real;
     }
 
     gQueryDummy.prototype._addToQueue = function(fnc, arg){
         // When dummy functions are called, the name of the function and
         // arguments are put into a queue to execute later
 
-        this._fncQueue.unshift({ fnc: fnc, arg: arg });
+        this._fncQueue.unshift({fnc: fnc, arg: arg});
 
-        if (this._delayCompleted)
+        if (this._delayCompleted){
             return this._performDummyQueueActions();
-        else
-            return this;
+        } else {return this;}
     };
 
     gQueryDummy.prototype._performDummyQueueActions = function(){
@@ -654,7 +679,7 @@
         this._delayCompleted = true;
 
         let next;
-        while (this._fncQueue.length > 0) {
+        while (this._fncQueue.length > 0){
             next = this._fncQueue.pop();
 
             if (next.fnc === 'wait') {
@@ -670,20 +695,20 @@
 
     // Add shadow methods for all gQuery methods in existence.
     // skip non-function properties or properties of Object.prototype
-    for (let fnc in gQuery.fn) {
+    for (let fnc in gQuery.fn){
         if (typeof gQuery.fn[fnc] !== 'function' || !gQuery.fn.hasOwnProperty(fnc)){
             continue;
         }
 
-        gQueryDummy.prototype[fnc] = (function (fnc) {
+        gQueryDummy.prototype[fnc] = (function(fnc){
             return function(){
                 let arg = Array.prototype.slice.call(arguments);
                 return this._addToQueue(fnc, arg);
             };
         })(fnc);
-    }
+    };
 
-    gQuery.fn.wait = function(delay, _queue) {
+    gQuery.fn.wait = function(delay, _queue){
         return new gQueryDummy(this, delay, _queue);
     };
 
@@ -789,13 +814,6 @@
             if(!res.ok){throw new Error('Network response was not ok.');}
             return res[bodyMH]();
         }).catch(err => {
-            if(typeof $.ui === 'object' && typeof $.ui.alert === 'function'){
-                $.ui.alert({
-                    title: 'Error: fetch',
-                    message: `<div class='code-box mb-0 mt-2'>${err}</div>`,
-                    type: 'alert', buttons: false, timer: 8000
-                });
-            }
             throw new Error(err);
         });
     };
@@ -864,16 +882,23 @@
     };
 
     gQuery.event = {
-        add: function(obj, evtName, fn, opts){
+        add: function(obj, name, fn, opts){
             typeof opts === 'object' || (opts={});
             opts.capture === undefined && (opts.capture=false);
 
-            let flag = evtName.split('.');evtName = flag.splice(0,1);
+            let flag = name.split('.');
+            let evtName = flag.splice(0,1);
             flag.length>0 && (opts.__flag = {});
             flag.map(f=>{opts.__flag[f]=true;});
 
-            let events = obj.gQueryEvents, evtObj = {fn:fn, opts:opts};
+            let fnDummy = function(e){
+                if(opts.once===true){
+                    $.event.remove(obj, name, opts);
+                }
+                return fn.call(obj, e);
+            };
 
+            let events = obj.gQueryEvents, evtObj = {fn:fnDummy, opts:opts};
             if(events===undefined){
                 events = {[evtName]:[ evtObj ]};
             } else {
@@ -1178,12 +1203,13 @@
         },
         tick:function(){
             let that = $.animation;
+            if(!that.running){return;}
+
             if(document.hidden === false && window.requestAnimationFrame){
                 window.requestAnimationFrame(that.tick);
             } else {
                 window.setTimeout(that.tick, 13);
             }
-
             that.process();
         }
     };
@@ -1202,10 +1228,17 @@
         let aniArray = this.array, _ts = Date.now();
 
         $.each(aniArray, function(_i, _k){
+            if(typeof _k.opts!=='object'){return true;}
+
             let dura = _k.opts.duration;
             if(_k.start==null){
                 _k.start = _ts;
                 _k.end = _ts + dura;
+                _k.elem.__gQueryStop = false;
+            } else {
+                if(_k.elem.__gQueryStop){
+                    aniArray.splice(_i, 1);return true;
+                }
             }
             _k.curr = dura - (_k.end - _ts);
 
@@ -1247,6 +1280,7 @@
      *   init: function(args){...},
      *   todo: function(){...}
      * })
+     * @tip 局部变量请在 init 函数中赋值
      * ------------------------------------- */
     gQuery.chain = function(_ch){
         function chain(){
