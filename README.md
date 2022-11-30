@@ -1,8 +1,9 @@
 # gQuery
 The brand new JavaScript function library, and killed IE
-- Only 9.4kB minified and gzipped. Can also be included as an AMD module
+- Only 10.0kB minified and gzipped. Can also be included as an AMD module
 - Supports CSS3 selectors to find elements as well as in style property manipulation
 - Use native animation API. Support all major browsers
+
 
 # Why gQuery
 众所周知 jQuery 是一个非常健壮的 JavaScript 库，它提供的 API 易于使用且兼容众多浏览器（例如令开发者头痛的 Internet Explorer）。
@@ -21,8 +22,9 @@ The brand new JavaScript function library, and killed IE
 
 gQuery 及 GQUI 良好兼容 Electron 及 NW.js，并已开发过成熟商业软件。
 
-# Docs [过时]
-https://www.gquery.net/docs/
+
+# Docs
+https://gquery.cn/docs/
 
 
 

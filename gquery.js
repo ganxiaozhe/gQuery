@@ -1,17 +1,18 @@
 // =================================================
 //
-// gQuery.js v1.5.3
+// gQuery.js v1.5.6
 // (c) 2020-present, JU Chengren (Ganxiaozhe)
+// Contact: hi@gxzv.com
 // Released under the MIT License.
-// gquery.org/license
+// gquery.cn/license
 //
 // [fn]
 // init,push,each,find,is,exist,eq,parent,next
-// text,html,ohtml,val,width,height,offset
+// text,html,ohtml,val,width,height,css,offset
 // remove,empty,prepend,append,before,after
 // attr,removeAttr,data,removeData
 // hasClass,addClass,removeClass,toggleClass
-// css,show,hide,animate,fadeIn,fadeOut,fadeToggle
+// show,hide,animate,fadeIn,fadeOut,fadeToggle
 // slideUp,slideDown,slideToggle,on,one,off,trigger
 // click,select,load,wait
 //
@@ -46,10 +47,10 @@
     (global = window || self, global.gQuery = global.$ = factory());
 
     if(!!window.ActiveXObject || "ActiveXObject" in window){
-        window.location.href = 'https://gquery.org/kill-ie?back='+(window.location.href);
+        window.location.href = 'https://gquery.cn/kill-ie?back='+(window.location.href);
     }
 
-    console.log('%c gQuery 1.5.3 %c www.gquery.org \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
+    console.log('%c gQuery 1.5.6 %c gquery.cn \n','color: #fff; background: #030307; padding:5px 0; margin-top: 1em;','background: #efefef; color: #333; padding:5px 0;');
 }(window, function(){
     'use strict';
     let gQuery = function(selector, context){
@@ -61,7 +62,7 @@
      * ------------------------------------- */
     gQuery.fn = gQuery.prototype = {
         constructor: gQuery,
-        gquery: '1.5.3',
+        gquery: '1.5.6',
         init: function(sel, opts){
             let to = typeof sel, elems = [];
             switch(to){
@@ -117,14 +118,14 @@
         },
         /**
          * sel           CSS3 选择器
-         * contain       查询是否包含自身
+         * selfContain   查询是否包含自身
          * onlyChildren  只查询子元素
          */
-        find: function(sel, contain, onlyChildren){
+        find: function(sel, selfContain, onlyChildren){
             let finder = Object.create(this), fArr = [], i;
             this.each(function(idx){
                 if(!$.isNode(this)){return;}
-                contain && $(this).is(sel) && fArr.push(this);
+                selfContain && $(this).is(sel) && fArr.push(this);
 
                 let elems = onlyChildren ? this.children : this.querySelectorAll(sel);
                 for (i = 0; i < elems.length; i++) {
@@ -133,7 +134,6 @@
                     }
                     fArr.push(elems[i]);
                 }
-                delete finder[idx];
             });
 
             fArr = $.array.unique(fArr);
@@ -149,7 +149,7 @@
                     this.msMatchesSelector || this.mozMatchesSelector || 
                     this.webkitMatchesSelector || this.oMatchesSelector
                 );
-                if(_mat.call(this, sel)){r = true;return false;}
+                if(typeof _mat==='function' && _mat.call(this, sel)){r = true;return false;}
             });
             return r;
         },
@@ -161,10 +161,17 @@
             return r;
         },
         eq: function(idx){return $(this[idx]);},
-        parent: function(){
+        parent: function(sel, force){
             let finder = Object.create(this), fArr = [], i;
             this.each(function(idx){
-                fArr.push(this.parentNode);delete finder[idx];
+                let node = this.parentNode;
+                while(sel && node && !$(node).is(sel)){
+                    if(!force){
+                        node = undefined;break;
+                    }
+                    node = node.parentNode;
+                }
+                node&&fArr.push(node);
             });
 
             fArr = $.array.unique(fArr);
@@ -189,7 +196,7 @@
         },
         remove: function(sel, onlyChildren){
             onlyChildren===undefined && (onlyChildren=false);
-            let rthis = ( sel === undefined ? this : this.find(sel,false,onlyChildren) );
+            let rthis = ( sel === undefined ? this : this.find(sel, false, onlyChildren) );
             rthis.each(function(){
                 if(this.parentNode===null){return true;}
                 this.parentNode.removeChild(this);
@@ -260,11 +267,22 @@
                 top: document.body.scrollTop==0?document.documentElement.scrollTop:document.body.scrollTop,
                 left: document.body.scrollLeft==0?document.documentElement.scrollLeft:document.body.scrollLeft
             };
+            // true
             opts && (spos.top=0, spos.left=0);
-            
-            return {
-                top: rect.top + spos.top, left: rect.left + spos.left
-            }
+
+            let $this = $(this[0]);
+            let data = {
+                top: rect.top + spos.top,
+                left: rect.left + spos.left,
+                height: $this.height(),
+                width: $this.width(),
+            };
+            let wrapH = opts ? window.innerHeight : document.body.offsetHeight,
+                wrapW = opts ? window.innerWidth : document.body.offsetWidth;
+            data.bottom = wrapH - data.top - data.height;
+            data.right = wrapW - data.left - data.width;
+
+            return data;
         },
         append: function(elem){
             return gqHandle.pend.call(this, 'appendChild', elem);
@@ -292,10 +310,14 @@
 
             if(typeof attrs === 'object'){
                 return this.each(function(){
-                    for(let idx in attrs){this.setAttribute(idx, attrs[idx]);}
+                    for(let idx in attrs){
+                        this.setAttribute&&this.setAttribute(idx, attrs[idx]);
+                    }
                 });
             }
-            return this.each(function(){this.setAttribute(attrs, val);});
+            return this.each(function(){
+                this.setAttribute&&this.setAttribute(attrs, val);
+            });
         },
         removeAttr: function(attr){
             attr = attr.split(' ');
@@ -362,7 +384,6 @@
 
             if(typeof styles === 'string'){
                 let _css, resArr=[];
-                styles = styles.replace(/^!/,'');
                 this.each(function(){
                     resArr.push( getComputedStyle(this)[styles] );
                 });
@@ -566,6 +587,9 @@
             }
             return this;
         },
+        /**
+         * load('https://gquery.cn #hero')
+         */
         load: function(url, data, func){
             let _this = this, up = url.trim().split(' ');
             typeof data === 'function' && (func=data, data=false);
@@ -573,7 +597,7 @@
             $.fetch(up[0], data, 'text').then(function(resp){
                 if(up.length>1){
                     up.splice(0, 1);
-                    _this.html( $(resp).find(up.join(' '), 1).html() );
+                    _this.html( $(resp).find(up.join(' '), true).html() );
                 } else {
                     _this.html( resp );
                 }
@@ -597,11 +621,16 @@
             let isArr = Array.isArray(val);
 
             if(val === undefined || (isArr && val.length==0) ) {
-                let resArr = [];this.each(function(){resArr.push(this[prop]);});
+                let resArr = [];
+                this.each(function(){
+                    resArr.push(this[prop]);
+                });
                 return (isArr ? resArr : resArr.join(''));
             }
-            return isArr ? this.each(function(idx){this[prop] = val[idx];}) :
-             this.each(function(){this[prop] = val;});
+
+            return isArr ? this.each(function(idx){
+                this[prop] = val[idx];
+            }) : this.each(function(){this[prop] = val;});
         },
         pend: function(prop, elem){
             let elems = typeof elem === 'string' ? $.parse.html(elem) : (
@@ -646,12 +675,15 @@
         this._delayCompleted = false;
         this._$real = $real;
 
+        // 1: $(sel).fn().wait(ms).fn();
+        // 2: $(sel).fn().wait(promise).fn();
+        // 3: $(sel).fn().wait(event).fn();
         if (typeof delay === 'number' && delay >= 0 && delay < Infinity){
-            this.timeoutKey = window.setTimeout(function () {
+            this.timeoutKey = window.setTimeout(function(){
                 dummy._performDummyQueueActions();
             }, delay);
         } else if (delay !== null && typeof delay === 'object' && typeof delay.promise === 'function'){
-            delay.then(function () {
+            delay.then(function(){
                 dummy._performDummyQueueActions();
             });
         } else if (typeof delay === 'string'){
@@ -662,9 +694,7 @@
     }
 
     gQueryDummy.prototype._addToQueue = function(fnc, arg){
-        // When dummy functions are called, the name of the function and
-        // arguments are put into a queue to execute later
-
+        // 当影子函数被调用时，将函数名称及参数放入队列以便稍后执行
         this._fncQueue.unshift({fnc: fnc, arg: arg});
 
         if (this._delayCompleted){
@@ -673,9 +703,8 @@
     };
 
     gQueryDummy.prototype._performDummyQueueActions = function(){
-        // Start executing queued actions.  If another `wait` is encountered,
-        // pass the remaining stack to a new gQueryDummy
-
+        // 列队操作
+        // 若遇到另一个 “wait”，则将剩余堆栈传递给新的 gQueryDummy
         this._delayCompleted = true;
 
         let next;
@@ -693,28 +722,32 @@
         return this;
     };
 
-    // Add shadow methods for all gQuery methods in existence.
-    // skip non-function properties or properties of Object.prototype
-    for (let fnc in gQuery.fn){
-        if (typeof gQuery.fn[fnc] !== 'function' || !gQuery.fn.hasOwnProperty(fnc)){
-            continue;
-        }
-
-        gQueryDummy.prototype[fnc] = (function(fnc){
-            return function(){
-                let arg = Array.prototype.slice.call(arguments);
-                return this._addToQueue(fnc, arg);
-            };
-        })(fnc);
-    };
 
     gQuery.fn.wait = function(delay, _queue){
         return new gQueryDummy(this, delay, _queue);
     };
+    gQuery.waitUpdate = function(){
+        // 为 gQueryDummy 添加 gQuery 的所有的方法
+        // 跳过非函数方法和 Object.prototype
+        for (let fnc in gQuery.fn){
+            if (typeof gQuery.fn[fnc] !== 'function' || !gQuery.fn.hasOwnProperty(fnc)){
+                continue;
+            }
+
+            gQueryDummy.prototype[fnc] = (function(fnc){
+                return function(){
+                    let arg = Array.prototype.slice.call(arguments);
+                    return this._addToQueue(fnc, arg);
+                };
+            })(fnc);
+        };
+    };
+    gQuery.waitUpdate();
 
 
 
 
+    gQuery.debugger = false;
     /* -------------------------------------
      * gQuery - extend
      * ------------------------------------- */
@@ -725,6 +758,7 @@
                 this[idx] = $.extend(true, this[idx], obj[idx]) : 
                 this[idx] = obj[idx];
             }
+            gQuery.waitUpdate();
             return this;
         }
 
@@ -810,10 +844,17 @@
         }
 
         if(!bodyMH){return fetch(url, _mh);}
+        let copyRes;
         return fetch(url, _mh).then(res => {
             if(!res.ok){throw new Error('Network response was not ok.');}
+            gQuery.debugger && (copyRes = res.clone());
             return res[bodyMH]();
         }).catch(err => {
+            if(copyRes && copyRes.ok){
+                copyRes.text().then(rsp=>{
+                    console.error(rsp);
+                });
+            }
             throw new Error(err);
         });
     };
@@ -862,7 +903,9 @@
             for (let i = 0; i < arr.length; i++) {
                 if(isObj){
                     resame = true;
-                    for(let obj in finder){arr[i][obj]==finder[obj] || (resame = false);}
+                    for(let obj in finder){
+                        arr[i][obj]==finder[obj] || (resame = false);
+                    }
                     resame && resArr.push( {index:i, array:arr[i]} );
 
                     if(opts.limit>0 && resArr.length>=opts.limit){break;}
@@ -1277,8 +1320,8 @@
     /** -------------------------------------
      * Prototype Chain Generator
      * @HTU chain({
-     *   init: function(args){...},
-     *   todo: function(){...}
+     *   init: function([args]){...},
+     *   todo: function([args]){...}
      * })
      * @tip 局部变量请在 init 函数中赋值
      * ------------------------------------- */
@@ -1385,7 +1428,9 @@
             this._df = df;
             return this;
         },
-        ago: function(){
+        ago: function(split){
+            split || (split = '');
+
             let df = this._df;
             if(typeof df!=='object'){return '现在';}
             if(df._ms<0){return '未来';}
@@ -1395,19 +1440,19 @@
                     df.mon = Math.floor(df.d/30);
                     if(df.mon>=12){
                         df.year = Math.floor(df.mon/12);
-                        return df.year+"年前";
+                        return df.year+split+"年前";
                     }
 
-                    return df.mon+"个月前";
+                    return df.mon+split+"个月前";
                 }
 
                 if(df.d==1){return "昨天";}
                 if(df.d==2){return "前天";}
-                return df.d+"天前";
+                return df.d+split+"天前";
             }
-            if(df.h>0){return df.h+"小时前";}
-            if(df.i>0){return df.i+"分钟前";}
-            if(df.s>0){return df.s+"秒前";}
+            if(df.h>0){return df.h+split+"小时前";}
+            if(df.i>0){return df.i+split+"分钟前";}
+            if(df.s>0){return df.s+split+"秒前";}
             if(df.ms>0){return "刚刚";}
             if(df.ms===0){return "现在";}
 
