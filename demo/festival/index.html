@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>Festival - gQuery</title>
+<meta name='Keywords' content='' />
+<meta name='Description' content='GQUI: Festival' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<style type="text/css">
+#hero {background: #000;height: 100vh;color: #fff;}
+#hero h1 {font-size: 32px;}
+#hero h3 {font-weight: 200;}
+</style>
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='hero' class='flex-ct ta-c'><div>
+        <h1>节日快乐</h1>
+        <h3 class='mt-3'>世事多无奈，莫随霜雪白</h3>
+    </div></div>
+</div> <!-- #gquiMain -->
+
+
+<footer id='footer'>
+    <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+</footer>
+</div>  <!-- #gquiContainer -->
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript">
+'use strict';
+let __page = {
+    init:{}, fn:{}, data:{tipbarIdx:0}
+};
+
+
+/** ------------------------------------
+ * @gxz $init.function
+ * ------------------------------------- */
+$(function(){
+    for(let fn in __page.init){
+        typeof __page.init[fn] === 'function' && __page.init[fn]();
+    };
+});
+</script>
+</body>
+</html>

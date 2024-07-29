@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title id='set-index-title'>Kill IE - gQuery</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="Keywords" content="gQuery,killie,kill-ie"/>
+<meta name="Description" content="gQuery: The brand new DOM function library, JavaScript Library"/>
+<meta name="author" content="甘小蔗"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<style type="text/css">
+	body {font-family: 'Microsoft Yahei', sans-serif;}
+	div {width: 100%;text-align: center;user-select:none;}
+	a, a:hover, a:visited, a:active, a:link {text-decoration: none;color: #000;}
+	.gtitle {margin-top: calc(50vh - 260px);font-weight:300;font-size:36px;margin-bottom: 8px;}
+	.gtip {font-weight:400;color:gray;font-size:14px;}
+	.gbrowser {margin-top: 1.8rem;}
+	.gbrowser img {height: 72px;transition: all 1s ease-out;}
+	.gbrowser img:hover {transform: rotate(720deg);}
+
+	.intro {max-width: 1200px;width: 100%;margin: 80px auto 0px auto;}
+	.intro .plane {width: calc(50% - 30px);text-align: left;}
+	.intro .plane.left {float: left;padding-left: 20px;}
+	.intro .plane.right {float: right;padding-right: 20px;}
+	.intro .plane p {line-height: 1.5;font-size: 14px;word-break: break-all;}
+
+	.clear {clear: both;}
+	.powby {font-size:12px;color:gray;margin-top: 80px;}
+</style>
+</head>
+<body>
+	<div class='gtitle'>为什么还在用 IE ?</div>
+	<div class='gtip'>为保障信息的安全和展现，强烈建议升级浏览器</div>
+	<div class='gbrowser'>
+		<a href='https://www.microsoft.com/zh-cn/edge' target='_blank' style='margin-right: 1rem;'><img src='/lib/img/icon/browser-edge.png'></a>
+		<a href='https://www.google.cn/chrome/' target='_blank'><img src='/lib/img/icon/browser-chrome.svg'></a>
+	</div>
+
+	<div class='intro'>
+		<div class='plane left'>
+			<p>2015年3月17日，微软宣布 Internet Explorer 不再是 Windows 10 的默认浏览器，并且逐步放弃这一品牌。4月29日，在微软 Build 2015 大会上，微软发布新浏览器 Microsoft Edge，Microsoft Edge 为 Windows 10 的默认浏览器，而 Internet Explorer 只出现在“附件”中，意味着 Internet Explorer 已淡出主流应用。2016年1月6日，微软宣布将会停止发布 Internet Explorer 11 之前版本的安全性更新。2020年8月17日，微软宣布将于11月底前将陆续停止支持 IE。</p>
+			<p>Internet Explorer 最主要都是被批评其安全性。很多间谍软件，广告软件及电脑病毒入侵是因为软件有安全漏洞及安全结构有裂缝。浏览恶意网站（如色情，钓鱼网站）时会被恶意安装。这被名为“路过式下载”：在ActiveX的安全描述中填写虚假的描述以遮盖软件的实际用途，误导用户安装一些恶意软件，在IE7已修正解决。虽然所有软件都会有安全漏洞，但微软使用比其他浏览器稍长的时间去修补漏洞。</p>
+			<p>其他批评来自技术专家用户、网站开发者和建基于 Internet Explorer 而开发的软件应用程序的开发者，他们十分担心 Internet Explorer 对开放标准的支持，因为 Internet Explorer 通常使用专利的网页标准延伸组件来达至相似的功能。Internet Explorer 对一些标准化技术都有一定程度上的支持，但亦有很多运行上的差距和兼容性的故障，这导致技术开发者的批评日益增加。批评增加的情况，在很大程度上是归因于 Internet Explorer 的竞争对手相对地已提供完全的技术支持，标准规格（Standards-compliant）的应用亦越来越广泛起来。因为 Internet Explorer 在全球使用率上占有颇高的百分比，网络开发者们在寻求跨平台的代码时常常会发现 Internet Explorer 的漏洞、私有的功能集合和对标准支持的不完善。</p>
+			<p style='text-align: right;'>来自 —— <a href='https://zh.wikipedia.org/wiki/Internet_Explorer' target='_blank'>[维基百科: Internet Explorer]</a></p>
+		</div>
+		<div class='plane right'>
+			<p>On March 17, 2015, Microsoft announced that Microsoft Edge would replace Internet Explorer as the default browser on its Windows 10 devices. This effectively makes Internet Explorer 11 the last release. Internet Explorer, however, remains on Windows 10 and Windows Server 2019 primarily for enterprise purposes. Since January 12, 2016, only Internet Explorer 11 has official support for consumers; extended support for Internet Explorer 10 ended on January 31, 2020. Support varies based on the operating system's technical capabilities and its support life cycle.</p>
+			<p>Internet Explorer has been subjected to many security vulnerabilities and concerns: much of the spyware, adware, and computer viruses across the Internet are made possible by exploitable bugs and flaws in the security architecture of Internet Explorer, sometimes requiring nothing more than viewing of a malicious web page in order to install themselves. This is known as a "drive-by install". There are also attempts to trick the user into installing malicious software by misrepresenting the software's true purpose in the description section of an ActiveX security alert.</p>
+			<p style='text-align: right;'>From —— <a href='https://en.wikipedia.org/wiki/Internet_Explorer' target='_blank'>[Wikipedia: Internet Explorer]</a></p>
+		</div>
+	</div>
+	<div class='clear'></div>
+
+	<div class='powby'>powered by <a href='//www.gquery.cn?form=killie'>gQuery</a> | <a id='back' href='#'>Back</a></div>
+
+
+
+<script type="text/javascript">
+	if (document.readyState != 'loading'){DOMInit();} else {
+		document.addEventListener('DOMContentLoaded', DOMInit);
+	}
+
+	function DOMInit(){
+		let backUrl = getQueryParam('back') || document.referrer || '/';
+		document.querySelector('#back').setAttribute('href', backUrl);
+	}
+	function getQueryParam(name) {
+		let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
+			res = window.location.search.substr(1).match(reg);
+		if(res != null){return decodeURI(res[2]);}
+		return null;
+	}
+</script>
+</body>
+</html>

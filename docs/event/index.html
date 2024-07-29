@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>事件 - gQuery</title>
+<meta name='Keywords' content='gQuery事件, gQuery开发文档' />
+<meta name='Description' content='gQuery 对浏览器中的事件触发器进行了高度封装，除了每个事件完全独立互不影响外，还包括仅首次生效、事件命名、委托等配置。' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/lib/highlight/gmde.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.docs.css" />
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='docsNav'>
+        <div class='p-6 docsNav__loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+
+    <div id='docsWrap'>
+        <div id='docsInner' class='container article no-indent'>
+            <h1>gQuery 事件</h1>
+
+
+            <h2>介绍</h2>
+            <p>gQuery 对浏览器中的事件触发器进行了高度封装，除了每个事件完全独立互不影响外，还包括仅首次生效、事件命名、委托等配置。</p>
+            <p>gQuery 通过 <code>$.event</code> 类对事件进行管理及操作，并将事件信息储存在被绑定元素的 gQueryEvents 属性中。</p>
+
+
+            <h2>事件类别</h2>
+            <p>以下是开发中常见的事件类别，它们在 Web 官方规范中定义，为各个浏览器中通用的标准事件，全部事件列表请查看：<a href='https://developer.mozilla.org/zh-CN/docs/Web/Events' target='_blank'>事件参考 | MDN</a></p>
+
+            <div class='ox-wrap'><table class='gqui-table fluid'><tbody>
+                <tr><th>鼠标事件</th><th>键盘事件</th><th>表单/控件</th><th>文档/窗口</th></tr>
+                <tr><td>click</td><td>keydown</td><td>submit</td><td>load</td></tr>
+                <tr><td>contextmenu</td><td>keypress</td><td>change</td><td>resize</td></tr>
+                <tr><td>dblclick</td><td>keyup</td><td>focus</td><td>scroll</td></tr>
+                <tr><td>mousedown</td><td></td><td>blur</td><td></td></tr>
+                <tr><td>mouseenter</td><td></td><td></td><td></td></tr>
+                <tr><td>mouseleave</td><td></td><td></td><td></td></tr>
+                <tr><td>mousemove</td><td></td><td></td><td></td></tr>
+                <tr><td>mouseover</td><td></td><td></td><td></td></tr>
+                <tr><td>mouseout</td><td></td><td></td><td></td></tr>
+            </tbody></table></div>
+
+
+            <h2>事件绑定</h2>
+            <p><code>$.fn.on</code> 支持为元素绑定事件，一共有以下几种使用方法：</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$(window).on('load', function(){
+    console.log('window loaded.');
+});
+
+/* 事件命名 event.name */
+$('h2').on('click.log', function(e){
+    console.log(this, e.target);
+});
+
+/* 事件委托 */
+$('#docsInner').on('click', 'h2', function(){
+    console.log('entrust: '+this.innerText);
+});
+
+/* 配置 */
+$(window).on('scroll', function(){
+    console.log(this.scrollY);
+}, {passive: true});
+
+/* Mixed */
+$('#docsInner').on({
+    mouseenter: function(){
+        $(this).css('color', 'var(--danger)');
+    },
+    mouseleave: function(){
+        $(this).css('color', '');
+    }
+}, 'p');</pre>
+            <p>其中，拥有单独命名的事件将不受事件类别移除的影响，例如你无法通过 <code>off('click')</code> 而移除 <code>on('click.log')</code>，若要移除命名事件，需使用 <code>off('click.log')</code> 或 <code>off()</code>。</p>
+            <p>此外，事件委托存在意义是在需要为大量元素绑定相应事件时，通过绑定在它们的父级节点上监听其相应事件冒泡，以获得更好的性能。此外，通过在 “根元素” 添加事件委派，无需在 Pjax 或 Ajax 追加新元素后再对新元素绑定一次。</p>
+
+
+            <h2>事件捕获与冒泡</h2>
+            <p>事件冒泡，这是一个新人经常性会遇见的问题，具体的例如在下面环境中，实现两个需求：</p>
+            <ul>
+                <li>点击消息栅板弹出具体文章内容</li>
+                <li>点击消息栅板中删除按钮弹出对话框</li>
+            </ul>
+            <p>简单添加两个时间绑定，就能实现上诉需求。但实际上，由于事件冒泡的存在，你会发现在点击删除后，文章内容竟也被弹了出来。</p>
+            <p>导致这个问题出现的罪魁祸首就是用于解决定位 <a href='https://www.w3.org/TR/DOM-Level-3-Events/#event-flow' target='_blank'>事件流</a> 的冒泡功能：在用户点击网页中某个 DOM 元素时，系统会从窗口（顶层）开始捕获被触发的节点，在成功触发后，又会从节点冒泡反馈至窗口。这三个事件阶段分别为：捕获阶段、目标阶段和冒泡阶段。</p>
+            <p>如果不支持某个阶段，或者事件对象的传播已停止，则将跳过该阶段。例如，如果 bubbles 属性设置为 false，则将跳过冒泡阶段，如果 <code>stopPropagation()</code> 在调度之前已调用，则将跳过所有阶段。</p>
+
+            <p>综上，我们只需要在删除方法中调用事件的 stopPropagation 方法，即可阻止事件冒泡。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$消息栅板.on('click', function(){
+    $.ui.dialog('弹窗', '文章内容...');
+});
+
+$消息栅板.on('click', '删除按钮', function(event){
+    event.stopPropagation();
+    confirm('确定删除该文章？');
+});</pre>
+
+
+            <h2>触发事件</h2>
+            <p><code>$.fn.trigger(event:String [, params:Object])</code> 可手动触发绑定/委派在元素上的相应事件，且会在 DOM 树上冒泡。</p>
+
+
+            <h2>移除事件绑定</h2>
+            <p><code>$.fn.off(event:String [, options:Object])</code> 将移除选择元素绑定的所有相应事件。若用在绑定事件时添加了命名，移除时也需要传入一致的事件名及命名。</p>
+
+        </div>
+
+
+        <footer id='footer'>
+            <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+        </footer>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/highlight/pack.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript" src="/src/js/app.docs.js"></script>
+</body>
+</html>

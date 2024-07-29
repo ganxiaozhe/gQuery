@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>特效 - gQuery</title>
+<meta name='Keywords' content='gQuery特效, gQuery开发文档' />
+<meta name='Description' content='基于 gQuery 内置的动画计时器 $.fn.animate，提供了一些常用的动画特效。' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/lib/highlight/gmde.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.docs.css" />
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='docsNav'>
+        <div class='p-6 docsNav__loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+
+    <div id='docsWrap'>
+        <div id='docsInner' class='container article no-indent'>
+            <h1>gQuery 特效</h1>
+
+
+            <h2>介绍</h2>
+            <p>基于 gQuery 内置的动画计时器 <code>$.fn.animate</code>，提供了一些常用的动画特效。</p>
+
+
+            <h2>显示 / 隐藏</h2>
+            <p><code>$.fn.show([:String])</code> 与 <code>$.fn.hide()</code> 可快捷显示或隐藏元素。其中 show 方法支持传入一个字符以强制设置其 display 属性。</p>
+
+
+            <h2>渐变</h2>
+            <p><code>$.fn.fadeIn()</code> 与 <code>$.fn.fadeOut()</code> 可使元素逐渐淡入或淡出，同时提供了 <code>$.fn.fadeToggle()</code> 来自动切换这两种状态。以上三种方法均接受两个可选参数来控制动画持续时间及回调：<code>(duration:Number, callback:Function)</code>。</p>
+
+
+            <h2>滑动</h2>
+            <p><code>$.fn.slideDown()</code> 与 <code>$.fn.slideUp()</code> 可使元素逐渐滑动以展开或收起，同时提供了 <code>$.fn.slideToggle()</code> 来自动切换这两种状态。以上三种方法均接受两个可选参数来控制动画持续时间及回调：<code>(duration:Number, callback:Function)</code>。</p>
+
+
+            <h2>动画计时器</h2>
+            <p>以上内置的动画特效皆基于动画计时器 <code>$.fn.animate(props:Object [, options:Number:Object, callback:Function])</code> 以实现。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$('h2').animate({opacity:0});
+
+$('h2').css('position', 'relative').animate({
+    opacity:0.5, left:'100px'
+}, 1500, function(){
+    console.log('Done.');
+});</pre>
+            <p>需要注意的是，该方法目前仅支持简单的数值类特效，不支持复杂数值如 RGB 动画等，如有相关需求请使用 Velocity。gQuery 并不打算支持 JS 动画的实现，而是推荐通过改变元素类以 CSS 来实现动画。</p>
+
+        </div>
+
+
+        <footer id='footer'>
+            <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+        </footer>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/highlight/pack.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript" src="/src/js/app.docs.js"></script>
+</body>
+</html>

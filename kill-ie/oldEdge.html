@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<title id='set-index-title'>Update Edge - gQuery</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="Keywords" content="gQuery,killie,kill-ie"/>
+<meta name="Description" content="gQuery: Update your Edge browser !"/>
+<meta name="author" content="甘小蔗"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<style type="text/css">
+	*, *::before, *::after {box-sizing: border-box;}
+	body {font-family: 'Microsoft Yahei', sans-serif}
+	div {width: 100%;text-align: center;user-select:none;}
+	a, a:hover, a:visited, a:active, a:link {text-decoration: none;color: #000;}
+
+	.gtitle {margin-top: calc(50vh - 260px);font-weight:300;font-size:36px;margin-bottom: 8px;}
+	.gtip {font-weight:400;color:gray;font-size:14px;}
+	.gbrowser {margin-top: 1.8rem;}
+	.gbrowser img {height: 72px;transition: all 1s ease-out;}
+	.gbrowser img:hover {transform: rotate(720deg);}
+
+	.intro {max-width: 1000px;width: 100%;margin: 80px auto 0px auto;padding: 20px;}
+	.intro p {line-height: 1.5;font-size: 14px;word-break: break-all;}
+	#browserAgent {color: rgb(120,120,120);}
+
+	.clear {clear: both;}
+	.powby {font-size:12px;color:gray;margin-top: 80px;}
+</style>
+</head>
+<body>
+	<div class='gtitle'>请升级您的 Edge !</div>
+	<div class='gtip'>为保障信息的安全和展现，强烈建议升级浏览器</div>
+	<div class='gbrowser'>
+		<a href='https://www.microsoft.com/zh-cn/edge' target='_blank' style='margin-right: 1rem;'><img src='/lib/img/icon/browser-edge.png'></a>
+		<a href='https://www.google.cn/chrome/' target='_blank'><img src='/lib/img/icon/browser-chrome.svg'></a>
+	</div>
+
+	<div class='intro'>
+		<p id='browserAgent' style='text-align: center;'></p>
+		<p>当前 Edge 浏览器版本过低，现 Edge 已由 EdgeHTML 升级为 Chromium，使用 Windows NT 10 内核引入新的堆内存实现 Segment Heap，拥有更快的速度，更流畅的体验，更丰富的拓展，更高的安全性。</p>
+	</div>
+	<div class='clear'></div>
+
+	<div class='powby'>powered by <a href='//www.gquery.cn?form=killie'>gQuery</a> | <a id='back' href='#'>Back</a></div>
+
+
+
+<script type="text/javascript">
+	window.$ = function(s){ return document.querySelector(s); };
+
+	if (document.readyState != 'loading'){DOMInit();} else {
+		document.addEventListener('DOMContentLoaded', DOMInit);
+	}
+
+	function DOMInit(){
+		let backUrl = getQueryParam('back') || document.referrer || '/';
+		$('#back').setAttribute('href', backUrl);
+
+		$('#browserAgent').innerText = navigator.userAgent;
+	}
+	function getQueryParam(name) {
+		let reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i'),
+			res = window.location.search.substr(1).match(reg);
+		if(res != null){return decodeURI(res[2]);}
+		return null;
+	}
+</script>
+</body>
+</html>

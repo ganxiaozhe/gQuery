@@ -1,0 +1,152 @@
+/** ------------------------------------
+ * img-uploads
+ * ------------------------------------- */
+.img-uploads {
+    display: grid;grid-gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.img-uploads > * {
+    border-radius: 6px;border: 1px solid var(--bc3);
+    overflow: hidden;height: 150px;
+}
+.img-uploads .img-wrap img {cursor: zoom-in;}
+.img-upload {
+    display: flex;align-items: center;justify-content: center;
+    position: relative;text-align: center;cursor: pointer;
+    color: var(--bc8);font-size: 14px;
+    transition: all 0.25s ease;
+}
+.img-upload>div {
+    transition: all 0.25s ease;padding: 2px;border-radius: 4px;
+}
+.img-upload:hover>div {
+    padding: 16px;background: rgba(var(--white-rgb), 0.7);
+}
+.img-upload input {cursor: pointer;}
+.img-upload .ti {
+    font-size: 30px;margin-bottom: 6px;display: block;
+}
+.img-upload h5 {font-size: 12px;}
+.img-upload:hover {color: var(--bc10);}
+.img-upload-input, .video-upload-input {
+    position: absolute;top: 0;left: 0;
+    width: 100%;height: 100%;opacity: 0;
+}
+
+
+.img-wrap {position: relative;}
+.img-footer {
+    position: absolute;bottom: 0;left: 0;width: 100%;
+    padding: 6px 10px;background: rgba(0,0,0,.7);color: #fff;
+    display: flex;align-items: center;justify-content: space-between;
+    font-size: 12px;
+}
+.img-footer h4 {word-break: break-all;}
+.img-footer .labels {
+    flex-shrink: 0;font-size: 11px;
+    padding-left: 10px;font-weight: 600;opacity: 0.8;
+}
+.img-delete {
+    position: absolute;top: 0;right: 0;cursor: pointer;
+    padding: 4px 8px;background: var(--danger);
+    border-radius: 0 0 0 12px;color: #fff;
+    opacity: 0;transition: opacity 0.25s ease;
+}
+.img-wrap:hover .img-delete {opacity: 0.9;}
+
+@media screen and (max-width: 767px){
+    .img-wrap .img-delete {opacity: 0.9;}
+}
+
+
+
+
+/** ------------------------------------
+ * root
+ * ------------------------------------- */
+:root {--primary-rgb: 61,152,255;}
+body {background: var(--bg-seco);}
+
+.fc-info {color: var(--info);opacity: 0.9;}
+.img-uploads {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-gap: 12px;
+}
+.img-uploads > * {height: 112px;}
+.img-upload {background-color: var(--bg-thri);}
+.img-upload .ti {font-size: 52px;}
+
+.article {--gqui-fs: 15px}
+#explain-article>p {text-indent: 2em;}
+#explain-article>img {--gqui-mb: 0;}
+
+/** ------------------------------------
+ * #header
+ * ------------------------------------- */
+#header {
+    --hh: 50px;
+
+    position: relative;top: 0;left: 0;
+    width: 100%;height: var(--hh);
+    padding: 0 16px;
+
+    border-bottom: 0.8px solid #c5c5c5;
+    box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.16); 
+}
+#header h2 {
+    font-size: 18px;font-weight: 450;
+    transition: filter 0.45s ease;
+}
+#header i {font-size: 20px;}
+#header h2.is-blur {
+    filter: blur(10px);
+}
+
+/** ------------------------------------
+ * #stage
+ * ------------------------------------- */
+#stage>.inner {
+    opacity: 0;display: none;
+}
+#stage>.inner>h4 {
+    font-size: 15px;
+    margin: 22px 0 10px 0;
+}
+#stage>.inner>h4>* {vertical-align: middle;}
+#stage>.inner>h4 em {color: var(--red);}
+#stage>.inner>h4 i {margin-right: 4px;}
+
+
+.MNA-wrap {width: 100%;}
+.MNA-item img {width: 19vw;}
+.MNA-item__title {
+    text-align: center;font-size: 12px;color: var(--bc9);
+    margin-top: 3px;
+}
+.MNA-item__title>* {vertical-align: middle;}
+.MNA-item__title i {font-size: 16px;margin-right: 2px;}
+.MNA-item__title.success i {color: var(--success);}
+.MNA-item__title.danger i {color: var(--danger);}
+
+
+/** ------------------------------------
+ * explain
+ * ------------------------------------- */
+#explain-article {
+    padding-bottom: calc(52px);
+}
+#do-goSign {
+    position: fixed;bottom: 0;left: 0;
+    border-radius: 0;
+}
+
+
+/** ------------------------------------
+ * sign
+ * ------------------------------------- */
+#sign-wrap {
+    border: 1px solid var(--bc8);
+}
+#sign-canvas {
+    width: 100%;height: calc(100vh - 160px);
+}

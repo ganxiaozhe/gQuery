@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>Cook Timeline - gQuery Demo</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="./css/gquery.ui.min.css" />
+<link type="text/css" rel="stylesheet" href="./css/gazeimg.gquery.min.css" />
+
+<link type="text/css" rel="stylesheet" href="./iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="./timeline/timeline.css" />
+
+<link type="text/css" rel="stylesheet" href="./index.css" />
+</head>
+<body>
+
+<div id='gquiContainer'>
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+
+    <!-- timeline -->
+    <div id='timeline-embed'>
+        <div id='timeline'></div>
+    </div>
+
+
+    <!-- 操作界面 -->
+    <article id='intfOperate'>
+        <button class='btn primary btn-icon' data-opt='normalPlay'><i id='icon-normalPlay' class='icon ti ti-player-play'></i></button>
+        <!-- <button class='btn primary sm' data-opt='previewPlay'>预览播放</button>
+        <button class='btn primary sm' data-opt='normalPlay'>正式播放</button> -->
+    </article>
+
+    <article id='intfExport'>
+        <div id='cookCardImg'></div>
+
+        <div id='cookCard' class='cookCard'>
+        <div class='cookCardBody'>
+            <!-- <h2>菜谱标题名称</h2> -->
+            <div id='cookCard-timeline' class='gqui-timeline cookCard-timeline'>
+                <!-- <div class='gqui-timeline-item timeline-item-minor'>
+                    <div class='gqui-timeline-label'></div>
+                    <div class='gqui-timeline-badge'></div>
+                    <div class='gqui-timeline-content'><h4>开始</h4></div>
+                </div>
+                <div class='gqui-timeline-item timeline-item-simple'>
+                    <div class='gqui-timeline-label'>3</div>
+                    <div class='gqui-timeline-badge'></div>
+                    <div class='gqui-timeline-content'>
+                        <div>
+                            <h4>步骤三的标题</h4>
+                            <h5 class='item-date'>20 分钟</h5>
+                        </div>
+                        <div class='img-wrap'><img src='https://storage.53iq.com/group1/M00/47/E4/wKgKYk1vsPqAVqL7AADKVEzunuE395.jpg'></div>
+                    </div>
+                </div>
+                <div class='gqui-timeline-item timeline-item-minor'>
+                    <div class='gqui-timeline-label'>4</div>
+                    <div class='gqui-timeline-badge'></div>
+                    <div class='gqui-timeline-content'>
+                        <h4 class='flex-bt'>
+                            <span>步骤四的标题</span>
+                            <span class='item-date'>5 分钟</span>
+                        </h4>
+                    </div>
+                </div>
+                <div class='gqui-timeline-item timeline-item-more'>
+                    <div class='gqui-timeline-label'></div>
+                    <div class='gqui-timeline-content'>
+                        <h4>······</h4>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        <div class='cookCardFooter flex-bt'>
+            <div class='cookCardFooter__inner'>
+                <h2 id='cookCard-title'>菜谱标题名称</h2>
+                <h5>长按识别二维码 查看菜谱</h5>
+            </div>
+            <div id='cookCard-qrCode' class='cookCardFooter__qrcode'>
+            </div>
+        </div>
+        </div>
+
+        <div class='exportLayer__marker'></div>
+        <div id='exportLayer' class='exportLayer flex-bt'>
+            <button class='btn cancel lg' style='width:calc(40% - 8px)'>返回</button>
+            <button class='btn primary lg' style='width:calc(60% - 8px)'>长按图片保存</button>
+        </div>
+    </article>
+
+</div> <!-- #gquiMain -->
+
+</div> <!-- #gquiContainer -->
+
+<div class='gqui-overlay-loader' id='entryLoader'><div class='gqui-loader-inner'>
+    <div class='gqui-loader-spin'>
+        <svg viewBox='25 25 50 50' class='spinner'>
+            <circle cx='50' cy='50' r='20' fill='none' class='path'></circle>
+        </svg>
+    </div>
+    <div class='gqui-loader-body'>
+        <!-- <div class='gqui-loader-message mt-3'>Loading</div> -->
+    </div>
+</div></div>
+
+
+
+<script type="text/javascript" src="./js/gquery.min.js"></script>
+<script type="text/javascript" src="./js/gquery.ui.min.js"></script>
+<script type="text/javascript" src="./js/gazeimg.gquery.min.js"></script>
+
+<script type="text/javascript" src="./js/modules/qrcode.min.js"></script>
+<script type="text/javascript" src="./js/html2canvas.min.js"></script>
+<!-- <script type="text/javascript" src="./js/lrz/lrz.bundle.js"></script> -->
+
+<script type="text/javascript" src="./timeline/timeline.js"></script>
+<script type="text/javascript" src="./js/jweixin-1.6.0.js"></script>
+
+<script type="text/javascript" src="./js/modules/vconsole.min.js"></script>
+<!-- <script type="text/javascript">var vconsole = new VConsole();</script> -->
+<script type="text/javascript" src="./index.js"></script>
+</body>
+</html>

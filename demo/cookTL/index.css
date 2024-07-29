@@ -1,0 +1,157 @@
+:root {
+    --primary-rgb: 243,80,25;
+}
+i.ti {font-style: normal!important;}
+#entryLoader {
+    background-color: var(--white);z-index: 99;
+}
+
+/** ------------------------------------
+ * @timeline hook
+ * ------------------------------------- */
+.tl-attribution, .tl-message-full {
+    display: none!important;
+}
+.tl-timemarker-media-container img {
+    width: 100%;height: 100%;
+    object-fit: contain;
+}
+.tl-icon-background {
+    position: absolute;bottom: -6px;right: -6px;
+    color: var(--theme-color);opacity: 0.3;
+    font-size: 32px;transform: rotate(-45deg);
+}
+.tl-timemarker-active .tl-icon-background {}
+.tl-headline .ti {
+    float: right;cursor: pointer;
+    font-size: 0.8em;line-height: 1.2;opacity: 0.5;
+}
+
+.tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick:before {opacity: 0.6;}
+.tl-timemarker-line-indexer {
+    position: absolute;bottom: -36px;z-index: 10;
+    transform: translateX(-50%);font-size: 14px;
+}
+
+@media screen and (max-width:767px){
+    .tl-slide-content {width: 100%!important;}
+    .tl-slide .tl-slide-scrollable-container {display: flex;}
+}
+
+
+#intfOperate {
+    position: fixed;top: 0;right: 0;z-index: 10;
+    padding: 12px;
+}
+#intfOperate>* {margin-left: 8px;}
+#tlIconMarker {
+    position: absolute;bottom: 39px;left: 0;z-index: 9;
+    width: 24px;height: 24px;border-radius: 100%;overflow: hidden;
+    background-color: rgba(255,255,255,0.6);
+    transform: translateX(-50%) translateY(50%);
+}
+#tlProgMarker {
+    position: absolute;bottom: 39px;left: 0;z-index: 8;
+    width: 100%;height: 12px;
+    transform: translateY(50%);
+    background-color: rgba(0,0,0,.3);
+}
+
+
+
+/** ------------------------------------
+ * @cookCard export
+ * ------------------------------------- */
+#intfExport {
+    position: fixed;z-index: 99;top: 0;left: 0;
+    width: 100%;height: 100%;overflow: auto;
+    background-color: var(--bg-main);
+    display: none;opacity: 0;
+}
+.cookCard {
+    --color-bg: #fff;--color: #F35019;
+    /*--color-bg: rgb(25,25,23);--color: rgb(211,181,132);*/
+
+    width: 100%;max-width: 520px;
+    height: auto;padding: 0;margin: 0 auto;
+    background-color: var(--color-bg);
+    color: var(--color);
+}
+#cookCardImg {max-width: 520px;margin: 0 auto;}
+.cookCard-timeline {
+    --label-width: 30px;
+    --badge-size: 18px;
+    --content-pd: 24px;
+    --gqui-bg: #F35019;
+}
+.gqui-timeline::before {
+    background-color: #F35019;opacity: 0.2;
+}
+.gqui-timeline-label {font-size: 20px;}
+.timeline-item-main .gqui-timeline-label {padding-top: 3px;}
+.timeline-item-main .gqui-timeline-badge {margin-top: 7px;}
+.timeline-item-minor {opacity: 0.6;}
+.timeline-item-more {opacity: 0.6;padding-left: 20px;}
+.timeline-item-simple .gqui-timeline-content {
+    display: flex;align-items: flex-start;justify-content: space-between;
+}
+.timeline-item-simple .img-wrap {
+    width: 38%;border-radius: 2px!important;
+}
+.timeline-item-simple .item-date {
+    font-size: 14px!important;opacity: 0.6;margin-top: 6px;
+}
+
+.cookCardBody {padding: 44px 40px 32px 40px;}
+.cookCardBody h3 {
+    font-size: 22px;font-weight: 500;
+}
+.cookCardBody h4 {font-size: 18px;}
+.cookCardBody p {opacity: 0.85;}
+.cookCardBody .item-date {font-size: 18px;}
+.cookCardBody .img-wrap {
+    display: flex;
+    border-radius: 4px;overflow: hidden;
+}
+
+.cookCardFooter {
+    padding: 28px 40px;
+    background: var(--color);color: var(--color-bg);
+}
+.cookCardFooter h2 {
+    font-size: 24px;font-weight: 600;
+}
+.cookCardFooter h5 {
+    font-size: 14px;opacity: 0.6;margin-top: 4px;
+}
+.cookCardFooter__qrcode {
+    padding: 5px;border: 1px solid var(--color-bg);
+    border-radius: 3px;
+}
+
+
+.exportLayer__marker {position: relative;width: 100%;height: 80px;}
+.exportLayer {
+    position: fixed;bottom: 0;left: 0;z-index: 100;
+    padding: 16px;width: 100%;
+    background-color: rgba(255,255,255,0.8);
+    backdrop-filter: blur(8px);-webkit-backdrop-filter: blur(8px);
+}
+
+
+/** ------------------------------------
+ * @user thumb
+ * ------------------------------------- */
+.user-thumb {
+    position: absolute;bottom: 0;right: 0;z-index: 99;
+    padding: 16px;display: flex;flex-direction: column;
+}
+.user-thumb>* {cursor: pointer;}
+.user-thumb-avatar {
+    width: 40px;height: 40px;
+}
+.user-thumb-item {
+    padding-top: 16px;text-align: center;
+}
+.user-thumb__icon {font-size: 28px;}
+.user-thumb__text {font-size: 12px;margin-top: 2px;opacity: 0.8;}

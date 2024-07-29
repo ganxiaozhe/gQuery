@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>开发文档 - gQuery</title>
+<meta name='Keywords' content='gQuery Docs, gQuery开发文档' />
+<meta name='Description' content='gQuery 是一个现代的、注重细节的 JavaScript 函数库。开发初衷是以小体积、多复用来简化并加速原生下开发效率并优化体验。' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/lib/highlight/gmde.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.docs.css" />
+
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='docsNav'>
+        <div class='p-6 docsNav__loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+
+    <div id='docsWrap'>
+        <div id='docsInner' class='container article no-indent'>
+            <h1>gQuery.js</h1>
+
+
+            <h2>简介</h2>
+            <p><strong>gQuery</strong> 是一个现代的、注重细节的 JavaScript <strong>函数库</strong>。开发初衷是以小体积、多复用来简化并加速原生下开发效率并优化体验。</p>
+            <p>gQuery 使用<strong>链式</strong>语法操作 DOM，并封装了丰富的常用函数操作方法。极小的体积非常适合单页面开发，通过几行代码快速实现 MVC，甚至可直接封装于脚本内部。相比 jQuery，并没有用大量代码去实现 IE 兼容，而是在 API 上尽力兼容 jQuery，如果你曾使用过 jQuery，可以很快上手使用甚至直接替换。</p>
+            <p>当前 gQuery 已结束版本快速迭代期，并已在多个线上环境、Electron、NW.js 中得到充分验证，可放心将该版本用于生产环境。</p>
+
+
+            <h2>前提条件</h2>
+            <p>若要使用 gQuery 函数库，请先熟悉下列技术：</p>
+            <ul>
+                <li>JavaScript</li>
+                <li>HTML</li>
+                <li>CSS</li>
+            </ul>
+
+
+            <h2>安装</h2>
+            <p>直接下载并用 <code>script</code> 标签引入，<code>gQuery</code> 与 <code>$</code> 会被注册为一个全局变量。</p>
+            <pre>&lt;script type="text/javascript" src="/lib/js/gquery.min.js"&gt;&lt;/script&gt;</pre>
+
+
+            <h2>快速接触 - DOM</h2>
+            <p>gQuery 的使用离不开全局变量 <code>gQuery</code> 与 <code>$</code>，惯用法为通过 <code>$(selector).action()</code> 选择 DOM 元素并使其执行 action 函数。</p>
+            <p><code>gQuery.fn</code> 中通过 <code>extend</code> 封装了许多函数方法以继承 <code>$(selector)</code> 选中的元素来进行后续操作，并且同一个方法通常有多种用法。例如通过 <code>.text(String)</code> 修改其文本内容，通过 <code>.text()</code> 获得其文本内容，甚至还可以通过 <code>.text([])</code> 将其文本内容转换为数组：</p>
+
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$('h2').text('gQuery');
+console.log( $('h2').text() );
+console.log( $('h2').text([]) );</pre>
+            
+            <p>在 gQuery <strong>原型链</strong>中，可以对<strong>多个 DOM 同时进行操作</strong>，例如上方的第一行代码在原生 JavaScript 中，应该是这样：</p>
+            <pre class='code-autoParse language-javascript' data-lang='JavaScript'>document.querySelectorAll('h2').forEach((elem)=>{
+    elem.innerText = 'gQuery';
+});</pre>
+
+            <p>并且，可以通过链式编程将多行命令组合为一行：</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$('h2').animate({opacity:0}, 500).wait(1000).animate({opacity:1}, 500).wait(1000).animate({opacity:0}, 500).wait(1000).animate({opacity:1}, 500);</pre>
+
+
+            <h2>快速接触 - 拓展方法</h2>
+            <p>gQuery 提供了部分常用方法来进一步提升开发效率，如高度封装后的 Cookie、Date、Fetch、Storage、sessionStorage 等，此类函数通过 <code>gQuery.extend</code> 拓展封装。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>let arr = [
+    {a:'Love',b:'is',c:'Love'},
+    ['Love','is','Love'],
+    {a:'Love',b:'is',c:'Love'},
+    {a:'Love',b:'is',c:'Love'}
+];
+
+console.log( $.array.unique(arr) );</pre>
+
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>/* This will expire in 2 minutes */
+$.storage.set('TTL-Msg', {A:'20y',B:'boy',C:'🌈'}, '+2min');
+$.storage.get('TTL-Msg');</pre>
+
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>$.copy('你成功复制了这段话！');</pre>
+
+
+            <p>总之，gQuery 是一个非常容易上手的函数库，还有许多巧妙的功能等待你的探索，搭配 <strong>GQUI<sup>[v2]</sup></strong> 框架及组件可轻松完成 H5 自适应开发。</p>
+        </div>
+
+
+        <footer id='footer'>
+            <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+        </footer>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/highlight/pack.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript" src="/src/js/app.docs.js"></script>
+</body>
+</html>

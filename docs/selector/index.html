@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>选择器 - gQuery</title>
+<meta name='Keywords' content='gQuery 选择器, gQuery开发文档' />
+<meta name='Description' content='gQuery 选择器支持 CSS3 选择器对 HTML 单个元素或元素组进行操作，并于原型链中提供了多种筛选滤器。' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/lib/highlight/gmde.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.docs.css" />
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='docsNav'>
+        <div class='p-6 docsNav__loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+
+    <div id='docsWrap'>
+        <div id='docsInner' class='container article no-indent'>
+            <h1>gQuery 选择器</h1>
+
+
+            <h2>介绍</h2>
+            <p>gQuery 选择器支持 <strong>CSS3 选择器</strong> 对 DOM（Document Object Model——文档对象模型） 单个元素或元素组进行操作。简而言之，gQuery 选择器其实就是：</p>
+            <pre>document.querySelectorAll(selector) => 
+gQuery.fn.init(selector) => 
+gQuery(selector) => 
+$(selector)</pre>
+            <p>通过 <code>$(selector).length</code> 可以获取捕获元素的数量，通过 <code>$(selector)[index]</code> 获取相应 Element 。</p>
+            <blockquote><p>尝试：在控制台执行 <b>$('p')</b> 以及 <b>$('p').length</b> 查看返回内容</p></blockquote>
+            <p>注意：gQuery 选择器运行时需要 DOM Element <strong>已经存在</strong>，请控制代码在 Document ready 之后被执行。gQuery 提供 <code>$(function(){ //需要运行的代码 });</code> 以在 DOMContentLoaded 之后执行该匿名函数。</p>
+
+
+            <h2>基础选择器</h2>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>选择器</th><th>示例</th><th>说明</th><th>CSS</th></tr>
+                <tr><td>element</td><td>div</td><td>选择所有div元素</td><td>1</td></tr>
+                <tr><td>#id</td><td>#gquery</td><td>选择id='gquery'的元素</td><td>1</td></tr>
+                <tr><td>.class</td><td>.gquery</td><td>选择class='gquery'的元素</td><td>1</td></tr>
+                <tr><td>*</td><td>*</td><td>选择所有元素</td><td>2</td></tr>
+            </tbody></table></div>
+
+
+            <h2>关系选择器</h2>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>选择器</th><th>示例</th><th>说明</th><th>CSS</th></tr>
+                <tr><td>elem,elem</td><td>div,p</td><td>选择所有div以及p元素</td><td>1</td></tr>
+                <tr><td>elem elem</td><td>div p</td><td>选择所有div下的p元素</td><td>1</td></tr>
+                <tr><td>elem > elem</td><td>div > p</td><td>选择所有div下子级为的p元素</td><td>2</td></tr>
+                <tr><td>elem + elem</td><td>p + p</td><td>选择所有紧挨p元素后的p元素</td><td>2</td></tr>
+                <tr><td>elem ~ elem</td><td>p ~ p</td><td>选择所有p元素后的p元素</td><td>3</td></tr>
+            </tbody></table></div>
+
+
+            <h2>属性选择器</h2>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>选择器</th><th>示例</th><th>说明</th><th>CSS</th></tr>
+                <tr><td>[attribute]</td><td>[data-hi]</td><td>选择所有带[data-hi]的元素</td><td>2</td></tr>
+                <tr><td>[attribute='val']</td><td>[data-id='0']</td><td>选择所有data-id属性为0的元素</td><td>2</td></tr>
+                <tr><td>[attribute~='val']</td><td>[title~='gQuery']</td><td>选择所有标题属性包含gQuery的元素<b>（以空格分割）</b></td><td>2</td></tr>
+                <tr><td>[attribute|='val']</td><td>[ctmlang|='zhcn']</td><td>选择所有ctmlang属性为zhcn开头的元素</td><td>2</td></tr>
+                <tr><td>[attribute^='val']</td><td>[title^='gQuery']</td><td>选择所有标题属性开头为gQuery的元素</td><td>3</td></tr>
+                <tr><td>[attribute$='val']</td><td>[title$='gQuery']</td><td>选择所有标题属性结尾为gQuery的元素</td><td>3</td></tr>
+                <tr><td>[attribute*='val']</td><td>[title*='gQuery']</td><td>选择所有标题属性包含gQuery的元素</td><td>3</td></tr>
+            </tbody></table></div>
+
+
+
+            <h2>伪类选择器</h2>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>选择器</th><th>示例</th><th>说明</th><th>CSS</th></tr>
+                <tr><td>:link</td><td>a:link</td><td>选择所有未访问链接</td><td>1</td></tr>
+                <tr><td>:visited</td><td>a:visited</td><td>选择所有已访问链接    </td><td>1</td></tr>
+                <tr><td>:hover</td><td>button:hover</td><td>选择所有在鼠标下的按钮元素</td><td>1</td></tr>
+                <tr><td>:active</td><td>a:active</td><td>选择所有活动链接</td><td>1</td></tr>
+                <tr><td>:focus</td><td>input:focus</td><td>选择具有焦点的输入元素</td><td>2</td></tr>
+
+                <tr><td>:target</td><td>:target</td><td>选择当前活动的锚点元素</td><td>3</td></tr>
+                <tr><td>:lang</td><td>p:lang('zh')</td><td>选择所有lang属性起始值为zh的p元素</td><td>2</td></tr>
+
+                <tr><td>:enabled</td><td>input:enabled</td><td>选择所有已启用的输入元素</td><td>3</td></tr>
+                <tr><td>:disabled</td><td>input:disabled</td><td>选择所有已禁用的输入元素</td><td>3</td></tr>
+                <tr><td>:checked</td><td>input:checked</td><td>选择所有已选中的输入元素</td><td>3</td></tr>
+
+                <tr><td>:root</td><td>:root</td><td>选择文档的根元素</td><td>3</td></tr>
+                <tr><td>:nth-child</td><td>div p:nth-child(2n)</td><td>选择每个div下所有子级序号为2的倍数的p元素</td><td>3</td></tr>
+                <tr><td>:nth-last-child</td><td>div p:nth-last-child(2)</td><td>选择所有div下第二个p子级元素，从结尾开始计数</td><td>3</td></tr>
+                <tr><td>:nth-of-type</td><td>div p:nth-of-type(2n)</td><td>选择每个div下p元素子级序号为2的倍数的p元素</td><td>3</td></tr>
+                <tr><td>:nth-last-of-type</td><td>div p:nth-of-type(2n)</td><td>选择每个div下p元素子级序号为2的倍数的p元素，从结尾开始计数</td><td>3</td></tr>
+                <tr><td>:first-child</td><td>p:first-child</td><td>选择所有是其父级第一个子级的p元素</td><td>3</td></tr>
+                <tr><td>:last-child</td><td>p:last-child</td><td>选择所有是其父级最后一个子级的p元素</td><td>3</td></tr>
+                <tr><td>:first-of-type</td><td>p:first-of-type</td><td>选择所有是其父级的第一个p元素</td><td>3</td></tr>
+                <tr><td>:last-of-type</td><td>p:last-of-type</td><td>选择所有是其父级的最后一个p元素</td><td>3</td></tr>
+                <tr><td>:only-child</td><td>p:only-child</td><td>选择所有是其父级唯一子级的p元素</td><td>3</td></tr>
+                <tr><td>:only-of-type</td><td>p:only-of-type</td><td>选择所有是其父级唯一的p元素</td><td>3</td></tr>
+                <tr><td>:empty</td><td>p:empty</td><td>选择所有没有任何子级的p元素（包括文本节点）</td><td>3</td></tr>
+
+                <tr><td>:not</td><td>:not(p)</td><td>选择所有非p元素的元素</td><td>3</td></tr>
+
+                <tr class='bg-unable'><td>::first-line</td><td>p::first-line</td><td>选择所有p元素的第一行文本</td><td>3</td></tr>
+                <tr class='bg-unable'><td>::first-letter</td><td>p::first-letter</td><td>选择所有p元素的第一个字符</td><td>3</td></tr>
+                <tr class='bg-unable'><td>::before</td><td>i::before</td><td>用于描述在i元素内容之前生成的内容</td><td>3</td></tr>
+                <tr class='bg-unable'><td>::after</td><td>i::after</td><td>用于描述在i元素内容之后生成的内容</td><td>3</td></tr>
+            </tbody></table></div>
+
+
+            <h2>find 筛选</h2>
+            <p><code>$.fn.find(Selector:String [, selfContain:Boolean, onlyChildren:Boolean])</code> 接受一个 <strong>CSS3 选择器文本</strong> 以筛选得到当前匹配的元素集合中每个元素下符合条件的后代。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>console.log( $('p').find('code').text([]) );
+/* selfContain */
+$('p').find('p').length;    /* 0 */
+$('p').find('p', true).length;  /* 10 */</pre>
+
+
+            <h2>eq 筛选</h2>
+            <p><code>$.fn.eq(:Number)</code> 接受一个 <strong>数值</strong> 以筛选得到当前匹配的元素集合中指定顺序的元素。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>console.log( $('p').eq(2).text() );</pre>
+
+
+            <h2>关系筛选</h2>
+            <p>gQuery 提供 <code>$.fn.parent()</code> 和 <code>$.fn.next([Selector:String])</code> 选择元素集合中每个元素的 <strong>父级</strong> 和 <strong>下一兄弟级</strong> 元素。</p>
+            <p>在使用 <code>$.fn.next()</code> 时，若某个元素没有下一兄弟级元素，将其不会返回任何元素节点。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>let $elems = $('p');
+console.log(` original:${$elems.length} \n next:${$elems.next().length}`);</pre>
+
+
+            <h2>exist 判断</h2>
+            <p><code>$.fn.exist()</code> 可用于判断当前匹配的元素集合（任一元素）是否存在于 DOM。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>let $elem = $('p').eq(0);
+$elem.length>0 && console.log('元素存在');
+$elem.exist() && console.log('[exist] 元素存在');
+
+/* 从 DOM 中移除元素 */
+$elem.remove();
+
+$elem.length>0 && console.log('元素存在');
+$elem.exist() && console.log('[exist] 元素存在');</pre>
+
+
+            <h2>is 判断</h2>
+            <p><code>$.fn.is(Selector:String)</code> 接受一个 <strong>CSS3 选择器文本</strong> 以判断当前匹配的元素集合中是否有符合条件的元素。</p>
+            <pre class='code-autoParse language-javascript' data-lang='gQuery'>console.log( $('p').eq(0).is(':first-of-type') );    /* true */
+console.log( $('p').eq(1).is(':first-of-type') );   /* false */</pre>
+
+
+        </div>
+
+
+        <footer id='footer'>
+            <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+        </footer>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/highlight/pack.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript" src="/src/js/app.docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+/** ------------------------------------
+ * Header
+ * ------------------------------------- */
+#hero {
+    position: relative;width: 100%;height: 620px;
+    background: url(/lib/img/bg/mark-gray-kids.jpg) no-repeat;
+    background-size: cover;background-position: center bottom;
+    transition: filter 0.8s ease;
+
+    color: #fff;text-align: center;
+    text-shadow: 0 0 6px rgba(0,0,0,.6);
+}
+#hero.loaded {filter: blur(20px);}
+#hero h1 {font-size: 60px;font-weight: 800;}
+#hero h2 {font-size: 20px;}
+
+#tipbar {
+    position: relative;width: 100%;overflow: hidden;
+    height: 50px;line-height: 50px;
+    text-align: center;font-size: 16px;
+    background: var(--bg-main);
+}
+#tipbar p {opacity: 0;}
+#tipbar b {font-weight: 600;}
+
+@media screen and (max-width: 767px){
+    #tipbar {font-size: 13px;}
+}
+
+
+/** ------------------------------------
+ * iSection
+ * ------------------------------------- */
+.iSection {
+    position: relative;z-index: 1;
+    background: var(--bg-main);font-size: 17px;
+}
+.iSection.fullpage {min-height: 100vh;}
+.iSection.bar {padding: var(--x10) 0;}
+.iSection:nth-child(2n-1) {background-color: var(--bg-thri);}
+
+.is-ta {text-align: center;}
+.is-ta>h2 {font-size: 2em;font-weight: 600;}
+.is-ta>h4 {font-size: 1.2em;font-weight: 400;}
+.gq-whouse {
+    display: grid;gap: 8vw;--min: 90px;
+    align-items: center;
+    grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+}
+.gq-whouse img {
+    width: 100%;filter: contrast(0);opacity: 0.7;
+    transition: filter 0.4s ease, opacity 0.4s ease;
+}
+.gq-whouse img:hover {filter: contrast(1);opacity: 1;}
+
+@media screen and (max-width: 767px){
+    .gq-whouse {--min: 52px;gap: 10vw;}
+}
+
+
+.gqSection {
+    background-color: var(--gold)!important;color: #fff;
+    padding: var(--x10) 0;text-align: center;
+}
+.gqSection h2 {
+    font-size: 1.8em;font-weight: 600;
+}
+.gqSection h4 {font-size: 1.2em;color: rgb(255,245,180);}
+.gq-gits img {
+    width: 32px;height: 32px;filter: brightness(10);
+    opacity: 0.75;transition: opacity 0.3s ease;
+}
+.gq-gits img:hover {opacity: 1;}
+
+
+/** ------------------------------------
+ * Hero Bar
+ * ------------------------------------- */
+#hero-bar {transform: translateY(-50%);--gap: var(--x6);}
+#hero-bar .card-bg {
+    position: absolute;right: -80px;top: -40px;
+    width: 100px;height: 100px;background: var(--gold);
+    border-radius: 100%;opacity: 0;
+    transition: all 0.3s ease;
+}
+#hero-bar .card-bg.bg2 {
+    width: 160px;height: 160px;
+    transition: .4s all 0.1s ease;
+}
+#hero-bar .gqui-card:hover .card-bg{
+    right: -40px;opacity: 0.3;
+}
+#hero-bar .gqui-card .icon {
+    position: relative;
+}
+#hero-bar .gqui-card .icon:after {
+    content: '';position: absolute;
+    top: 50%;left: 50%;
+    width: 20px;height: 20px;
+    filter: blur(5px);opacity: .9;
+    background: var(--yellow);border-radius: 50%;
+}
+@media screen and (max-width: 767px){
+    #hero-bar {transform: translateY(-48px);}
+}
+
+
+/** ------------------------------------
+ * code
+ * ------------------------------------- */
+#bg-code {
+    position: absolute;top: 0;left: 0;
+    font-size: 19px;font-weight: 600;line-height: 1.5em;
+    color: var(--bc4);height: 100%;overflow: hidden;
+}
+:root[gqui-theme='dark'] #bg-code {
+    color: var(--bc1);
+}
+.code-input, .code-output {
+    padding: var(--x3) var(--x5);
+    font-size: 16px;font-family: var(--ff-code);
+    word-break: break-all;white-space: pre-wrap;
+}
+.code-output {
+    background-color: var(--bg-seco);color: rgb(106,208,198);
+}
+.code-input .remark {color: var(--bc8)}
+
+
+
+.section-stage {
+    display: flex;align-items: center;
+}
+.section-stage.right {justify-content: end;}
+.section-inner {max-width: 80%;}
+.section-inner h2 {
+    font-size: 2.5em;font-weight: 600;margin-bottom: 12px;
+}
+.section-inner p {font-size: 0.9em;}
+@media screen and (max-width: 767px){
+    .section-stage {display: block;text-align: center;}
+    .section-inner {max-width: 100%;}
+}
+
+
+/** ------------------------------------
+ * isStage
+ * ------------------------------------- */
+.is-stage {
+    display: flex;align-items: center;justify-content: center;
+    background: var(--bg-seco);padding: 18vh 0;
+}
+.is-inner {
+    padding: var(--x8);max-width: 85%;
+}
+.is-inner h2 {
+    font-size: 2.4em;font-weight: 600;
+    margin: var(--x5) 0 var(--x8) 0;
+}
+.is-inner h2 b {font-weight: 800;color: var(--gold);}
+.is-inner ul {
+    margin: 0 0 0 20px;
+}
+.is-inner ul li {position: relative;}
+.is-inner ul li:before {
+    content: '';position: absolute;left: -20px;top: 0.3em;
+    width: 6px;height: 16px;background: var(--yellow);
+}
+.is-inner ul li+li {margin-top: var(--x3);}
+
+@media screen and (max-width: 767px){
+    .is-inner {max-width: 100%;}
+}
+
+
+/** ------------------------------------
+ * Bubbles
+ * ------------------------------------- */
+.bg-bubbles li{
+    position:absolute;bottom:-160px;
+    width:40px;height:40px;border-radius:50%;
+    background-color:rgba(255,255,255,0.15);list-style:none;
+    animation:square 15s infinite;
+    transition-timing-function:linear;
+}
+.bg-bubbles li:nth-child(1){left:10%;}
+.bg-bubbles li:nth-child(2){left:20%;width:90px;height:90px;animation-delay:2s;animation-duration:7s}
+.bg-bubbles li:nth-child(3){left:25%;animation-delay:4s}
+.bg-bubbles li:nth-child(4){left:40%;width:60px;height:60px;animation-duration:8s;background-color:rgba(255,255,255,0.3)}
+.bg-bubbles li:nth-child(5){left:70%}
+.bg-bubbles li:nth-child(6){left:80%;width:120px;height:120px;animation-delay:3s;background-color:rgba(255,255,255,0.2)}
+.bg-bubbles li:nth-child(7){left:32%;width:160px;height:160px;animation-delay:2s}
+.bg-bubbles li:nth-child(8){left:55%;width:20px;height:20px;animation-delay:4s;animation-duration:15s}
+.bg-bubbles li:nth-child(9){left:25%;width:10px;height:10px;animation-delay:2s;animation-duration:12s;background-color:rgba(255,255,255,0.3)}
+.bg-bubbles li:nth-child(10){left:85%;width:160px;height:160px;animation-delay:5s}
+.bg-bubbles li:nth-child(11){left:5%;width:60px;height:60px;animation-delay:2s}
+@keyframes square{
+    0%{opacity:.5;transform:translateY(0) rotate(45deg)}
+    25%{opacity:.75;transform:translateY(-400px) rotate(90deg)}
+    50%{opacity:1;transform:translateY(-600px) rotate(135deg)}
+    100%{opacity:0;transform:translateY(-1000px) rotate(180deg)}
+}
+
+
+
+.wrap-icon {
+    --size: var(--x15);display: flex;
+    width: var(--size);height: var(--size);
+    color: #fff;font-size: var(--x8);
+}

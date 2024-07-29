@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>H5签名 - gQuery Demo</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="./css/gquery.ui.min.css" />
+<link type="text/css" rel="stylesheet" href="./css/gazeimg.gquery.min.css" />
+
+<link type="text/css" rel="stylesheet" href="./iconfont/tabler-icons.min.css" />
+
+<link type="text/css" rel="stylesheet" href="./index.css" />
+<style type="text/css">
+</style>
+</head>
+<body>
+
+<div id='gquiContainer'>
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <header id='header' class='flex-bt'>
+        <i id='btn-close' class='ti ti-x'></i>
+        <h2>加载中</h2>
+        <i style='width:21.5px'></i>
+    </header>
+    <div id='stage'>
+        <article id='inner-entry' class='inner container'></article>
+
+        <article id='inner-explain' class='inner container'></article>
+
+        <article id='inner-sign' class='inner container'></article>
+
+        <article id='inner-end' class='inner container'></article>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div> <!-- #gquiContainer -->
+
+
+
+<template id='tmpl-entry'>
+    <h4 class='mt-0'><em>*</em>请输入姓名</h4>
+    <div class='input-wrap'>
+        <input class='input fluid' />
+        <div class='input-tiper' aria-hidden='true'>姓名</div>
+    </div>
+
+    <h4><em>*</em>请输入身份证号码</h4>
+    <div class='input-wrap'>
+        <input class='input fluid' />
+        <div class='input-tiper' aria-hidden='true'>身份证号码</div>
+    </div>
+
+    <h4><em>*</em>上传身份证（正反两面）照片</h4>
+    <ul id='uploads-idcard' class='img-uploads col-12' data-max='2'>
+        <label class='img-upload' for='upload-img'><div>
+            <i class='ti ti-plus'></i>
+            <!-- <h4>拖拽或单击上传</h4> -->
+            <h5>0 / 2</h5>
+            <input type='file' accept='image/*' id='upload-idcard' class='img-upload-input' />
+        </div></label>
+    </ul>
+
+
+    <h4 class='fc-info mb-5'><i class='ti ti-info-circle'></i><span>注意事项</span></h4>
+    <div class='MNA-wrap flex-bt'>
+        <div class='MNA-item'>
+            <img src='./img/MNA-1.png'>
+            <div class='MNA-item__title success'>
+                <i class='ti ti-check'></i><span>标准</span>
+            </div>
+        </div>
+
+        <div class='MNA-item'>
+            <img src='./img/MNA-2.png'>
+            <div class='MNA-item__title danger'>
+                <i class='ti ti-x'></i><span>边框缺失</span>
+            </div>
+        </div>
+
+        <div class='MNA-item'>
+            <img src='./img/MNA-3.png'>
+            <div class='MNA-item__title danger'>
+                <i class='ti ti-x'></i><span>照片模糊</span>
+            </div>
+        </div>
+
+        <div class='MNA-item'>
+            <img src='./img/MNA-4.png'>
+            <div class='MNA-item__title danger'>
+                <i class='ti ti-x'></i><span>闪光强烈</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class='ta-c mt-10'>
+        <button id='do-verify' class='btn info lg rad'>进行校验</button>
+    </div>
+</template>
+
+
+<template id='tmpl-explain'>
+    <div id='explain-article' class='article'>
+        <!-- <h3 class='ta-c mb-5'>关于文档签名的问题</h3> -->
+        <div class='explain-loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+    <button id='do-goSign' class='btn info lg fluid'>点击签名</button>
+</template>
+
+
+<template id='tmpl-sign'>
+    <div id='sign-wrap'>
+        <canvas id='sign-canvas'></canvas>
+    </div>
+    <div class='flex-around mt-5'>
+        <button id='do-unSign' class='btn cancel ghost'>撤销重签</button>
+        <button id='do-sign' class='btn info'>确定上传</button>
+    </div>
+</template>
+
+
+<template id='tmpl-end'>
+    <div id='section-end' style='min-height: calc(100vh - 100px);' class='flex-ct'><div class='article'>
+        <p class='ta-c mb-1' style='color:var(--green)'><i class='ti ti-circle-check fs-10'></i></p>
+        <h3 class='ta-c fc-8'>您已完成签名</h3>
+    </div></div>
+</template>
+
+
+
+<script type="text/javascript" src="./js/gquery.min.js"></script>
+<script type="text/javascript" src="./js/gquery.ui.min.js"></script>
+<script type="text/javascript" src="./js/gazeimg.gquery.min.js"></script>
+
+<script type="text/javascript" src="./js/lrz/lrz.bundle.js"></script>
+<script type="text/javascript" src="./js/signature_pad.umd.min.js"></script>
+
+<script type="text/javascript" src="./js/pdf.js"></script>
+<script type="text/javascript" src="./js/pdf.worker.js"></script>
+<script type="text/javascript" src="./index.js"></script>
+</body>
+</html>

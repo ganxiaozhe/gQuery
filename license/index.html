@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>License - gQuery</title>
+<meta name='Keywords' content='gquery license' />
+<meta name='Description' content='gQuery.js is released under the MIT License.' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<style type="text/css">
+body {background-color: var(--bg-seco);}
+#hero {
+    background-color: var(--bg-main);
+    padding: 32px 0;
+}
+#hero>.grid {--gap: 32px;}
+#hero .article {padding: 0!important;}
+
+
+@media screen and (max-width:767px){
+    #hero>.grid {--gap: 16px}
+}
+</style>
+
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <header id='hero'>
+        <div class='container grid'>
+            <div class='article col-6'><pre style='height:100%' >/** -------------------------------------
+ *
+ * gQuery.js v1.5.2
+ * (c) 2021, JU Chengren (Ganxiaozhe)
+ * 
+ * Released under the MIT License.
+ * gquery.cn/license
+ *
+ * ------------------------------------- */</pre></div>
+            <div class='article col-6'><pre>/** -------------------------------------
+ *
+ * gQuery UI v2.0.0 [PREVIEW]
+ * (c) 2021, JU Chengren (Ganxiaozhe)
+ * 
+ * Released under the MIT License.
+ * Pre-released under the GPLv3 License.
+ * gquery.cn/license
+ * 
+ * THE PREVIEW VERSION IS NOT PERFECT
+ * AND IS NOT RECOMMENDED FOR USE IN
+ * A PRODUCTION ENVIRONMENT, SO IT IS
+ * RELEASED UNDER THE GPLv3 LICENSE
+ *
+ * ------------------------------------- */</pre></div>
+
+            <div class='article col-12'><pre>MIT License
+
+Copyright (c) 2021, JU Chengren (Ganxiaozhe)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</pre></div>
+        </div>
+    </header>
+</div> <!-- #gquiMain -->
+
+
+<footer id='footer'>
+    <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+</footer>
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript">
+'use strict';
+let __page = {
+    init:{}, fn:{}, data:{tipbarIdx:0}
+};
+
+
+/** ------------------------------------
+ * @gxz $init.function
+ * ------------------------------------- */
+$(function(){
+    for(let fn in __page.init){
+        typeof __page.init[fn] === 'function' && __page.init[fn]();
+    };
+});
+</script>
+</body>
+</html>

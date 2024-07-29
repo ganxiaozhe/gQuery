@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>微信聊天界面 - gQuery</title>
+<meta name='Keywords' content='' />
+<meta name='Description' content='GQUI: 仿微信聊天界面及接口' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/css/gazeimg.gquery.min.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+
+<link type="text/css" rel="stylesheet" href="/lib/css/wechat.gquery.css" />
+<style type="text/css">
+#stage {
+    background-color: var(--bc15);padding: 40px 0;
+    display: flex;justify-content: space-around;
+}
+#app {max-width: 420px;height: 760px;}
+
+
+#hj-menu {
+    display: grid;grid-gap: 4px;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+#hj-menu li {
+    color: var(--info);cursor: pointer;cursor: pointer;
+    transition: all 0.25s ease;
+}
+#hj-menu li:hover {opacity: 0.8;}
+</style>
+</head>
+<body>
+
+<div id='gquiContainer'>
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='stage'>
+        <div id='app'></div>
+    </div>
+</div> <!-- #gquiMain -->
+
+
+<footer id='footer'>
+    <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+</footer>
+</div>  <!-- #gquiContainer -->
+
+
+<template id='tmpl-menu'>
+<ul id='hj-menu' class='mt-3'>
+    <li>我的旧账号呢？</li><li>如何获得元块？</li>
+    <li>元粒能做什么？</li><li>互动版块的意义？</li>
+    <li>幻界的未来规划？</li><li>幻界的盈利模式？</li>
+    <li>优联是什么？</li><li>如何在幻界创作？</li>
+    <li>关于GMCT生成器</li><li>关于幻界开放平台</li>
+</ul>
+</template>
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+
+<script type="text/javascript" src="/lib/js/gazeimg.gquery.js"></script>
+<script type="text/javascript" src="/lib/js/wechat.gquery.js"></script>
+<script type="text/javascript">
+'use strict';
+let __page = {
+    init:{}, fn:{}, data:{}, 
+    chat:{}, chatMenu:{}
+};
+__page.init.wechat = function(){
+    __page.chat.wc = $.wechat({
+        wrap:'#app',
+        theme:$(document.documentElement).attr('gqui-theme'),
+        self:{name:'Ganxiaozhe', avatar:'./g.jpg'},
+        other:{name:'小元', avatar:'./metamo.svg'},
+
+        onSend:__page.chat.onSend,
+        onReceive:__page.chat.onReceive,
+        onBack:function(){window.location.href = '/';}
+    });
+
+    __page.chat.menuInit();
+};
+
+
+__page.chat.menuInit = function(){
+    let that = this;
+    let menuHTML = $('#tmpl-menu').html();
+    this.wc.receive({
+        content:`Hello, 这里是小元，在元魔幻界遇到的问题都可以找我问问哦！${menuHTML}`, type:0
+    });
+
+    $('#hj-menu').on('click', 'li', function(){
+        let cont = $(this).text();
+        if(!cont){return;}
+        that.wc.send({content:cont, type:1});
+    });
+};
+__page.chat.onSend = function(msg){
+    if(msg.type>1){return;}
+    let triggerList = [{
+        s:'我的旧账号呢', f:'oldAccount'
+    },{
+        s:'如何获得元块', f:'getYuanKuai'
+    },{
+        s:'元粒能做什么', f:'canYuanLiDo'
+    },{
+        s:'互动版块的意义', f:'whatsHuDong'
+    },{
+        s:'幻界的未来规划', f:'futurePlan'
+    },{
+        s:'幻界的盈利模式', f:'profitModel'
+    },{
+        s:'优联是什么', f:'YouLian'
+    },{
+        s:'如何在幻界创作', f:'joinTheCreation'
+    },{
+        s:'关于GMCT生成器', f:'aboutGMCT'
+    },{
+        s:'关于幻界开放平台', f:'aboutOpenPlatform'
+    }];
+
+    let tg, tgFlag = false;
+    for (let i = 0; i < triggerList.length; i++) {
+        tg = triggerList[i];
+
+        if(msg.content.indexOf(tg.s)>-1){
+            tgFlag = true;break;
+        }
+    }
+    if(tgFlag){
+        __page.chatMenu[tg.f] && __page.chatMenu[tg.f]();
+        return;
+    }
+
+    __page.chat.wc.receive({content:`小元还不太能理解你说的哦，不过已经记在本本上了！以后会更加努力学习的！<span style='display:inline-block;'>> <</span>`, type:0});
+};
+
+/** ------------------------------------
+ * @chatMenu 菜单处理
+ * ------------------------------------- */
+__page.chatMenu.__send = function(msg){
+    __page.chat.wc.receive(msg);
+};
+__page.chatMenu.oldAccount = function(){
+    this.__send({content:`当前的元魔幻界是于 2022 年全新上线，由 2020 至 2021 年运营的“元魔群组服”升级而来，同时“元魔群组服”在 2021 年兼并了从 2017 年运营的“甘小蔗我的世界”。由于元魔幻界仅保留了“元魔群组服”的所有旧账号，如果你仅注册过“甘小蔗我的世界”的账号，且并未在“元魔群组服”运营期间迁移，你将无法从当前网站迁移你的账号。<b>如需帮助，请联系小蔗：QQ 630224338</b>`, type:0});
+};
+__page.chatMenu.getYuanKuai = function(){
+    this.__send({content:`元块暂时仅能通过捐赠获得：<a href='/donate/' target='_blank'>捐赠链接</a>。需注意，捐赠获得的元块仅能购买自营商品，且无法提现，不接受退款（除特殊原因外）。`, type:0});
+};
+__page.chatMenu.canYuanLiDo = function(){
+    this.__send({content:`元粒作为幻界中触手可及的虚拟货币，用途暂时还在规划当中，如有建议可于<a href='/dynamic/release/' target='_blank'>幻圈中发布</a>（请添加“幻界改造建议”标签）。不过可以确定的是，将来主要作为元魔开放平台 API 调用的收费货币。`, type:0});
+};
+__page.chatMenu.whatsHuDong = function(){
+    this.__send({content:`互动版块主要目的为帮助广大用爱发电的开发者获得范围内的合理收益。例如通过幻界开放平台，接入后可在代码中通过 OAuth 技术获取幻界用户数据，继而根据互动版块的 API 查询制定用户购买记录，决定权限开放与否。具体可见教程：<a href='https://mc.metamo.cn/article/view/?id=8' target='_blank'>互动版块教程链接</a>`, type:0});
+};
+__page.chatMenu.futurePlan = function(){
+    this.__send({content:`大爱随风起，不应随风散；要去发光，而不是被照亮。[待编辑]`, type:0});
+};
+__page.chatMenu.profitModel = function(){
+    this.__send({content:`幻界目前的盈利模式仅有捐赠途径，如果你认可我们的工作，并愿意解囊相助，请通过此链接进行捐赠：<a href='/donate/' target='_blank'>捐赠链接</a>。礼轻义重，捐赠量力而行。`, type:0});
+};
+__page.chatMenu.YouLian = function(){
+    this.__send({content:`优联共创... [待编辑]`, type:0});
+};
+__page.chatMenu.joinTheCreation = function(){
+    this.__send({content:`[待编辑]`, type:0});
+};
+__page.chatMenu.aboutGMCT = function(){
+    this.__send({content:`GMCT 于甘小蔗最早在 2017 年开发的各类生成器演变而来，感谢大家一路相伴。[待编辑]`, type:0});
+};
+__page.chatMenu.aboutOpenPlatform = function(){
+    this.__send({content:`正在开发中... [待编辑]`, type:0});
+};
+
+
+
+/** ------------------------------------
+ * @gxz $init.function
+ * ------------------------------------- */
+$(function(){
+    for(let fn in __page.init){
+        typeof __page.init[fn] === 'function' && __page.init[fn]();
+    };
+});
+</script>
+</body>
+</html>

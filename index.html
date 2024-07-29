@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>gQuery - Think more, do more</title>
+<meta name='Keywords' content='gquery, gq, JavaScript library' />
+<meta name='Description' content='gQuery: The JavaScript Function Library. Think more, Do more.' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="./index.css" />
+
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <section id='tipbar'>
+        <p><a href='https://gxzv.com' target='_blank'><b>#Ganxiaozhe's Values</b> Do everything that makes the world better.</a></p>
+        <p><a href='https://996.icu' target='_blank'><b>#DeveloperLivesMatter</b> 996 ICU</a></p>
+    </section>
+    <header id='hero' class='flex-ct'>
+        <div class='inner pb-6'>
+            <h1>gQuery</h1>
+            <h2 class='mt-1 i18n-gq_bi'>高效构建快速且强大的前端项目</h2>
+        </div>
+    </header>
+
+    <section class='iSection' style='padding-bottom: 140px;'>
+        <div id='hero-bar' class='container grid'>
+            <a href='/docs/' class='gqui-card horizontal col-4'>
+                <div class='gqui-card-header p-4 flex-ct'>
+                    <i class='ti ti-book icon fs-11'></i>
+                </div>
+                <div class='gqui-card-body pl-0'>
+                    <h3 class='i18n-docs'>Docs</h3>
+                    <h4 class='i18n-docs_p'>梦开始的地方</h4>
+                </div>
+                <div class='card-bg'></div>
+                <div class='card-bg bg2'></div>
+            </a>
+
+            <a href='/ui/preview/' class='gqui-card horizontal col-4'>
+                <div class='gqui-card-header p-4 flex-ct'>
+                    <i class='ti ti-building-carousel icon fs-11'></i>
+                </div>
+                <div class='gqui-card-body pl-0'>
+                    <h3 class='i18n-gqui'>GQUI</h3>
+                    <h4 class='i18n-gqui_p'>轻松开发响应式布局</h4>
+                </div>
+                <div class='card-bg'></div>
+                <div class='card-bg bg2'></div>
+            </a>
+
+            <a href='/plugins/' class='gqui-card horizontal col-4'>
+                <div class='gqui-card-header p-4 flex-ct'>
+                    <i class='ti ti-plug icon fs-11'></i>
+                </div>
+                <div class='gqui-card-body pl-0'>
+                    <h3 class='i18n-plugin'>Plugins</h3>
+                    <h4 class='i18n-plugin_p'>官方插件库</h4>
+                </div>
+                <div class='card-bg'></div>
+                <div class='card-bg bg2'></div>
+            </a>
+        </div>
+
+        <div class='container grid'>
+            <img class='col-5' src='/lib/ill/gift.svg'>
+            <section class='col-7 section-stage right mt-sm-6'>
+                <div class='section-inner'>
+                    <h2 class='i18n-intro1_h'>新一代函数库</h2>
+                    <p class='i18n-intro1_p'>支持 CSS3 选择器查找元素及样式属性操作，使用原生 API，兼容所有主流浏览器。</p>
+                </div>
+            </section>
+
+            <img class='col-5 hide-pc mt-sm-15' src='/lib/ill/friend.svg'>
+            <section class='col-7 section-stage'>
+                <div class='section-inner'>
+                    <h2 class='i18n-intro2_h'>丰富组件及调及用</h2>
+                    <p class='i18n-intro2_p'>gQuery 提供了许多丰富且稳健的功能函数，助力高效构建您精彩的应用。<br/>gQuery UI 提供了丰富的布局辅助、小组件，自定义它们非常容易。</p>
+                </div>
+            </section>
+            <img class='col-5 hide-pe' src='/lib/ill/friend.svg'>
+        </div>
+    </section>
+
+
+
+    <section class='iSection grid'>
+        <div class='col-5 is-stage'>
+            <div class='is-inner'>
+                <div class='wrap-icon gqui-bg-gold'>
+                    <i class='ti ti-atom'></i>
+                </div>
+                <h2 class='i18n-easyUse'>与 jQuery 一样好用的 <b>$</b></h2>
+                <ul>
+                    <li class='i18n-easyUse_li1'>gQuery 也同时提供了原型链及方法链，更高效且易于使用，如在原型链提供了 .wait 时延等。</li>
+                    <li class='i18n-easyUse_li2'>方法链中高度封装了许多丰富的功能，如 Storage / Cookie / Array / Date / ChainGenerator 等。</li>
+                </ul>
+            </div>
+        </div>
+        <div class='col-7'>
+            <div class='code-input'>$('h2[class^=i18n-]').data({this:1, is:2, gquery:3});</div>
+            <div class='code-output'>[gQuery Prototype Object]</div>
+
+            <div class='code-input'>$('.is-inner > .wrap-icon').fadeOut(500).wait(1000).fadeIn();</div>
+            <div class='code-output'>[gQuery Dummy Object]</div>
+
+            <pre class='code-input'>$.storage.set('TTL-Msg', {A:'y19',B:'boy',C:'🌈'}, '+2min');
+<span class='remark'>// This will expire in 2 minutes</span>
+$.storage.get('TTL-Msg');</pre>
+            <div class='code-output'>'{"A":"y19","B":"boy","C":"🌈"}'</div>
+
+            <div class='code-input'>$.array.finder([{role:'L'},{role:'G'},{role:'B'},{role:'T'},{role:'Q'},{role:'I'}], {role:'B'});</div>
+            <pre class='code-output'>{
+"index": 2,
+"array": {
+    "role": "B"
+}
+}</pre>
+
+            <div class='code-input'>$.date(1630862585909).format('本世纪第yy年的m月d日 hh:ii:ss');</div>
+            <div class='code-output'>'本世纪第21年的9月6日 01:23:05'</div>
+
+            <div class='code-input'>$.date('2021-10-28').calc('+2month -30 days +56s').diff(1630862585909).ago()</div>
+            <div class='code-output'>'2个月前'</div>
+        </div>
+    </section>
+
+
+    <section class='iSection bar'>
+        <div class='container is-ta'>
+            <h2 class='i18n-whoUse'>谁在使用</h2>
+            <h4 class='i18n-whoUse_p mt-2'>gQuery 是已被验证并投入线上环境的框架</h4>
+            <div class='gq-whouse mt-15 mb-5'>
+                <a href='https://gxzv.com' target='_blank'><img src='/lib/img/logo/gxzv.png'></a>
+                <a href='https://www.5axismfg.cn/' target='_blank'><img src='/lib/img/logo/5axismfg.png'></a>
+                <a href='https://www.ajufood.cn' target='_blank'><img src='/lib/img/logo/ajufood.png'></a>
+                <a href='https://panzhihua.live' target='_blank'><img src='/lib/img/logo/panzhihua.png'></a>
+                <a href='https://mc.metamo.cn' target='_blank'><img src='/lib/img/logo/metamo.svg'></a>
+                <a href='https://fumu.org.cn' target='_blank'><img src='/lib/img/logo/fumu.svg'></a>
+            </div>
+        </div>
+    </section>
+
+
+    <section class='iSection grid'>
+        <div class='col-7 gqui-bg-img hide-pe' style='background-image:url(/lib/img/bg/mark-gray-kids.jpg);min-height: 60vh;'></div>
+        <div class='col-5 is-stage'>
+            <div class='is-inner'>
+                <div class='wrap-icon gqui-bg-gold'>
+                    <i class='ti ti-geometry'></i>
+                </div>
+                <h2 class='i18n-isGqui'>现代化自适应 <b>UI</b></h2>
+                <ul>
+                    <li class='i18n-isGqui_li1'>gQuery UI 提供自适应布局，支持多端设备。以及现代化扁平风格组件，天然支持浅色/深色主题。</li>
+                    <li class='i18n-isGqui_li2'>极简化：简单好用，组件明确。可选择性引入 GQUI.JS 以获得功能增强。</li>
+                    <li class='i18n-isGqui_li3'>辅助布局：提供网格系统、灵活盒子、字体控制、文章系统、灵活边距、丰富组件等助力高效开发。</li>
+                </ul>
+            </div>
+        </div>
+        <div class='col-7 gqui-bg-img hide-pc' style='background-image:url(/lib/img/bg/mark-gray-kids.jpg);min-height: 60vh;'></div>
+    </section>
+
+
+
+
+    <section class='iSection gqSection' style='overflow:hidden;'>
+        <div class='container'>
+            <h2 class='i18n-gqSection'>gQuery 是一个正茁壮成长的前端框架系统</h2>
+            <h4 class='i18n-gqSection_p mt-8'>gQuery 是免费且开源的</h4>
+            <div class='gq-gits mt-2'>
+                <a href='https://github.com/ganxiaozhe/gQuery' target='_blank'><img src='/lib/img/icon/github.svg'></a>
+                <span class='px-4'></span>
+                <a href='https://gitee.com/ganxiaozhe/gQuery' target='_blank'><img src='/lib/img/icon/gitee.svg'></a>
+            </div>
+        </div>
+
+        <div class='bg-bubbles'><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></div>
+    </section>
+</div> <!-- #gquiMain -->
+
+
+<footer id='footer'>
+    <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+</footer>
+</div> <!-- #gquiContainer -->
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/js/gazeimg.gquery.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript">
+let __page = {
+    init:{}, data:{tipbarIdx:0}
+};
+
+
+
+// 顶部公告栏
+__page.init.tipbar = function(){
+    let index = __page.data.tipbarIdx, $tips = $('#tipbar>p');
+    let $tip = $tips.eq(index);
+    $tips.length<=++index && (index = 0);
+    __page.data.tipbarIdx = index;
+
+    $tips.fadeOut(300);
+    $tip.wait(360).fadeIn(1000);
+    setTimeout(()=>{__page.init.tipbar();}, 5000);
+};
+// hero 背景
+__page.init.bgHero = function(){
+    $.gazeimg.loader('/lib/img/bg/gray-kids.jpg').then(resp=>{
+        let $bg = $('#hero');
+        $bg.addClass('loaded');
+        setTimeout(()=>{
+            $bg.css('background-image', 'url(/lib/img/bg/gray-kids.jpg)').removeClass('loaded');
+        }, 1000);
+    });
+};
+
+
+
+/** ------------------------------------
+ * @gxz $init.function
+ * ------------------------------------- */
+$(function(){
+    for(let fn in __page.init){
+        typeof __page.init[fn] === 'function' && __page.init[fn]();
+    };
+});
+</script>
+</body>
+</html>

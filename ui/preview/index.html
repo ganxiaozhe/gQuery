@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>GQUI Preview - gQuery</title>
+<meta name='Keywords' content='gquery ui, gqui, css component' />
+<meta name='Description' content='GQUI: Component library that takes the overall situation into consideration.' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<style type="text/css">
+body {background-color: var(--bg-seco);}
+#hero {
+    background-color: var(--bg-main);
+}
+.container {max-width: 1080px;}
+
+
+/** ------------------------------------
+ * gqui-panel
+ * ------------------------------------- */
+.gqui-panel > h4 {
+    font-size: 24px;font-weight: 600;
+    color: var(--bc11);position: relative;
+    margin: 48px 0 20px 0;
+}
+.gqui-panel > h4:first-child {
+    margin-top: 0;
+}
+.gqui-panel > h4:after {
+    content: '';position: absolute;left: -4px;bottom: 4px;
+    width: 40px;height: 10px;background: var(--gold);opacity: 0.65;
+}
+
+
+/** ------------------------------------
+ * mixed
+ * ------------------------------------- */
+.fs-name {display: inline-block;width: 72px;}
+.btns-area {margin-bottom: 24px;}
+.btns-area .btn {margin: var(--x2);}
+.grid>.item {
+    background: var(--bg-thri);
+    border: 1px solid var(--bc4);padding: 6px 4px;
+}
+
+.fbox {display: block;width: 28px;height: 28px;box-sizing: content-box;}
+.fbox:nth-child(1n) {background: #29c75f;}
+.fbox:nth-child(2n) {background: #FBBA00;}
+.fbox:nth-child(3n) {background: #4080ff;}
+
+
+/** ------------------------------------
+ * example-colors
+ * ------------------------------------- */
+.example-colors {
+    --gap: var(--x3);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    margin-bottom: var(--gqui-mb);
+}
+.example-color {
+    border-radius: var(--x1);font-size: 16px;
+}
+.example-color .body {padding: var(--x4);}
+.example-color .body h4 {font-weight: 200;font-size: 0.9em;}
+.example-color .footer {
+    text-align: center;font-size: 12px;padding: var(--x2) 0;
+}
+.example-color .footer.l {background: rgba(255,255,255,0.2);}
+.example-color .footer.r {background: rgba(0,0,0,0.2);}
+
+@media screen and (max-width:767px){
+    .example-colors {
+        grid-template-columns: repeat(12, 1fr);
+    }
+    .example-color {grid-column-start: span 6;font-size: 12px;}
+}
+
+
+
+/** ------------------------------------
+ * example-row
+ * ------------------------------------- */
+.example-row {margin-bottom: var(--gqui-mb);}
+.example-col {
+    position: relative;display: flex;
+    justify-content: center;align-items: center;
+    padding: 6rem 24px 4rem 24px;background-color: var(--bc2);
+}
+.example-col > .bgTitle {
+    position: absolute;top: calc(6rem - 18px);left: 50%;z-index: 0;
+    transform: translate(-50%, -50%);font-size: 50px;
+    color: var(--bc6);font-weight: 800;
+}
+.example-col > * {position: relative;}
+
+.example-cols {flex-direction: column;}
+.example-cols .gqui-card+.gqui-card {margin-top: var(--x6);}
+
+
+.example-barrage {
+    position: relative;min-height: 300px;width: 100%;
+    overflow: hidden;
+    background-color: var(--bc2);
+}
+.example-barrage .gqui-barrage {
+    --fs: 16px;font-weight: 600;color: var(--bc11);
+    display: flex;align-items: center;justify-content: space-between;
+    padding: 5px 16px;border-radius: 8px;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+.example-barrage .gqui-barrage:hover {
+    background-color: rgba(var(--white-rgb), 0.8);
+    color: var(--bc14);
+}
+</style>
+
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <header id='hero'>
+        <div class='container article'><pre>/** -------------------------------------
+ *
+ * gQuery UI v2.0.0 [PREVIEW]
+ * (c) 2021-present, JU Chengren (Ganxiaozhe)
+ * 
+ * [F] Released under the MIT License.
+ * [T] Pre-released under the GPLv3 License.
+ * gquery.cn/license
+ * 
+ * THE PREVIEW VERSION IS NOT PERFECT
+ * AND IS NOT RECOMMENDED FOR USE IN
+ * A PRODUCTION ENVIRONMENT, SO IT IS
+ * RELEASED UNDER THE GPLv3 LICENSE
+ *
+ * ------------------------------------- */</pre></div>
+    </header>
+
+    <div class='container gqui-panel my-12'>
+        <h4>Base Color</h4>
+        <div id='baseColors' class='example-colors grid'>
+        </div> <!-- example-colors -->
+
+        <h4>Normal Color</h4>
+        <div class='example-colors grid'>
+            <div class='example-color gqui-bg-red grid-force'>
+                <div class='body col-12'>
+                    <h3>Red</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-dark-red grid-force'>
+                <div class='body col-12'>
+                    <h3>Dark Red</h3><h4>hsl(2,67%,37%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-yellow grid-force'>
+                <div class='body col-12'>
+                    <h3>Yellow</h3><h4>hsl(52,89%,63%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-gold grid-force'>
+                <div class='body col-12'>
+                    <h3>Gold</h3><h4>hsl(43,100%,50%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-orange grid-force'>
+                <div class='body col-12'>
+                    <h3>Orange</h3><h4>hsl(27,90%,55%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-sky grid-force'>
+                <div class='body col-12'>
+                    <h3>Sky</h3><h4>hsl(208,44%,73%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-aqua grid-force'>
+                <div class='body col-12'>
+                    <h3>Aqua</h3><h4>hsl(189,100%,43%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-blue grid-force'>
+                <div class='body col-12'>
+                    <h3>Blue</h3><h4>hsl(208,100%,40%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-dark-blue grid-force'>
+                <div class='body col-12'>
+                    <h3>Dark Blue</h3><h4>hsl(208,79%,28%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-green grid-force'>
+                <div class='body col-12'>
+                    <h3>Green</h3><h4>hsl(140,40%,55%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-dark-green grid-force'>
+                <div class='body col-12'>
+                    <h3>Dark Green</h3><h4>hsl(130,35%,42%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-purple grid-force'>
+                <div class='body col-12'>
+                    <h3>Purple</h3><h4>hsl(266,46%,46%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-dark-purple grid-force'>
+                <div class='body col-12'>
+                    <h3>Dark Purple</h3><h4>hsl(273,100%,28%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-pink grid-force'>
+                <div class='body col-12'>
+                    <h3>Pink</h3><h4>hsl(1,78%,86%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-light-brown grid-force'>
+                <div class='body col-12'>
+                    <h3>Light Brown</h3><h4>hsl(18,31%,28%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-brown grid-force'>
+                <div class='body col-12'>
+                    <h3>Brown</h3><h4>hsl(18,31%,28%)</h4>
+                </div>
+            </div>
+
+            <div class='example-color gqui-bg-silver grid-force'>
+                <div class='body col-12'>
+                    <h3>Silver</h3><h4>hsl(18,31%,28%)</h4>
+                </div>
+            </div>
+        </div> <!-- example-colors -->
+
+        <h4>Primary Color</h4>
+        <div class='example-colors grid'>
+            <div class='example-color gqui-bg-primary grid-force'>
+                <div class='body col-12'>
+                    <h3>Primary</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-info grid-force'>
+                <div class='body col-12'>
+                    <h3>Info</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-success grid-force'>
+                <div class='body col-12'>
+                    <h3>Success</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-cancel grid-force'>
+                <div class='body col-12'>
+                    <h3>Cancel</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-warning grid-force'>
+                <div class='body col-12'>
+                    <h3>Warning</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+            <div class='example-color gqui-bg-danger grid-force'>
+                <div class='body col-12'>
+                    <h3>Danger</h3><h4>hsl(3,65%,49%)</h4>
+                </div>
+            </div>
+        </div> <!-- example-colors -->
+
+
+
+        <h4>Button</h4>
+        <div class='btns-area'>
+            <button class='btn'>Button</button>
+            <button class='btn primary'>Primary</button>
+            <button class='btn success'>Success</button>
+            <button class='btn info'>Info</button>
+            <button class='btn cancel'>Cancel</button>
+            <button class='btn warning'>Warning</button>
+            <button class='btn danger'>Danger</button>
+
+            <br/>
+
+            <button class='btn rad'>Round</button>
+            <button class='btn primary rad'>Primary</button>
+            <button class='btn success rad'>Success</button>
+            <button class='btn info rad'>Info</button>
+            <button class='btn cancel rad'>Cancel</button>
+            <button class='btn warning rad'>Warning</button>
+            <button class='btn danger rad'>Danger</button>
+
+            <br/>
+
+            <button class='btn rad primary'>主按钮</button>
+            <button class='btn rad primary ghost'>次要按钮</button>
+            <button class='btn rad'>默认按钮</button>
+            <button class='btn rad seco'>文本按钮</button>
+            <button class='btn rad link'>链接按钮</button>
+
+            <br/>
+
+            <button class='btn btn-icon'><i class='icon ti ti-home'></i></button>
+            <button class='btn primary btn-icon'><i class='icon ti ti-3d-cube-sphere'></i></button>
+            <button class='btn success btn-icon'><i class='icon ti ti-trophy'></i></button>
+            <button class='btn info btn-icon'><i class='icon ti ti-search'></i></button>
+            <button class='btn cancel btn-icon'><i class='icon ti ti-adjustments'></i></button>
+            <button class='btn warning btn-icon'><i class='icon ti ti-alert-octagon'></i></button>
+            <button class='btn danger btn-icon'><i class='icon ti ti-activity'></i></button>
+
+            <br/>
+
+            <button class='btn primary lg'>Button Large</button>
+            <button class='btn info'>Button Middle</button>
+            <button class='btn info sm'>Button Small</button>
+
+            <br/>
+
+            <button class='btn lg fluid danger ghost'>Button Danger Large Fluid</button>
+        </div>
+
+
+        <h4>Button Ghost</h4>
+        <div class='btns-area'>
+            <button class='btn ghost'>Ghost</button>
+            <button class='btn primary ghost'>Ghost Primary</button>
+            <button class='btn success ghost'>Ghost Success</button>
+            <button class='btn info ghost'>Ghost Info</button>
+
+            <br/>
+
+            <button class='btn cancel ghost rad'>Ghost Rad Cancel</button>
+            <button class='btn warning ghost rad'>Ghost Rad Warning</button>
+            <button class='btn danger ghost rad'>Ghost Rad Danger</button>
+        </div>
+
+
+        <h4>Button Disabled</h4>
+        <div class='btns-area'>
+            <button class='btn' disabled='disabled'>Disabled</button>
+            <button class='btn info' disabled='disabled'>Info Disabled</button>
+            <button class='btn cancel' disabled='disabled'>Cancel Disabled</button>
+            <button class='btn warning ghost' disabled='disabled'>Ghost Warning Disabled</button>
+            <button class='btn danger ghost' disabled='disabled'>Ghost Danger Disabled</button>
+        </div>
+
+
+        <h4>Button Custom</h4>
+        <div class='btns-area'>
+            <button class='btn' style='background:linear-gradient(90deg, #00B3FF, #4080ff);color:#fff;'>Custom Gradient Button</button>
+            <button class='btn' style='background:linear-gradient(90deg, #00B3FF, #4080ff);color:#fff;' disabled='disabled'>Custom Gradient Button Disabled</button>
+            <button class='btn' style='background:linear-gradient(90deg, #00B3FF, #4080ff);color:#fff;border:1px solid #00B3FF;'>Custom Gradient Button And Border</button>
+            <button class='btn' style='background:#fffccf url(/lib/img/icon.png) no-repeat;color:#555;background-size:cover;'>Custom Image Button</button>
+        </div>
+
+
+
+        <h4>Input</h4>
+        <div>
+            <input class='input mb-2' placeholder='Input' />
+            <br/>
+            <input class='input rad' placeholder='Round Input' />
+
+            <input type='file' accept='image/*' id='up-bgbar' class='gqui-hide'>
+            <label for='up-bgbar' class='btn info rad ml-2 flex-ac' style='display:inline-flex;'><i class='ti ti-live-photo fs-6 mr-2' style='padding-bottom:2px'></i><span>上传封面图片</span></label>
+        </div>
+
+        <div class='input-wrap lg mt-2' style='--left-width:28px;--right-width:90px;'>
+            <div class='input-left flex-ct'><i class='input-icon ti ti-2fa fs-7'></i></div>
+            <div class='input-right flex-ct fs-0 click'>
+                <div class='flex-ac'>
+                    <i class='input-icon mr-2 fs-9 ti ti-message-circle' style='margin-bottom: 3px;'></i>
+                    <span>获取验证码</span>
+                </div>
+            </div>
+
+            <input class='input fluid' placeholder='验证码' />
+        </div>
+        <div class='input-wrap lg mt-2' style='--left-width: 28px;--right-width: 28px;'>
+            <div class='input-left flex-ct'><i class='ti ti-brand-edge fs-7'></i></div>
+            <div class='input-right flex-ct'><i class='ti ti-search fs-7'></i></div>
+
+            <input class='input fluid' placeholder='探索你的探索' />
+        </div>
+
+
+        <h4>Input Tiper</h4>
+        <div class='flex flex-wrap'>
+            <div class='input-wrap'>
+                <input class='input' />
+                <div class='input-tiper' aria-hidden='true'>input 持久化提示</div>
+            </div>
+            <div class='input-wrap ml-2 ml-sm-0 mt-sm-2'>
+                <input class='input' value='Your Name' />
+                <div class='input-tiper is-active' aria-hidden='true'>你的名字</div>
+            </div>
+        </div>
+        <div class='input-wrap lg mt-2'>
+            <input class='input fluid' />
+            <div class='input-tiper' aria-hidden='true'>input 持久化提示</div>
+        </div>
+        <div class='input-wrap lg mt-2'>
+            <textarea class='input fluid' style='height:90px'></textarea>
+            <div class='input-tiper' aria-hidden='true'>textarea 持久化提示</div>
+        </div>
+
+
+        <h4>Select</h4>
+        <select id='eg-select' class='gqui-select'>
+            <option>select 提示</option>
+            <option value='1'>Option 1</option>
+            <option value='2'>Option 2</option>
+            <option value='3'>Option 3</option>
+        </select>
+        <br/>
+
+        <select id='eg-select-tiper' class='gqui-select tiper mt-2'>
+            <option>select 持久化提示</option>
+            <option value='1'>Option 1</option>
+            <option value='2'>Option 2</option>
+            <option value='3'>Option 3</option>
+            <option value='4'>Option 4</option>
+            <option value='5'>Option 5</option>
+            <option value='6'>Option 6</option>
+            <option value='7'>Option 7</option>
+            <option value='8'>Option 8</option>
+            <option value='9'>Option 9</option>
+        </select>
+        <br/>
+
+        <select id='eg-select-empty' class='gqui-select mt-2'>
+            <option>select 提示</option>
+        </select>
+
+
+
+        <h4>Radio</h4>
+        <div class='va-m-'>
+            <div class='gqui-checkbox mr-1'>
+                <input type='radio' id='eg_rd_opt_1' name='eg_rd_opt_g1'>
+                <label class='gqui-checkbox-icon' for='eg_rd_opt_1'></label>
+            </div>
+            <span>Option A [Only Check On Icon]</span>
+        </div>
+        <div class='va-m- mt-1'>
+            <label for='eg_rd_opt_2'><div class='gqui-checkbox mr-1'>
+                <input type='radio' id='eg_rd_opt_2' name='eg_rd_opt_g1'>
+                <span class='gqui-checkbox-icon'></span>
+            </div>
+            <span>Option B [Can Check Both Icon & Text]</span></label>
+        </div>
+
+        <div class='mt-4 btns-area'>
+            <input type='radio' id='gqui-eg_rd_opt_3' name='eg_rd_opt_g2'>
+            <label class='btn info' for='gqui-eg_rd_opt_3'>Option A</label>
+
+            <input type='radio' id='gqui-eg_rd_opt_4' name='eg_rd_opt_g2'>
+            <label class='btn success' for='gqui-eg_rd_opt_4'>Option B</label>
+
+            <input type='radio' id='gqui-eg_rd_opt_5' name='eg_rd_opt_g2' disabled='disabled'>
+            <label class='btn danger is-disabled' for='gqui-eg_rd_opt_5'>Option C</label>
+
+            <input type='radio' id='gqui-eg_rd_opt_6' name='eg_rd_opt_g2'>
+            <label class='btn danger' for='gqui-eg_rd_opt_6'>Option C</label>
+        </div>
+
+
+        <h4>Checkbox</h4>
+        <div class='va-m-'>
+            <div class='gqui-checkbox mr-1'>
+                <input type='checkbox' id='eg_cb_opt_1'>
+                <label class='gqui-checkbox-icon' for='eg_cb_opt_1'></label>
+            </div>
+            <span>Option A [Only Check On Icon]</span>
+        </div>
+        <div class='va-m- mt-1'>
+            <label for='eg_cb_opt_2'><div class='gqui-checkbox mr-1'>
+                <input type='checkbox' id='eg_cb_opt_2'>
+                <span class='gqui-checkbox-icon'></span>
+            </div>
+            <span>Option B [Can Check Both Icon & Text]</span></label>
+        </div>
+
+        <div class='mt-4 btns-area'>
+            <input type='checkbox' id='gqui-eg_cb_opt_3' name='eg_cb_opt_g2'>
+            <label class='btn info' for='gqui-eg_cb_opt_3'>Option A</label>
+
+            <input type='checkbox' id='gqui-eg_cb_opt_4' name='eg_cb_opt_g2'>
+            <label class='btn success' for='gqui-eg_cb_opt_4'>Option B</label>
+
+            <input disabled='disabled' type='checkbox' id='gqui-eg_cb_opt_5' name='eg_cb_opt_g2'>
+            <label class='btn danger is-disabled' for='gqui-eg_cb_opt_5'>Option C</label>
+
+            <input type='checkbox' id='gqui-eg_cb_opt_6' name='eg_cb_opt_g2'>
+            <label class='btn danger' for='gqui-eg_cb_opt_6'>Option C</label>
+        </div>
+
+
+        <h4>Toggle Switch</h4>
+        <div class='flex'>
+            <div class='gqui-toggle mr-4'>
+                <div class='gqui-toggle-l'></div>
+                <div class='gqui-toggle-r'></div>
+                <div class='gqui-toggle-btn'></div>
+            </div>
+            <div class='gqui-toggle mr-4'>
+                <div class='gqui-toggle-l'><span>☁️</span></div>
+                <div class='gqui-toggle-r'><span>❄️</span></div>
+                <div class='gqui-toggle-btn'></div>
+            </div>
+            <div class='gqui-toggle gqui-toggle--checked'>
+                <div class='gqui-toggle-l'><span>☁️</span></div>
+                <div class='gqui-toggle-r'><span>❄️</span></div>
+                <div class='gqui-toggle-btn'></div>
+            </div>
+        </div>
+        <div class='mt-4'>
+            <div class='gqui-mark-themeToggle gqui-toggle'>
+                <div class='gqui-toggle-l'><span>🌛</span></div>
+                <div class='gqui-toggle-r'><span>🌞</span></div>
+                <div class='gqui-toggle-btn'></div>
+            </div>
+        </div>
+
+
+
+        <h4>Slider</h4>
+        <input id='eg-slider' class='gqui-slider' type='range' min='0' max='100'>
+        <br/>
+        <input class='gqui-slider' type='range' min='-100' max='100' value='40'>
+
+
+
+        <h4>Details</h4>
+        <details class='gqui-details inline mr-5'>
+            <summary>Summary</summary>
+            <details-menu class='gqui-select-list anim-scale-in'>
+                <li>Details #1</li>
+                <li class='is-active'>Details #2</li>
+                <li>Details #3</li>
+            </details-menu>
+        </details>
+
+        <details class='gqui-details inline'>
+            <summary>
+                <div class='btn btn-icon'><i class='ti ti-dots'></i></div>
+            </summary>
+            <details-menu class='gqui-select-list anim-scale-in'>
+                <li>Details #1</li>
+                <li>Details #2</li>
+                <li>Details #3</li>
+            </details-menu>
+        </details>
+
+        <br/><br/>
+        <details class='gqui-details inline mr-5'>
+            <summary>
+                <div class='btn primary sm'>Summary Right</div>
+            </summary>
+            <details-menu class='gqui-select-list is-right anim-scale-in'>
+                <li>Details #1</li>
+                <li>Details #2</li>
+                <li>Details #3</li>
+            </details-menu>
+        </details>
+
+        <details class='gqui-details inline mr-5'>
+            <summary>Summary Bottom</summary>
+            <details-menu class='gqui-select-list is-bottom anim-scale-in'>
+                <li>Details #1</li>
+                <li>Details #2</li>
+                <li>Details #3</li>
+            </details-menu>
+        </details>
+        
+
+
+
+
+
+        <h4>Font Size</h4>
+        <div><span class='fs-name'>.fs-0</span><span class='fs-0'>gQuery（10px）</span></div>
+        <div><span class='fs-name'>.fs-1</span><span class='fs-1'>gQuery（12px）</span></div>
+        <div><span class='fs-name'>.fs-2</span><span class='fs-2'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-3</span><span class='fs-3'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-4</span><span class='fs-4'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-5</span><span class='fs-5'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-6</span><span class='fs-6'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-7</span><span class='fs-7'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-8</span><span class='fs-8'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-9</span><span class='fs-9'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-10</span><span class='fs-10'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-11</span><span class='fs-11'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-12</span><span class='fs-12'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-13</span><span class='fs-13'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-14</span><span class='fs-14'>gQuery</span></div>
+        <div><span class='fs-name'>.fs-15</span><span class='fs-15'>gQuery</span></div>
+
+
+        <h4>Font Style</h4>
+        <div><span class='fs-name'>.fw-b</span><span class='fw-b'>gQuery</span></div>
+        <div><span class='fs-name'>.ta-l</span><span class='ta-l' style='display: inline-block;width: calc(100% - 74px)'>gQuery</span></div>
+        <div><span class='fs-name'>.ta-c</span><span class='ta-c' style='display: inline-block;width: calc(100% - 74px)'>gQuery</span></div>
+        <div><span class='fs-name'>.ta-r</span><span class='ta-r' style='display: inline-block;width: calc(100% - 74px)'>gQuery</span></div>
+        <div class='va-t-'><span class='fs-name'>.t-h</span><span class='t-h'>gQuery</span></div>
+        <div class='va-t-'><span class='fs-name'>.t-line-1</span><span class='t-line-1' style='display: -webkit-inline-box!important;width: 200px;'><b>gQuery UI</b> 文字超出自动隐藏 文字超出自动隐藏</span></div>
+        <div class='va-t-'><span class='fs-name'>.t-line-2</span><span class='t-line-2' style='display: -webkit-inline-box!important;width: 200px;'><b>gQuery UI</b> 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏</span></div>
+        <div class='va-t-'><span class='fs-name'>.t-line-4</span><span class='t-line-4' style='display: -webkit-inline-box!important;width: 200px;'><b>gQuery UI</b> 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏 文字超出自动隐藏</span></div>
+
+
+
+        <h4>Article</h4>
+        <div class='article p-6'>
+            <h5>客观的我</h5>
+            <p>在山城长大的水瓶男，今年 <code>${new Date().getFullYear() - 2002}</code> 岁。</p>
+            <p>极度独立，孤立主义者，网易云 10 级，博爱但疏离，自我不自私，<strong>Love is Love.</strong></p>
+
+            <ul>
+                <li>List item #1</li>
+                <li>List item #2</li>
+                <ul>
+                    <li>List item #2-1</li>
+                    <li>List item #2-2</li>
+                </ul>
+                <li>List item #3</li>
+            </ul>
+            <ol>
+                <li>List item #1</li>
+                <li>List item #2</li>
+                <ol>
+                    <li>List item #2-1</li>
+                    <li>List item #2-2</li>
+                </ol>
+                <li>List item #3</li>
+            </ol>
+        </div>
+
+
+
+        <h4>Table</h4>
+        <div class='ox-wrap'>
+            <table class='gqui-table table-yb' style='min-width: 520px;'><tbody>
+                <tr><td>类型</td><td>CPU</td><td>内存</td><td>SSD</td><td>上传宽带</td><td>下载宽带</td></tr>
+                <tr><td>纯净服</td><td>2.5+ GHz</td><td>10 GB+</td><td>60 GB+</td><td>30 MBps+</td><td>15 MBps+</td></tr>
+                <tr><td>插件服</td><td>2.5+ GHz</td><td>10 GB+</td><td>120 GB+</td><td>30 MBps+</td><td>15 MBps+</td></tr>
+                <tr><td>MOD服</td><td>3+ GHz</td><td>10 GB+</td><td>200 GB+</td><td>150 MBps+</td><td>100 MBps+</td></tr>
+            </tbody></table>
+        </div>
+
+        <div class='ox-wrap mt-6'>
+            <table class='gqui-table line fluid' style='min-width: 520px;'><tbody>
+                <tr><th>类型</th><th>CPU</th><th>内存</th><th>SSD</th><th>上传宽带</th><th>下载宽带</th></tr>
+                <tr><td>纯净服</td><td>2.5+ GHz</td><td>10 GB+</td><td>60 GB+</td><td>30 MBps+</td><td>15 MBps+</td></tr>
+                <tr><td>插件服</td><td>2.5+ GHz</td><td>10 GB+</td><td>120 GB+</td><td>30 MBps+</td><td>15 MBps+</td></tr>
+                <tr><td>MOD服</td><td>3+ GHz</td><td>10 GB+</td><td>200 GB+</td><td>150 MBps+</td><td>100 MBps+</td></tr>
+            </tbody></table>
+        </div>
+
+
+
+        <h4>Table Layout</h4>
+        <table class='gqui-table table-layout'><tbody>
+            <tr><td>
+                <div class='gqui-symbol'>
+                    <div class='gqui-symbol-icon'>
+                        <img class='h-50' src='/lib/img/icon.png'>
+                    </div>
+                </div>
+            </td><td style='width:220px;'>
+                <p><b>gQuery</b></p>
+                <p class='fs-1'>JavaScript Function Library</p>
+            </td><td style='width: 150px;'>
+                <p><b>22,002</b></p>
+                <p class='fs-1'>Total download</p>
+            </td><td>
+                <span class='gqui-label gqui-bg-gold'>Recommend</span>
+            </td></tr>
+
+            <tr><td>
+                <div class='gqui-symbol'>
+                    <div class='gqui-symbol-icon'>
+                        <img class='h-50' src='/lib/img/icon.png'>
+                    </div>
+                </div>
+            </td><td style='width:220px;'>
+                <p><b>gQuery UI</b></p>
+                <p class='fs-1'>Modern CSS Framework</p>
+            </td><td style='width: 150px;'>
+                <p><b>36,214</b></p>
+                <p class='fs-1'>Total download</p>
+            </td><td>
+                <span class='gqui-label gqui-bg-info'>Update</span>
+            </td></tr>
+        </tbody></table>
+
+
+
+
+        <h4>Grid</h4>
+        <div class='grid'>
+            <div class='item col-1'>1</div>
+            <div class='item col-1'>2</div>
+            <div class='item col-1'>3</div>
+            <div class='item col-1'>4</div>
+            <div class='item col-1'>5</div>
+            <div class='item col-1'>6</div>
+            <div class='item col-1'>7</div>
+            <div class='item col-1'>8</div>
+            <div class='item col-1'>9</div>
+            <div class='item col-1'>10</div>
+            <div class='item col-1'>11</div>
+            <div class='item col-1'>12</div>
+
+            <div class='item col-sm-4'>col-sm-4</div>
+            <div class='item col-sm-3'>col-sm-3</div>
+            <div class='item col-sm-5'>col-sm-5</div>
+            <div class='col-9'></div>
+
+            <div class='item col-4 col-sm-4'>col-4 col-sm-4</div>
+            <div class='item col-3 col-sm-3'>col-3 col-sm-3</div>
+            <div class='item col-5 col-sm-5'>col-5 col-sm-5</div>
+        </div>
+
+
+        <div class='grid mt-6' style='--gap:8px'>
+            <div class='item col-2'>col-2</div>
+            <div class='item col-3'>col-3</div>
+            <div class='item col-1'>col-1</div>
+            <div class='item col-1'>col-1</div>
+            <div class='item col-1'>col-1</div>
+            <div class='item col-1 row-2'>col-1</div>
+            <div class='item col-3'>col-3</div>
+
+            <div class='item col-4 col-sm-4'>col-4 col-sm-4</div>
+            <div class='item col-1 col-sm-8'>col-1 col-sm-8</div>
+            <div class='item col-3 col-sm-4'>col-3 col-sm-4</div>
+            <div class='item col-1 col-sm-4'>col-1 col-sm-4</div>
+            <div class='item col-2 col-sm-4'>col-2 col-sm-4</div>
+
+            <div class='item col-4 col-md-5 col-sm-6'>col-4 col-md-5 col-sm-6</div>
+            <div class='item col-4 col-md-5 col-sm-6'>col-4 col-md-5 col-sm-6</div>
+        </div>
+
+
+
+        <h4>Flex</h4>
+        <div class='ox-wrap'>
+        <table class='gqui-table fluid first-b' style='min-width: 520px;'><tbody>
+            <tr><th style='min-width: 110px;'>类名</th><th>作用</th><th style='min-width: 190px;'>效果</th></tr>
+            <tr><td>.flex</td><td>将元素类型设置为 flex，<code>flex-wrap</code> 设为 wrap</td><td><div class='flex'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.flex-nowrap</td><td>将 <code>flex-wrap</code> 设为 nowrap</td><td><div class='flex-nowrap'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+
+            <tr><td>.flex-ed</td><td>将 <code>align-items</code> 设为 center，<code>justify-content</code> 设置为 end</td><td><div class='flex-ed'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+
+            <tr><td>.flex-ct</td><td>将 <code>align-items</code> 设为 center，<code>justify-content</code> 设置为 center</td><td><div class='flex-ct'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.flex-bt</td><td>将 <code>align-items</code> 设为 center，<code>justify-content</code> 设置为 space-between</td><td><div class='flex-bt'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.flex-ad</td><td>将 <code>align-items</code> 设为 center，<code>justify-content</code> 设置为 space-around</td><td><div class='flex-ad'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+
+            <tr><td>.flex-ac</td><td>仅将 <code>align-items</code> 设为 center</td><td><div class='flex-ac'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.flex-jc</td><td>仅将 <code>justify-content</code> 设为 center</td><td><div class='flex-jc'>
+                <div class='fbox'></div><div class='fbox'></div><div class='fbox'></div>
+            </div></td></tr>
+        </tbody></table>
+        </div>
+
+
+        <h4>Margin & Padding</h4>
+        <div class='ox-wrap'>
+        <table class='gqui-table fluid first-b' style='min-width: 520px;'><tbody>
+            <tr><th style='min-width: 110px;'>类名</th><th>作用</th><th style='min-width: 190px;'>效果</th></tr>
+            <tr><td>.m-0</td><td>将第一个方块外边距等级设置为 0</td><td><div class='flex'>
+                <div class='fbox m-0'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.m-2</td><td>将第一个方块外边距等级设置为 2</td><td><div class='flex'>
+                <div class='fbox m-2'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.mx-4</td><td>将第一个方块外边距（水平）等级设置为 4</td><td><div class='flex'>
+                <div class='fbox mx-4'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.ml-4</td><td>将第一个方块外边距（左）等级设置为 4</td><td><div class='flex'>
+                <div class='fbox ml-4'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.mr-4</td><td>将第一个方块外边距（右）等级设置为 4</td><td><div class='flex'>
+                <div class='fbox mr-4'></div><div class='fbox'></div>
+            </div></td></tr>
+
+
+            <tr><td>.p-0</td><td>将第一个方块内边距等级设置为 0</td><td><div class='flex'>
+                <div class='fbox p-0'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.p-3</td><td>将第一个方块内边距等级设置为 3</td><td><div class='flex'>
+                <div class='fbox p-3'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.py-5</td><td>将第一个方块内边距（垂直）等级设置为 5</td><td><div class='flex'>
+                <div class='fbox py-5'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.pt-7</td><td>将第一个方块内边距（上）等级设置为 7</td><td><div class='flex'>
+                <div class='fbox pt-7'></div><div class='fbox'></div>
+            </div></td></tr>
+            <tr><td>.pb-7</td><td>将第一个方块内边距（下）等级设置为 7</td><td><div class='flex'>
+                <div class='fbox pb-7'></div><div class='fbox'></div>
+            </div></td></tr>
+        </tbody></table>
+        </div>
+
+
+
+
+        <h4>Progress</h4>
+        <div class='gqui-progress'>
+            <div class='gqui-progress-bar'><div class='gqui-progress-inner gqui-bg-green' style='width:25%'></div></div>
+            <div class='gqui-progress-text'>25%</div>
+        </div>
+        <div class='gqui-progress'>
+            <div class='gqui-progress-bar'><div class='gqui-progress-inner gqui-bg-red' style='width:50%'></div></div>
+            <div class='gqui-progress-text'>50%</div>
+        </div>
+        <div class='gqui-progress'>
+            <div class='gqui-progress-bar'><div class='gqui-progress-inner gqui-bg-blue' style='width:68%'></div></div>
+            <div class='gqui-progress-text'>68%</div>
+        </div>
+
+        <div class='gqui-progress-bar mt-3' style='--height: 15px;'>
+            <div class='gqui-progress-inner gqui-bg-gold' style='width:88%;'>88%</div>
+        </div>
+        <div class='gqui-progress-bar mt-3' style='--height: 15px;'>
+            <div class='gqui-progress-inner gqui-bg-gold' style='width:88%;'>88%</div>
+            <div class='gqui-progress-bar_text'>100%</div>
+        </div>
+
+
+
+        <h4>Pagination</h4>
+        <div id='eg-pagination' class='gqui-pagination'></div>
+        <br/>
+        <div id='eg-pagination-1k' class='gqui-pagination'></div>
+
+
+
+
+        <h4>Card</h4>
+        <div class='example-row grid'>
+            <div class='example-col col-6'>
+                <div class='bgTitle'>Simple</div>
+
+                <div class='gqui-card' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-body'>
+                        <h3>Card Title</h3>
+                        <h4>Card Secondary Text</h4>
+                    </div>
+                </div>
+
+            </div>
+            <div class='example-col col-6'>
+                <div class='bgTitle'>Complex</div>
+
+                <div class='gqui-card' style='max-width: 300px;'>
+                    <div class='gqui-card-header' style='height: 160px;'>
+                        <img src='/lib/img/bg/mark-gray-kids.jpg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <div class='gqui-card-label'>
+                            <span class='label'>Label</span>
+                            <span class='label'>Label</span>
+                        </div>
+                        <h3>Card Title</h3>
+                        <h4>Card Secondary Text</h4>
+                        <p>Card Text Card Text Card Text Card Text Card Text Card Text</p>
+                    </div>
+                    <div class='gqui-card-footer grid'>
+                        <button class='btn danger ghost col-6'>Delete</button>
+                        <button class='btn info col-6'>View</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- example-row -->
+
+        <div class='example-row grid mt-6'>
+            <div class='example-col col-6'>
+                <div class='bgTitle'>Title</div>
+
+                <div class='gqui-card' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header' style='height: 160px;'>
+                        <img src='/lib/img/bg/mark-gray-kids.jpg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <h3>Card Title</h3>
+                        <h4>Card Secondary Text</h4>
+                    </div>
+                </div>
+
+            </div>
+            <div class='example-col col-6'>
+                <div class='bgTitle'>Custom</div>
+
+                <div class='gqui-card rad-3' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header p-4 pb-0' style='height: 160px;'>
+                        <img src='/lib/img/bg/mark-gray-kids.jpg' class='rad-1'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <div class='flex-bt fw-b fs-1'>
+                            <span>作者：甘小蔗</span>
+                            <span>时间：2021</span>
+                        </div>
+                        <div class='flex-bt fw-b fs-1'>
+                            <span>类别：开源框架</span>
+                        </div>
+                    </div>
+                    <div class='gqui-card-footer'>
+                        <button class='btn info ghost fluid rad-3'>查看详情</button>
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- example-row -->
+
+        <div class='example-row grid mt-6'>
+            <div class='example-col example-cols col-6'>
+                <div class='bgTitle'>Horizontal</div>
+
+                <div class='gqui-card horizontal' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header'>
+                        <img src='/lib/img/bg/mark-gray-kids.jpg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <h3>Card Title</h3>
+                        <h4>Card Secondary Text</h4>
+                    </div>
+                </div>
+                <div class='gqui-card horizontal' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header'>
+                        <img src='/lib/img/bg/mark-gray-kids.jpg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <h3>Card Title</h3>
+                        <h4>Card Secondary Text</h4>
+                    </div>
+                </div>
+
+            </div>
+            <div class='example-col example-cols col-6'>
+                <div class='bgTitle'>Custom</div>
+
+                <div class='gqui-card horizontal' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header p-3'>
+                        <img src='/lib/ill/dinosaur/angry.svg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <div class='gqui-card-label'>
+                            <span class='label gqui-bg-red'>Angry</span>
+                        </div>
+                        <h4 class='fw-b'>生气的小恐龙</h4>
+                    </div>
+                </div>
+
+                <div class='gqui-card horizontal' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header p-3'>
+                        <img src='/lib/ill/dinosaur/happy.svg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <h4 class='fw-b'>开心的小恐龙</h4>
+                        <div class='gqui-card-label'>
+                            <span class='label gqui-bg-blue'>Happy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='gqui-card horizontal' style='min-width: 200px;width: 100%;max-width: 300px;'>
+                    <div class='gqui-card-header p-3'>
+                        <img src='/lib/ill/dinosaur/doctor.svg'>
+                    </div>
+                    <div class='gqui-card-body'>
+                        <h3>小恐龙医生</h3>
+                    </div>
+                    <div class='gqui-card-footer grid-force'>
+                        <button class='btn col-6'>诊断记录</button>
+                        <button class='btn info col-6'>立即诊断</button>
+                    </div>
+                </div>
+
+            </div>
+        </div> <!-- example-row -->
+
+
+
+        <h4>Dialog</h4>
+        <div class='btns-area'>
+            <button class='btn info' onclick="$.ui.dialog('Dialog Title','Dialog Content')">Simple</button>
+            <button class='btn info' onclick="$.ui.dialog('Dialog Title','Dialog Content', function(){alert('confirm')}, function(){alert('cancel')})">Callback</button>
+            <button class='btn info' id='eg-btn-custom'>Custom</button>
+        </div>
+
+
+        <h4>Alert</h4>
+        <div class='btns-area'>
+            <button class='btn info' onclick="$.ui.alert('Alert Content')">Simple</button>
+            <button class='btn info' onclick="$.ui.alert('Alert Content','top-right')">Position</button>
+            <button class='btn info' onclick="$.ui.alert('Alert Content',500)">AutoClose</button>
+            <button class='btn info' onclick="$.ui.alert('Alert Content', {buttons:[{val:'Button', func:function(){alert('callback')}}]})">Callback</button>
+            <button class='btn info' id='eg-btn-custom-alert'>Custom</button>
+        </div>
+
+
+        <h4>Actionsheet</h4>
+        <!-- <div class='gqui-actionsheet-wrap'>
+            <div class='gqui-actionsheet'>
+                <div class='gqui-actionsheet__menu'>
+                    <div class='gqui-actionsheet__cell'>菜单一</div>
+                    <div class='gqui-actionsheet__cell'>菜单二</div>
+                    <div class='gqui-actionsheet__cell'>菜单三</div>
+                </div>
+                <div class='gqui-actionsheet__action'>
+                    <div class='gqui-actionsheet__cell'>取消</div>
+                </div>
+            </div>
+        </div> -->
+        <div class='btns-area'>
+            <button class='btn info' onclick="$.ui.actionsheet([{title:'你好', func:function(){$.ui.alert('Hello!')}}])">Simple</button>
+            <button class='btn info' onclick="$.ui.actionsheet({menu:[{title:'你好'},{title:'我好'},{title:'大家好', func:function(){$.ui.alert('YES!');}}]})">Simple</button>
+        </div>
+
+
+        <h4>Tiper</h4>
+        <div class='img-wrap'>
+            <img data-tiper="<div class='ta-c'><b>Tiper Content</b><br/>[Support HTML & Variable]</div>" src='/lib/img/bg/mark-gray-kids.jpg' data-tiper-track>
+        </div>
+        <div class='btns-area mt-2'>
+            <button class='btn info ml-0' data-tiper="<div class='ta-c'>Tiper Content<br/>Not Track</div>">Tiper Not Track</button>
+
+            <button class='btn info ml-0' data-tiper="<div class='ta-c'>Tiper Content<br/>Not Track 2</div>">Tiper Not Track 2</button>
+
+            <button class='btn info ml-0' data-tiper="{__page.data.egCode}">Tiper Too Much Content</button>
+        </div>
+
+
+        <h4>Loader</h4>
+        <div>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-4' style='width:60%'></div>
+        </div>
+
+        <div class='img-wrap flex mt-6' style='position:relative;'>
+            <img src='/lib/img/bg/mark-gray-kids.jpg'>
+
+            <div class='gqui-overlay-loader'><div class='gqui-loader-inner'>
+                <div class='gqui-loader-spin'>
+                    <svg viewBox='25 25 50 50' class='spinner'>
+                        <circle cx='50' cy='50' r='20' fill='none' class='path'></circle>
+                    </svg>
+                </div>
+                <div class='gqui-loader-body'>
+                    <div class='gqui-loader-message mt-3'>Loading [Optional]</div>
+                </div>
+            </div></div>
+        </div>
+
+
+        <h4>Avatar</h4>
+        <div class='flex'>
+            <div class='gqui-avatar mr-4'><img src='/lib/img/icon.png'></div>
+
+            <div class='gqui-avatar rad'><img src='/lib/img/icon.png'></div>
+        </div>
+
+
+
+        <h4>Barrage</h4>
+        <div class='btns-area'>
+            <button class='btn info' onclick="$('.example-barrage').barrage(saying.random());">Default</button>
+            <button class='btn info' onclick="$('.example-barrage').barrage({content:saying.random(), top:'50%'});">Options</button>
+            <button class='btn info' onclick="$('.example-barrage').barrage(`<div class='gqui-avatar rad mr-2' style='width:26px;height:26px;'><img src='/lib/img/icon.png'></div><span>哈哈哈哈哈哈哈哈哈</span>`);">HTML</button>
+        </div>
+        <div class='example-barrage'>
+        </div>
+
+
+
+        <h4>Tabs</h4>
+        <div class='ox-wrap'><div class='gqui-tabs'>
+            <span class='gqui-tab is-active'>Home</span>
+            <span class='gqui-tab'>User</span>
+            <span class='gqui-tab'>Open</span>
+            <span class='gqui-tab'>Donate</span>
+            <span class='gqui-tab'>Download</span>
+        </div></div>
+
+
+
+        <h4>Timeline</h4>
+        <div class='gqui-timeline'>
+            <div class='gqui-timeline-item'>
+                <div class='gqui-timeline-label'>5月1日</div>
+                <div class='gqui-timeline-badge'></div>
+                <div class='gqui-timeline-content'>Outlines keep you honest. And keep structure.</div>
+            </div>
+            <div class='gqui-timeline-item'>
+                <div class='gqui-timeline-label'>4月30日</div>
+                <div class='gqui-timeline-badge'></div>
+                <div class='gqui-timeline-content'>往往充满戾气的话我可以一忍再忍，但是一遇到温柔我就会有一点想哭。</div>
+            </div>
+            <div class='gqui-timeline-item'>
+                <div class='gqui-timeline-label'>4月27日</div>
+                <div class='gqui-timeline-badge gqui-bg-green'></div>
+                <div class='gqui-timeline-content is-read'>草在结它的种子，风在摇它的叶子。我们站着，不说话，就十分美好。</div>
+            </div>
+            <div class='gqui-timeline-item'>
+                <div class='gqui-timeline-label'>4月25日</div>
+                <div class='gqui-timeline-badge gqui-bg-info'></div>
+                <div class='gqui-timeline-content'>Promise(承诺)、Earnest(诚挚)、Respect(尊重)、Forgiveness(宽容)、Enioy(享受)、Cherish(珍惜)、Trust(信任)是破译幸福Perfect的七个密码。</div>
+            </div>
+            <div class='gqui-timeline-item'>
+                <div class='gqui-timeline-label'>2021年</div>
+                <div class='gqui-timeline-badge gqui-bg-green'></div>
+                <div class='gqui-timeline-content is-read'>Kaamos 是芬兰语中“极夜”的意思，这是一段持续超过 24 小时的黑暗时期，是发生在极地圈内的一种现象。但 kaamos 也具有更情绪化的含义，因为它被用来描述一种渴望阳光的感觉，以及在日光不足的情况下缺乏热情。</div>
+            </div>
+        </div>
+
+
+    </div>
+</div> <!-- #gquiMain -->
+
+
+<footer id='footer'>
+    <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+</footer>
+</div>
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript">
+'use strict';
+let __page = {
+    init:{}, fn:{}, data:{tipbarIdx:0}
+};
+__page.data.egCode = `<div class='gqui-codebox' style='min-width:390px;width:55vw'>${$('p').text().repeat(9)}</div>`;
+
+__page.init.color = function(){
+    let colors = '';
+    for (let i = 1; i < 16; i++) {
+        let color = 'black';
+        i>9 && (color='white');
+        colors += `<div class='example-color grid-force' style='background-color: var(--bc${i});color: var(--${color});'>
+            <div class='body col-12'><h3>Base Color ${i}</h3></div>
+        </div>`;
+    }
+    $('#baseColors').html(colors);
+
+    $('.example-color').append(`<div class='footer l col-6'>20% #fff</div><div class='footer r col-6'>20% #000</div>`);
+};
+
+__page.init.eg = function(){
+    __page.data.pager = $.ui.pagination({
+        totalPage:100, wrapper:'#eg-pagination',
+        callback:(page)=>{
+            $.ui.alert(`跳转至第 ${page} 页`, 'bottom-right');
+        }
+    });
+    __page.data.pager1k = $.ui.pagination({
+        totalPage:1000, wrapper:'#eg-pagination-1k',
+        currentPage: 500
+    });
+
+    $('#eg-btn-custom').click(function(){
+        $.ui.dialog({
+            title: '标题',
+            message: '提示信息，支持 <b>HTML</b>',
+            buttons: [
+                {val: '我知道了', func: function(){
+                    alert('你知道了！');
+                }, class: 'info'},
+                {val: '我还没懂', func: function(){
+                    alert('你还没懂！');
+                }, class: 'cancel'},
+                {val: '再说一遍', func: function(){
+                    alert('啊！？');
+                }, class: 'danger'},
+            ]
+        });
+    });
+
+    $('#eg-btn-custom-alert').click(function(){
+        $.ui.alert('Alert Content', {
+            buttons: [
+                {val:'undo', class:'danger', func: function(){
+                    alert('undo');
+                }},
+                {val:'confirm', func: function(){
+                    alert('confirm');
+                }},
+            ]
+        });
+    });
+};
+
+
+let saying = {
+    words: [
+        {word:'不断蚕食，终能鲸吞',source:'《埃及艳后》'},
+        {word:'时光偷走的，永远是你眼皮底下看不见的珍贵',source:''},
+        {word:'春草明年绿，王孙归不归？',source:''},
+        {word:'世间多无奈，别被风雪染',source:''},{word:'世事多无奈，莫随霜雪白',source:''},
+        {word:'等世间所有的相遇，也等所有与你的久别重逢',source:''},
+        {word:'如果能避开猛烈的欢喜，自然也不会有悲痛的来袭',source:''},
+        {word:'世界上有太多孤独的人，害怕先踏出第一步',source:'《绿皮书》'},
+        {word:'迷途漫漫，终有一归',source:'《不能承受的生命之轻》'},
+        {word:'站远一点，才有机会去感动',source:''},
+        {word:'你问我爱你值不值得，其实你应该知道，爱就是不问值不值得',source:'张爱玲'},
+        {word:'等着别人来爱你，不如自己爱自己',source:'毕淑敏'},
+        {word:'报最大的希望，尽最大的努力，做最坏的打算，然后一切随缘，随遇而安',source:''},
+        {word:'爱你所爱，行你所行，听从你心，无问西东',source:''},
+        {word:'和任何一种生活，摩擦久了都会起球',source:''},
+        {word:'你的性别不该限制你喜欢的任何东西',source:''},
+        {word:'因为喜欢，可迎万难',source:''},
+        {word:'自己淋过雨的人，才会想着给别人打伞',source:''}
+    ],
+    random: function(arr, type){
+        Array.isArray(arr) || (type = arr, arr = saying.words);
+        type || (type='word');
+
+        let say = arr[Math.floor(Math.random()*arr.length)];;
+        switch(type){
+            case 'word':return say.word;
+            case 'both':return say;
+        }
+    }
+}
+
+
+/** ------------------------------------
+ * @gxz $init.function
+ * ------------------------------------- */
+$(function(){
+    for(let fn in __page.init){
+        typeof __page.init[fn] === 'function' && __page.init[fn]();
+    };
+});
+</script>
+</body>
+</html>

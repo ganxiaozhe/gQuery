@@ -1,0 +1,178 @@
+:root {
+    --primary-rgb: 255,183,0;
+}
+
+/** ------------------------------------
+ * Mixed
+ * ------------------------------------- */
+@media screen and (min-width: 769px){
+    .pc-ta-r {text-align: right!important;}
+}
+@media screen and (max-width: 768px){
+    .sm-ta-c {text-align: center!important;}
+    .sm-block {display: block!important;}
+}
+#noscript {
+    position: relative;background: var(--red);color: #fff;
+    text-align: center;padding: var(--x8);
+    display: block;font-weight: 500;
+}
+.click {cursor: pointer;}
+.clearfix:after {content:'';display: block;width: 100%;clear: both;}
+.gqui-dialog-footer .btn.cancel {border-color: transparent;}
+
+
+/** ------------------------------------
+ * Header & Footer
+ * ------------------------------------- */
+#header, #footer {
+    background: var(--bg-seco);
+    box-shadow: 0 0 6px rgba(0,0,0,.2);
+}
+#gquiContainer {
+    display: flex;flex-direction: column;
+    min-height: 100vh;
+}
+#gquiMain {flex: 1 0 auto;}
+
+
+/** ------------------------------------
+ * Header
+ * ------------------------------------- */
+#headerMark {position: relative;height: 60px;}
+#header {
+    --hh: 60px;
+    position: fixed;top: 0;left: 0;z-index: 9;
+    width: 100%;height: var(--hh);padding: 0 var(--x8);
+    font-size: 16px;
+    display: flex;align-items: center;justify-content: space-between;
+}
+#header>.l, #header>.r {
+    line-height: var(--hh);
+    display: flex;align-items: center;
+}
+#headerTitle {
+    display: inline-block;position: relative;
+    font-weight: 800;font-size: 18px;
+}
+#headerTitle:before, #headerTitle:after {
+    content: '';position: absolute;
+    height: 18px;width: 18px;border-radius: 100%;
+    background: var(--gold);
+    top: 12px;right: -24px;
+}
+#headerTitle:before {
+    background: url(/lib/img/icon.png);background-size: cover;
+    opacity: 1;
+}
+#headerTitle:after {
+    background: var(--red);height: 9px;width: 9px;
+    top: 22px;opacity: 0.5;transform-origin: top;
+    transition: all 0.8s ease;
+}
+#headerTitle:hover:after {
+    width: 12px;height: 12px;top: 19px;
+    transform: rotate(225deg);
+}
+
+
+/** ------------------------------------
+ * Language
+ * ------------------------------------- */
+#lang-list {
+    position: fixed;right: var(--x8);top: calc(60px + var(--x8));
+    z-index: 9;background: var(--bg-seco);border-radius: 8px;
+    box-shadow: 0 0 1em rgba(0,0,0,.15);
+    padding: 0 var(--x2);font-size: 15px;
+    transition: right 0.4s ease;user-select: none;
+}
+#lang-list.hide {right: -140px;}
+#lang-list li {
+    padding: var(--x3) var(--x4);cursor: pointer;
+    border-bottom: 1px solid var(--bc2);
+    transition: color 0.25s ease;
+}
+#lang-list li:last-child {border-bottom: none;}
+#lang-list li:hover {color: var(--gold);}
+
+#lang-list li.loading {
+    animation: langlist 0.7s linear infinite;
+}
+
+@keyframes langlist {
+    0% {opacity: 1;} 50% {opacity: 0;} 100% {opacity: 1;}
+}
+
+
+/** ------------------------------------
+ * Nav
+ * ------------------------------------- */
+#nav li {
+    display: inline-block;padding: 0 var(--x3);
+    color: var(--bc12);
+    transition: color 0.25s ease;
+}
+#nav li:hover {color: var(--black);}
+#nav ul {margin-right: var(--x6);}
+#nav-btn {display: none;}
+#header .btn-menu {display: none;}
+
+#nav-btn:checked ~ .btn-menu:before {
+    top: calc(50% - 2px);box-shadow: none;
+    transform: rotate(225deg);
+}
+#nav-btn:checked ~ .btn-menu:after {
+    bottom: calc(50% - 1px);transform: rotate(135deg);
+}
+
+@media screen and (max-width: 768px){
+    #nav {
+        position: fixed;top: 60px;left: -100%;
+        width: 100%;height: calc(100% - 60px);
+        background: var(--bg-seco);
+        transition: left 0.4s ease;
+    }
+    #nav-btn:checked ~ #nav {left: 0px;}
+
+    #nav ul {margin: 0 var(--x6);}
+    #nav li {
+        display: block;padding: var(--x0) var(--x2);
+        border-bottom: 1px solid var(--bc3);
+    }
+
+    #header .btn-menu {display: block;margin-left: var(--x4);}
+}
+
+
+/** ------------------------------------
+ * Menu Button
+ * ------------------------------------- */
+.btn-menu {
+    --width: 28px;--height: 28px;
+    width: var(--width);height: var(--height);position: relative;
+}
+.btn-menu:before, .btn-menu:after {
+    content: "";display: block;
+    width: var(--width);height: 3px;
+    background: var(--bc14);border-radius: 8px;
+    position: absolute;left: 0;
+    transition: all 0.3s ease-in-out;
+}
+.btn-menu:before {
+    top: 5px;box-shadow: 0 calc(var(--height) / 2 - 6.5px) var(--bc14);
+}
+.btn-menu:after {bottom: 5px;}
+
+
+/** ------------------------------------
+ * Footer
+ * ------------------------------------- */
+#footer {
+    position: relative;padding: var(--x8);
+    flex: 0 0 auto;font-size: 14px;
+    padding: var(--x6) 0;
+}
+#footer-beian {text-align: right;}
+@media screen and (max-width: 768px){
+    #footer-beian-icp {display: block;}
+}

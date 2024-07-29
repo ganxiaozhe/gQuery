@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- By: Ganxiaozhe 版权所有 -->
+<html lang="zh-CN">
+<head>
+<title id='app_title'>DOM 操作 - gQuery</title>
+<meta name='Keywords' content='gQuery DOM, HTML DOM, gQuery开发文档' />
+<meta name='Description' content='gQuery 原型链中皆在为 DOM 服务，换言之：若不在 DOM 环境下，gQuery 原型链将无法正常运行，但这并不影响其拓展链。' />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+<meta name="author" content="Ganxiaozhe (JU Cheng-ren)"/>
+<link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+
+<link type="text/css" rel="stylesheet" href="/lib/css/gquery.ui.v2.css" />
+<link type="text/css" rel="stylesheet" href="/lib/iconfont/tabler-icons.min.css" />
+<link type="text/css" rel="stylesheet" href="/lib/highlight/gmde.css" />
+
+<link type="text/css" rel="stylesheet" href="/src/css/app.main.css" />
+<link type="text/css" rel="stylesheet" href="/src/css/app.docs.css" />
+
+</head>
+<body>
+
+<div id='gquiContainer'>
+<header id='header'>
+    <section class='l'><a id='headerTitle' href='/'>gQuery</a></section>
+</header>
+
+
+<div id='gquiMain'>
+    <noscript id='noscript'>You need to enable JavaScript to run this app.</noscript>
+
+    <div id='docsNav'>
+        <div class='p-6 docsNav__loader'>
+            <div class='gqui-loader-line'></div>
+            <div class='gqui-loader-line mt-6' style='width:60%'></div>
+        </div>
+    </div>
+
+    <div id='docsWrap'>
+        <div id='docsInner' class='container article no-indent'>
+            <h1>DOM 操作</h1>
+
+
+            <h2>简介</h2>
+            <p><strong>DOM</strong>（Document Object Model——文档对象模型）是用来呈现以及与任意 HTML 或 XML 文档交互的 API。DOM 是载入到浏览器中的文档模型，以节点树的形式来表现文档，每个节点代表文档的构成部分。（例如：页面元素、字符串或注释等等）</p>
+            <p>gQuery 原型链中皆在为 DOM 服务，换言之：若不在 DOM 环境下，gQuery 原型链将无法正常运行，但这并不影响其拓展链。</p>
+
+
+            <h2>索取与给予</h2>
+            <p>尽管这小节的名字有点弦外之音的意思，但 gQuery 确实为 DOM 信息捕获与增减变化提供了更多可能。</p>
+            <p>例如用于获取内容与变化的函数方法：</p>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>方法名</th><th>说明</th><th>示例</th></tr>
+                <tr><td>text([:String:Array])</td><td>获取或设置元素文本内容</td><td>$('p').text()</td></tr>
+                <tr><td>html([:String:Array])</td><td>获取或设置元素 HTML 内容</td><td>$('p').html('g&lt;b&gt;Query&lt;/b&gt;')</td></tr>
+                <tr><td>ohtml([:String:Array])</td><td>获取或设置元素 outerHTML 内容</td><td>$('p').ohtml([])</td></tr>
+
+                <tr><td>val([:String:Array])</td><td>获取或设置元素值（表单）</td><td>$('input').val([])</td></tr>
+                <tr><td>width([:Number:String])</td><td>获取或设置元素宽度</td><td>$('p').width('50vh')</td></tr>
+                <tr><td>height([:Number:String])</td><td>获取或设置元素高度</td><td>$('p').height()</td></tr>
+                <tr><td>css(:Object:String [, :String])</td><td>获取或设置元素样式</td><td>$('p').css({color:'red', opacity:.7})</td></tr>
+
+                <tr><td>offset([:Object:Boolean])</td><td>获取元素定位坐标或设置元素 style</td><td>$('#footer').offset()</td></tr>
+
+                <tr><td>hasClass(Class:String)</td><td>判断元素（任一）是否有指定类</td><td>$('p').hasClass('p1')</td></tr>
+                <tr><td>addClass(Class:String)</td><td>为元素添加指定类</td><td>$('p').addClass('p1 p2 p3')</td></tr>
+                <tr><td>removeClass(Class:String)</td><td>为元素移除指定类</td><td>$('p').removeClass('p2')</td></tr>
+                <tr><td>toggleClass(Class:String)</td><td>为元素添加或移除指定类</td><td>$('p').toggleCass('p1 p3')</td></tr>
+            </tbody></table></div>
+
+            <p>以及用于元素增减的方法：</p>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>方法名</th><th>说明</th><th>示例</th></tr>
+                <tr><td>remove([Selector:String, onlyChildren:Boolean])</td><td>移除元素</td><td>$('h2').remove()</td></tr>
+                <tr><td>empty([Selector:String])</td><td>清空元素</td><td>$('h2').empty()</td></tr>
+
+                <tr><td>prepend(Element:String:Object)</td><td>将内容插入到元素前（内）</td><td>$('h2').prepend('&lt;p&gt;Hey!&lt;/p&gt;')</td></tr>
+                <tr><td>append(Element:String:Object)</td><td>将内容插入到元素后（内）</td><td>$('h2').append('&lt;p&gt;Hi!&lt;/p&gt;')</td></tr>
+
+                <tr><td>before(Element:String:Object)</td><td>将内容插入到元素前（外）</td><td>$('h2').before('&lt;p&gt;Sup!&lt;/p&gt;')</td></tr>
+                <tr><td>after(Element:String:Object)</td><td>将内容插入到元素后（外）</td><td>$('h2').after('&lt;p&gt;Hello!&lt;/p&gt;')</td></tr>
+            </tbody></table></div>
+
+
+            <p>用于信息捕获及设置的方法：</p>
+            <div class='ox-wrap'><table class='gqui-table table-bold-y fluid'><tbody>
+                <tr><th>方法名</th><th>说明</th><th>示例</th></tr>
+                <tr><td>attr(:Object:String [, :String])</td><td>获取或设置元素属性值</td><td>$('p').attr('data-name', 'val')</td></tr>
+                <tr><td>removeAttr(:String)</td><td>移除元素指定属性</td><td>$('p').removeAttr('data-name')</td></tr>
+
+                <tr><td>data(:Object:String [, :String])</td><td>获取或设置元素的储存数据</td><td>$('p').data({name:'甘小蔗', age:20})</td></tr>
+                <tr><td>removeData(:String)</td><td>移除元素指定的储存数据</td><td>$('p').removeData('name age')</td></tr>
+            </tbody></table></div>
+
+        </div> <!-- #docsInner -->
+
+
+        <footer id='footer'>
+            <div class='ta-c'>Copyright © 2020 - present, gquery.cn</div>
+        </footer>
+    </div>
+
+</div> <!-- #gquiMain -->
+
+</div>
+
+
+
+<script type="text/javascript" src="/lib/js/gquery.js"></script>
+<script type="text/javascript" src="/lib/js/gquery.ui.v2.js"></script>
+<script type="text/javascript" src="/lib/highlight/pack.js"></script>
+
+<script type="text/javascript" src="/src/js/app.main.js"></script>
+<script type="text/javascript" src="/src/js/app.docs.js"></script>
+</body>
+</html>

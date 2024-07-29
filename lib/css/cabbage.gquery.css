@@ -1,0 +1,20 @@
+.cabbageMenu {
+	position: absolute;top: 0px;left: 0px;z-index: 999;
+	background: rgba(40,40,40,0.75);box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
+	backdrop-filter: blur(20px);-webkit-backdrop-filter: blur(12px);
+	border: 1px solid rgb(10,10,10);border-radius: 5px;
+	min-width: 200px;height: auto;font-size: 11px;color: rgb(255,255,255);
+	overflow-x: hidden;overflow-y: auto;
+}
+.cabbageMenu ul {
+	width: 100%;height: 100%;border: 1px solid rgb(100,100,100);border-radius: 5px;
+	padding: 4px 0;
+}
+.cabbageMenu ul li {cursor: default;}
+.cabbageMenu ul li.i {position: relative;padding: 4px 16px;}
+.cabbageMenu ul li.i:hover {background: rgba(0,0,0,0.5);}
+.cabbageMenu ul li.extra::after {
+	content: '>';position: absolute;top: 3px;right: 12px;font-weight: 800;
+}
+.cabbageMenu ul li.break {height: 2px;background: rgb(100,100,100);padding: 0;margin: 4px 0;}
+.cabbageMenu ul li.disable {position: relative;padding: 4px 16px;color: rgb(180,180,180);}
