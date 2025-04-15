@@ -59,9 +59,14 @@ __app.init.nav = function(){
  * ------------------------------------- */
 __app.init.footer = function(){
     $('#footer').html(`<div class='container grid' style='--gap:var(--x1);'>
-        <section class='col-6 sm-ta-c'>「 ${new Date().getFullYear()} © gQuery 」 <a class='sm-block' href='http://beian.miit.gov.cn/' target='_blank'>渝 ICP 备 20007909 号</a></section>
+        <section class='col-6 sm-ta-c'>${new Date().getFullYear()} © gQuery<span class='mr-1 hide-sm opacity-50'> ,</span><a id='footer-icp' class='sm-block' href='http://beian.miit.gov.cn/' target='_blank'>渝ICP备20007909号-12</a></section>
         <section class='col-6 ta-r sm-ta-c'>Made with <b style='color:var(--red);'>❤</b> by <a href='https://gxzv.com/?from=gquery' target='_blank' class='fw-b'>Ganxiaozhe</a></section>
     </div>`);
+    
+
+    // setTimeout(()=>{
+    //     $('#footer-icp').text('渝 ICP 备 20007909 号');
+    // }, 1000);
 };
 
 
